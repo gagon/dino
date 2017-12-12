@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block main_table %}
+
+<div class="container-fluid">
+  <div class="page-header"  style="margin-top:0px;">
+    <h3>KPC</h3>
+  </div>
+  <table class="table table-hover" style="font-size: 10px; padding: 0px; vertical-align: middle;">
+    <thead>
+      <tr>
+        <th>Well</th>
+        <th>CGR</th>
+        <th>Slot</th>
+        <th>Comingled with</th>
+        <th>RMS/Manifold</th>
+        <th>Dual connect</th>
+        <th>Truncline <br>route</th>
+        <th>MAP</th>
+        <!-- <th>Current <br>FWHP</th> -->
+        <!-- <th>Current <br>FL pressure</th> -->
+        <!-- <th>Current <br>slot pressure</th> -->
+        <th>Field <br>MNP</th>
+        <!-- <th>GAP <br>MNP</th> -->
+        <th>GAP <br>FWHP</th>
+        <th>Set <br>FWHP</th>
+
+
+
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in range(40) %}
+      <tr>
+        <td>9810-2</td>
+        <td  bgcolor="#7FFFD">500</td>
+        <td>5</td>
+        <td>9834-1</td>
+
+        <td>RMS-H</td>
+        {% if i<10 %}
+        <td style="padding: 0px;vertical-align: middle;">
+          <div class="dropdown" style="margin:0px;">
+            <a class="btn btn-link btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="padding:0px;margin:0px;">
+              KPC
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+              <li><a href="#">KPC (slot4)</a></li>
+              <li><a href="#">Unit3 (slot18)</a></li>
+            </ul>
+          </div>
+        </td>
+        {% else %}
+          <td></td>
+        {% endif %}
+        <td style="padding: 0px;vertical-align: middle;">
+          <div class="dropdown">
+            <a class="btn btn-link btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="padding:0px;margin:0px;">
+              TL1
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+              <li><a href="#">TL1</a></li>
+              <li><a href="#">TL2</a></li>
+              <li><a href="#">Test</a></li>
+            </ul>
+          </div>
+        </td>
+        <td>80</td>
+        <!-- <td>85</td> -->
+        <!-- <td>83</td> -->
+        <!-- <td>82</td> -->
+        <td>80</td>
+        <!-- <td>75</td> -->
+        <td>83</td>
+        <td><input type="text" size="4"  style="padding:0px;margin:0px;"></td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td>9832</td>
+        <td>600</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+
+{% endblock %}

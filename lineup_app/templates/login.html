@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block currentpage %}
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-2">
+
+        {% if session['logged_in'] %}
+          <p>You're logged in already!</p>
+        {% else %}
+
+          <form method="POST">
+            <h3>Login</h3>
+            <div class="form-group">
+              <input type="username" name="username" class="form-control" placeholder="Username">
+            </div>
+            <div class="form-group">
+              <input type="password" name="password" class="form-control" placeholder="Password">
+            </div>
+            <input type="submit" class="btn btn-primary" value="Log in">
+          </form>
+
+        {% endif %}
+
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

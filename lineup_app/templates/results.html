@@ -1,0 +1,1576 @@
+{% extends 'base.html' %}
+{% block currentpage %}
+
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-lg-10">
+      <h3>Field Balance</h3>
+      <div class="panel panel-default">
+        <div id="mynetwork"></div>
+      </div>
+    </div>
+
+    <div class="col-lg-2">
+      <h3>KPIs</h3>
+      <div class="panel panel-default">
+        <table class="table table-bordered table-condensed" style="font-size:10px;" cellpadding="5">
+         <tbody>
+           <tr>
+             <td><b><u>CPC oil</u></b></td><td id="cpc_oil_perc"></td>
+           </tr>
+           <tr>
+             <td><b><u>OGP gas</u></b></td><td id="ogp_gas_perc"></td>
+           </tr>
+           <tr>
+             <td><b><u>Gas injection</u></b></td><td id="gas_inj_perc"></td>
+           </tr>
+           <tr>
+             <td><b><u>OGP oil</u></b></td><td id="ogp_oil_perc"></td>
+           </tr>
+           <tr>
+             <td><b><u>MTU oil</u></b></td><td id="mtu_oil_perc"></td>
+           </tr>
+           <tr>
+             <td><b><u>Fuel gas</u></b></td><td id="fuel_gas_perc"></td>
+           </tr>
+           <tr>
+             <td>KPC Free gas in MP Sep</td><td id="kpc_free_gas_perc"></td>
+           </tr>
+           <tr>
+             <td>KPC Total gas</td><td id="kpc_tot_gas_perc"></td>
+           </tr>
+           <tr>
+             <td>Unit-2 Free gas in MP Sep</td><td id="u2_free_gas_perc"></td>
+           </tr>
+           <tr>
+             <td>Unit-3 Free gas in MP Sep</td><td id="u3_free_gas_perc"></td>
+           </tr>
+           <tr>
+             <td>KPC gas to Unit-2</td><td id="kpc_gas_2_u2_perc"></td>
+           </tr>
+           <tr>
+             <td>KPC gas to Unit-3</td><td id="kpc_gas_2_u3_perc"></td>
+           </tr>
+         </tbody>
+        </table>
+
+      </div>
+
+    </div>
+  </div>
+
+
+
+    <div class="" id="fb_input_table" style="display:none;">
+      <div class="row">
+        <div class="col-lg-4">
+
+          <h4><b>Inputs</b></h4>
+          <table class="table table-bordered table-condensed">
+            <tr>
+              <td style="width:40%;">KPC Qoil</td>
+              <td style='width:40%;' id="kpc_qoil" contenteditable >22000</td>
+              <td style='width:20%;' id="kpc_qoil_uom">
+                <select class="form-control input-sm" name="kpc_qoil_uom_selected" style="padding:1px;width:200px;height:20px;">
+                  <option selected>Sm3/d</option>
+                  <option>St.tons/d</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td style="width:40%;">KPC Qgas</td>
+              <td style='width:40%;' id="kpc_qgas" contenteditable >22000</td>
+              <td style='width:20%;' id="kpc_qgas_uom">sm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">Unit-2 Qoil</td>
+              <td style='width:40%;' id="u2_qoil" contenteditable >22000</td>
+              <td style='width:20%;' id="u2_qoil_uom">sm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">Unit-2 Qgas</td>
+              <td style='width:40%;' id="u2_qgas" contenteditable >22000</td>
+              <td style='width:20%;' id="u2_qgas_uom">sm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">Unit-3 Qoil</td>
+              <td style='width:40%;' id="u3_qoil" contenteditable >22000</td>
+              <td style='width:20%;' id="u3_qoil_uom">sm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">Unit-3 Qgas</td>
+              <td style='width:40%;' id="u3_qgas" contenteditable >22000</td>
+              <td style='width:20%;' id="u3_qgas_uom">sm3/d</td>
+            </tr>
+          </table>
+          <div class="btn btn-primary" id="apply_fb_input_updates">Apply</div>
+        </div>
+
+        <div class="col-lg-4">
+          <h4><b>Constraints</b></h4>
+          <table class="table table-bordered table-condensed">
+            <tr>
+              <td style="width:40%;">CPC oil max</td>
+              <td style='width:40%;' id="cpc_oil_max" contenteditable >22000</td>
+              <td style='width:20%;' id="cpc_oil_uom">sm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">OGP gas</td>
+              <td style='width:40%;' id="ogp_gas_max" contenteditable >25000</td>
+              <td style='width:20%;' id="ogp_gas_uom">ksm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">Gas injection Target</td>
+              <td style='width:40%;' id="gas_inj_max" contenteditable >22000</td>
+              <td style='width:20%;' id="gas_inj_uom">ksm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">Fuel gas</td>
+              <td style='width:40%;' id="fuel_gas_max" contenteditable >2500</td>
+              <td style='width:20%;' id="fuel_gas_uom">ksm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">MTU oil</td>
+              <td style='width:40%;' id="mtu_oil_max" contenteditable >25000</td>
+              <td style='width:20%;' id="mtu_oil_uom">ksm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">OGP oil</td>
+              <td style='width:40%;' id="ogp_oil_max" contenteditable >25000</td>
+              <td style='width:20%;' id="ogp_oil_uom">ksm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">KPC Max gas in MP Sep</td>
+              <td style='width:40%;' id="kpc_free_gas_max" contenteditable >25000</td>
+              <td style='width:20%;' id="kpc_free_gas_uom">ksm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">KPC Max Tot gas in Drizo</td>
+              <td style='width:40%;' id="kpc_tot_gas_max" contenteditable >25000</td>
+              <td style='width:20%;' id="kpc_tot_gas_uom">ksm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">Unit-2 Max gas in MP Sep</td>
+              <td style='width:40%;' id="u2_free_gas_max" contenteditable >25000</td>
+              <td style='width:20%;' id="u2_free_gas_uom">ksm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">Unit-3 Max gas in MP Sep</td>
+              <td style='width:40%;' id="u3_free_gas_max" contenteditable >25000</td>
+              <td style='width:20%;' id="u3_free_gas_uom">ksm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">KPC Qgas Max to Unit-2</td>
+              <td style='width:40%;' id="kpc_gas_2_u2_max" contenteditable >25000</td>
+              <td style='width:20%;' id="kpc_gas_2_u2_uom">ksm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:40%;">KPC Qgas Max to Unit-3</td>
+              <td style='width:40%;' id="kpc_gas_2_u3_max" contenteditable >25000</td>
+              <td style='width:20%;' id="kpc_gas_2_u3_uom">ksm3/d</td>
+            </tr>
+          </table>
+
+
+        </div>
+
+
+        <div class="col-lg-4">
+          <h4><b>Lab data</b></h4>
+          <table class="table table-bordered table-condensed">
+            <tr>
+              <td style="width:50%;">Unstable oil Density Unit-3</td>
+              <td style='width:30%;' id="u3_unst_dens" contenteditable >22000</td>
+              <td style='width:20%;' id="u3_unst_dens_uom">sm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:50%;">Unstable oil Density Unit-2</td>
+              <td style='width:30%;' id="u2_unst_dens" contenteditable >22000</td>
+              <td style='width:20%;' id="u2_unst_dens_uom">sm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:50%;">St/unst oil Conversion Unit-3</td>
+              <td style='width:30%;' id="u3_st_unst_conv" contenteditable >22000</td>
+              <td style='width:20%;' id="u3_st_unst_conv_uom">sm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:50%;">St/unst oil Conversion Unit-2</td>
+              <td style='width:30%;' id="u2_st_unst_conv" contenteditable >22000</td>
+              <td style='width:20%;' id="u2_st_unst_conv_uom">sm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:50%;">Rs Unit-3</td>
+              <td style='width:30%;' id="u3_rs" contenteditable >22000</td>
+              <td style='width:20%;' id="u3_rs_uom">sm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:50%;">Rs Unit-2</td>
+              <td style='width:30%;' id="u2_rs" contenteditable >22000</td>
+              <td style='width:20%;' id="u2_rs_uom">sm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:50%;">Oil shrinkage Unit-3</td>
+              <td style='width:30%;' id="u3_shrinkage" contenteditable >22000</td>
+              <td style='width:20%;' id="u3_shrinkage_uom">sm3/d</td>
+            </tr>
+            <tr>
+              <td style="width:50%;">Oil shrinkage Unit-2</td>
+              <td style='width:30%;' id="u2_shrinkage" contenteditable >22000</td>
+              <td style='width:20%;' id="u2_shrinkage_uom">sm3/d</td>
+            </tr>
+          </table>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <hr>
+    <h3>Unit Performance Curves</h3>
+    <div class="row">
+
+
+      <div class="col-lg-4">
+       <div class="panel panel-default">
+         <div class="" id="kpc_pcs_plot" style="height:400px;">
+         </div>
+       </div>
+      </div>
+      <div class="col-lg-4">
+       <div class="panel panel-default">
+         <div class="" id="u2_pcs_plot" style="height:400px;">
+         </div>
+       </div>
+      </div>
+      <div class="col-lg-4">
+       <div class="panel panel-default">
+         <div class="" id="u3_pcs_plot" style="height:400px;">
+         </div>
+       </div>
+      </div>
+
+    </div>
+
+
+      <!-- </div> -->
+    <hr>
+    <div class="row">
+      <div class="col-lg-12">
+        <h3>TOTALS FIELD PRODUCTION</h3>
+        <h4 style="color:#339933;">Qgas (ksm3/d) - {{ data.field.qgas }}</h4>
+        <h4 style="color:#339933;">Qoil (sm3/d) - {{ data.field.qoil }}</h4>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <h3>UNITS PRODUCTION</h3>
+      </div>
+    </div>
+
+  <div class="row">
+
+    {% for tots in data.totals %}
+
+
+      <div class="col-lg-4">
+
+        {% if loop.index0==0 %}
+          <h3>KPC</h3>
+        {% elif loop.index0==1 %}
+          <h3>Unit 3</h3>
+        {% elif loop.index0==2 %}
+          <h3>Unit 2</h3>
+        {% endif %}
+
+        <table class="table table-bordered">
+          <thead class="thead-default">
+            <tr class="info">
+
+              {% if loop.index0==0 %}
+                <th>KPC</th>
+              {% elif loop.index0==1 %}
+                <th>Unit 3</th>
+              {% elif loop.index0==2 %}
+                <th>Unit 2</th>
+              {% endif %}
+              <th>Qgas (ksm3/d)</th>
+              <th>Qoil (sm3/d)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:#339933;"><b>Total</b></td>
+              <td style="color:#339933;"><b>{{ tots.qgas }}</b></td>
+              <td style="color:#339933;"><b>{{ tots.qoil }}</b></td>
+            </tr>
+            {% for rms,d in tots.subtotals.items() %}
+              <tr>
+                <td><b>{{ rms }}</b></td>
+                <td>{{ d.qgas }}</td>
+                <td>{{ d.qoil }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col-lg-2">
+      <button type="button" class="btn btn-default btn-lg btn-block" id="#save_state" onclick="save_state();" style="background-color:#e5ffec;">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save FWHPs to state
+      </button>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col-lg-12">
+
+      <span><h3>WELLS PRODUCTION</h3></span>
+
+      {% for d in data.wells %}
+
+        <div class="row">
+          <div class="col-lg-12">
+
+            {% if d[0].unit_id == 0 %}
+              <h3>KPC</h3>
+            {% elif d[0].unit_id == 1 %}
+              <h3>Unit 3</h3>
+            {% elif d[0].unit_id == 2 %}
+              <h3>Unit 2</h3>
+            {% endif %}
+
+            <table class="table table-hover table-condensed" id="sort_table{{d[0].unit_id}}" style="font-size: 12px;">
+              <thead class="thead-default">
+                <tr>
+                  <th>Wellname</th>
+                  <th>GOR</th>
+                  <th>Connected</th>
+                  <th>Flow to</th>
+                  <th>Comingled</th>
+                  <th>MAP</th>
+                  <th>Target FWHP</th>
+                  <th>FWHP</th>
+                  <th>dPChoke</th>
+                  <th>FL pressure</th>
+                  <th>Slot pressure</th>
+                  <th>Qoil</th>
+                  <th>Qgas</th>
+                  <th>DD</th>
+                  <th>DD limit</th>
+                  <th>Qliq</th>
+                  <th>Qliq limit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for key, row in d.items() %}
+                  <tr>
+                    <td name="wellname">{{ row.wellname }}</td>
+                    <td title="GOR">{{ row.gor|round(1, 'common') }}</td>
+                    <td title="Connected">{{ row.connected }}</td>
+                    <td title="Flow to">
+                      {{ row.route.unit }}--{{ row.route.rms }}--{{ row.route.tl }}--slot {{ row.route.slot }}
+                    </td>
+                    <td title="Comingled">{{ row.route.comingled }}</td>
+                    <td title="MAP" name="map">{{ row.map }}</td>
+                    <td title="Target FWHP" name="target_fwhp">{{ row.target_fwhp }}</td>
+                    <td title="FWHP" name="fwhp" value="{{ row.fwhp_raw }}">{{ row.fwhp|round(1, 'common') }}</td>
+                    <td title="dP Choke" name="dp">{{ row.dp|round(1, 'common') }}</td>
+                    <td title="FL pressure" name="flp">{{ (row.fwhp-row.dp)|round(1, 'common') }}</td>
+                    <td title="Slot pressure" name="slotpres">{{ row.slotpres|round(1, 'common') }}</td>
+                    <td title="Qgas">{{ row.qoil|round(1, 'common') }}</td>
+                    <td title="Qoil">{{ row.qgas|round(1, 'common') }}</td>
+                    <td title="DD">{{ row.dd|round(1, 'common') }}</td>
+                    <td title="DD limit">{{ row.dd_lim }}</td>
+                    <td title="Qliq">{{ row.qliq|round(1, 'common') }}</td>
+                    <td title="Qliq limit">{{ row.qliq_lim }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+      {% endfor %}
+
+    </div>
+  </div>
+
+</div>
+
+
+
+<script type="text/javascript">
+
+  $( document ).ready(function() {
+    $("#sort_table{{data.wells[0][0].unit_id}}").tablesorter();
+    $("#sort_table{{data.wells[1][0].unit_id}}").tablesorter();
+    $("#sort_table{{data.wells[2][0].unit_id}}").tablesorter();
+  });
+
+
+  function save_state() {
+    var set_state=get_state();
+    $.ajax({
+        type: "POST",
+        url: "/savestate_results",
+        // The key needs to match your method's input parameter (case-sensitive).
+        data: JSON.stringify(set_state),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
+        }
+    });
+    alert("FWHPs saved to state.");
+    return set_state;
+  };
+
+
+  function get_state(){
+
+    var set_state={};
+    set_state["wells"]={};
+
+    for (i=0; i<3; ++i) {
+      table="#sort_table" + i.toString()+" tbody";
+      $(table).children('tr').each(function () {
+
+        var wellname=$(this).find("[name=wellname]").text()
+        set_state["wells"][wellname]={};
+
+        var map=parseFloat($(this).find("[name=map]").text())
+        var dp=parseFloat($(this).find("[name=dp]").text())
+        var fwhp=parseFloat($(this).find("[name=fwhp]").attr("value"));
+
+        if (dp<10000){
+          if (dp>0){
+            set_state["wells"][wellname]["fwhp"]=fwhp;
+          }else{
+            set_state["wells"][wellname]["fwhp"]=map;
+          }
+        }else{
+          set_state["wells"][wellname]["fwhp"]=-1;
+        }
+
+      })
+    }
+    return set_state;
+  }
+
+
+
+  var fb_data;
+  var kpc_pc_chart;
+  var u2_pc_chart;
+  var u3_pc_chart;
+  var network;
+  var nodes;
+  var edges;
+  var data;
+  var options;
+  var table_show;
+  table_show=0;
+  var uom;
+
+
+  $( document ).ready(function() {
+
+    // loaded_data={{data|safe}}
+    network = network_build(fb_data);
+  });
+
+  uoms={
+    "category":{
+      "qoil":"oil_rate",
+      "qgas":"gas_rate",
+      "gor":"gas_oil_ratio",
+      "qoil_pot":"oil_rate",
+      "qgas_pot":"gas_rate",
+      "mp_rs":"gas_oil_ratio",
+      "lp_rs":"gas_oil_ratio",
+      "af_oil":"fraction",
+      "af_gas":"fraction",
+      "cpc_oil":"oil_rate",
+      "fuel_gas":"gas_rate",
+      "gas_inj":"gas_rate",
+      "ogp_gas":"gas_rate",
+      "ogp_oil":"oil_rate",
+      "mtu_oil":"oil_rate",
+      "kpc_gas_2_u2":"gas_rate",
+      "kpc_gas_2_u3":"gas_rate",
+      "u3_oil_2_kpc":"oil_rate",
+      "u3_gas_2_kpc":"gas_rate",
+      "u2_oil_2_kpc":"oil_rate",
+      "u2_gas_2_kpc":"gas_rate",
+      "u2_oil_2_u3":"oil_rate",
+      "u2_gas_2_u3":"gas_rate",
+      "kpc_free_gas":"gas_rate",
+      "kpc_tot_gas":"gas_rate",
+      "kpc_tot_oil":"oil_rate",
+      "u2_free_gas":"gas_rate",
+      "u2_tot_gas":"gas_rate",
+      "u2_tot_oil":"oil_rate",
+      "u3_free_gas":"gas_rate",
+      "u3_tot_gas":"gas_rate",
+      "u3_tot_oil":"oil_rate",
+      "cpc_oil_max":"oil_rate",
+      "fuel_gas_max":"gas_rate",
+      "gas_inj_max":"gas_rate",
+      "ogp_gas_max":"gas_rate",
+      "ogp_oil_max":"oil_rate",
+      "mtu_oil_max":"oil_rate",
+      "kpc_gas_2_u2_max":"gas_rate",
+      "kpc_gas_2_u3_max":"gas_rate",
+      "kpc_free_gas_max":"gas_rate",
+      "kpc_tot_gas_max":"gas_rate",
+      "u2_free_gas_max":"gas_rate",
+      "u3_free_gas_max":"gas_rate",
+      "cpc_oil_perc":"percent",
+      "fuel_gas_perc":"percent",
+      "gas_inj_perc":"percent",
+      "ogp_gas_perc":"percent",
+      "ogp_oil_perc":"percent",
+      "mtu_oil_perc":"percent",
+      "kpc_gas_2_u2_perc":"percent",
+      "kpc_gas_2_u3_perc":"percent",
+      "kpc_free_gas_perc":"percent",
+      "kpc_tot_gas_perc":"percent",
+      "u2_free_gas_perc":"percent",
+      "u3_free_gas_perc":"percent",
+    },
+    "uom":{
+      "oil_rate":[
+        "Sm3/d",
+        "St.tons/d",
+        "Unst.tons/d",
+        "Sm3/hr",
+        "St.tons/hr",
+        "Unst.tons/hr"
+      ],
+      "gas_rate":[
+        "KSm3/d",
+        "MMSm3/d",
+        "KSm3/hr",
+        "MMSm3/hr",
+      ],
+      "fraction":["-"],
+      "percent":["%"],
+    }
+  }
+
+  fb_data={{ data.fb_data|safe }};
+  // fb_data={
+  //   "unit_pcs":{
+  //     "kpc_pc":[[0,0,0],[1000,100,3000],[2000,500,9000],[5000,1000,11000],[6000,2000,12000],[7000,3000,13000],[12000,15000,15000]],
+  //     "u2_pc":[[0,0,0],[1000,100,3000],[2000,500,6000],[5000,1000,9000],[6000,2000,10000],[7000,3000,11000],[12000,15000,15000]],
+  //     "u3_pc":[[0,0,0],[1000,100,3000],[2000,500,8000],[5000,1000,12000],[6000,2000,13000],[7000,3000,14000],[12000,15000,15000]],
+  //   },
+  //   "wells":{
+  //     "kpc":{
+  //       "qoil":15000,
+  //       "qgas":10000,
+  //       "gor":2,
+  //       "qoil_pot":16000,
+  //       "qgas_pot":4,
+  //       "mp_rs":5,
+  //       "lp_rs":6,
+  //       "af_oil":7,
+  //       "af_gas":8
+  //     },
+  //     "u2":{
+  //       "qoil":0,
+  //       "qgas":1,
+  //       "gor":2,
+  //       "qoil_pot":3,
+  //       "qgas_pot":4,
+  //       "mp_rs":5,
+  //       "lp_rs":6,
+  //       "af_oil":7,
+  //       "af_gas":8
+  //     },
+  //     "u3":{
+  //       "qoil":0,
+  //       "qgas":1,
+  //       "gor":2,
+  //       "qoil_pot":3,
+  //       "qgas_pot":4,
+  //       "mp_rs":5,
+  //       "lp_rs":6,
+  //       "af_oil":7,
+  //       "af_gas":8
+  //     },
+  //   },
+  //   "streams":{
+  //     "actuals":{
+  //       "cpc_oil":0,
+  //       "fuel_gas":1,
+  //       "gas_inj":2,
+  //       "ogp_gas":3,
+  //       "ogp_oil":4,
+  //       "mtu_oil":5,
+  //       "kpc_gas_2_u2":6,
+  //       "kpc_gas_2_u3":7,
+  //       "u3_oil_2_kpc":8,
+  //       "u3_gas_2_kpc":9,
+  //       "u2_oil_2_kpc":10,
+  //       "u2_gas_2_kpc":11,
+  //       "u2_oil_2_u3":12,
+  //       "u2_gas_2_u3":13,
+  //       "kpc_free_gas":14,
+  //       "kpc_tot_gas":15,
+  //       "kpc_tot_oil":16,
+  //       "u2_free_gas":14,
+  //       "u2_tot_gas":15,
+  //       "u2_tot_oil":16,
+  //       "u3_free_gas":14,
+  //       "u3_tot_gas":15,
+  //       "u3_tot_oil":16,
+  //
+  //     },
+  //     "constraints":{
+  //       "cpc_oil_max":0,
+  //       "fuel_gas_max":1,
+  //       "gas_inj_max":2,
+  //       "ogp_gas_max":3,
+  //       "ogp_oil_max":4,
+  //       "mtu_oil_max":5,
+  //       "kpc_gas_2_u2_max":6,
+  //       "kpc_gas_2_u3_max":7,
+  //       "kpc_free_gas_max":14,
+  //       "kpc_tot_gas_max":15,
+  //       "u2_free_gas_max":14,
+  //       "u3_free_gas_max":14,
+  //     },
+  //     "perc":{
+  //       "cpc_oil_perc":0,
+  //       "fuel_gas_perc":1,
+  //       "gas_inj_perc":2,
+  //       "ogp_gas_perc":3,
+  //       "ogp_oil_perc":4,
+  //       "mtu_oil_perc":5,
+  //       "kpc_gas_2_u2_perc":6,
+  //       "kpc_gas_2_u3_perc":7,
+  //       "kpc_free_gas_perc":8,
+  //       "kpc_tot_gas_perc":9,
+  //       "u2_free_gas_perc":10,
+  //       "u3_free_gas_perc":11,
+  //     }
+  //   }
+  // }
+
+
+
+  function network_build(fb_data){
+
+    // create an array with nodes
+    nodes = new vis.DataSet([
+      {id: 1, label: 'KPC',group:"unit",x:200,y:200},
+      {id: 2, label: 'Unit-2',group:"unit",x:200,y:500},
+      {id: 3, label: 'Unit-3',group:"unit",x:700,y:350},
+      {id: 4, label: 'CPC oil',group:"oil_export",x:400,y:50},
+      {id: 5, label: 'OGP gas',group:"gas_export",x:900,y:650},
+      {id: 6, label: 'OGP oil',group:"oil_export",x:900,y:500},
+      {id: 7, label: 'MTU oil',group:"oil_export",x:900,y:100},
+      {id: 8, label: 'Gas injection',group:"gas_injection",x:200,y:750},
+      {id: 9, label: 'KPC wells',group:"wells",x:0,y:200},
+      {id: 10, label: 'Unit-2 wells',group:"wells",x:0,y:500},
+      {id: 11, label: 'Unit-3 wells',group:"wells",x:900,y:350},
+      {id: 12,x:200,y:270,hidden:true}, //KPC2U2gasout
+      {id: 13,x:200,y:450,hidden:true}, //KPC2U2gasin
+      {id: 14,x:200,y:350,hidden:true}, //KPC2U3gasout
+      {id: 15,x:650,y:350,hidden:true}, //KPC2U3gasin
+
+      {id: 16,x:250,y:500,hidden:true}, //U22U3oilout
+      {id: 17,x:680,y:500,hidden:true}, //U22U3oilmiddle
+      {id: 18,x:680,y:420,hidden:true}, //U22U3oilin
+
+      {id: 19,x:690,y:300,hidden:true}, //U32KPCoilout
+      {id: 20,x:690,y:200,hidden:true}, //U32KPCoilmiddle
+      {id: 21,x:250,y:200,hidden:true}, //U32KPCoilin
+
+      {id: 22,x:710,y:300,hidden:true}, //U32MTUoilout
+      {id: 23,x:710,y:100,hidden:true}, //U32MTUoilmiddle
+      {id: 24,x:860,y:100,hidden:true}, //U32MTUoilin
+
+      {id: 25,x:700,y:420,hidden:true}, //U32OGPgasout
+      {id: 26,x:700,y:650,hidden:true}, //U32OGPgasmiddle
+      {id: 27,x:860,y:650,hidden:true}, //U32OGPgasin
+
+      {id: 28,x:720,y:420,hidden:true}, //U32OGPoilout
+      {id: 29,x:720,y:500,hidden:true}, //U32OGPoilmiddle
+      {id: 30,x:860,y:500,hidden:true}, //U32OGPoilin
+
+      {id: 31,x:210,y:150,hidden:true}, //KPC2CPCoilout
+      {id: 32,x:210,y:50,hidden:true}, //KPC2CPCoilmiddle
+      {id: 33,x:360,y:50,hidden:true}, //KPC2CPCoilin
+
+      {id: 34,x:200,y:570,hidden:true}, //U22INJgasout
+      {id: 35,x:200,y:710,hidden:true}, //U22INJgasin
+
+      {id: 36,x:400,y:500,hidden:true}, //U22KPCoilout
+      {id: 37,x:400,y:200,hidden:true}, //U22KPCoilin
+
+      {id: 38,x:50,y:200,hidden:true}, //KPCwellsout
+      {id: 39,x:150,y:200,hidden:true}, //KPCwellsin
+
+      {id: 40,x:50,y:500,hidden:true}, //U2wellsout
+      {id: 41,x:150,y:500,hidden:true}, //U2wellsin
+
+      {id: 42,x:850,y:350,hidden:true}, //U3wellsout
+      {id: 43,x:750,y:350,hidden:true}, //U3wellsin
+
+      {id: 44, label: 'Fueld gas',group:"gas_export",x:0,y:50},
+
+      {id: 45,x:190,y:150,hidden:true}, //KPC2fuelgasout
+      {id: 46,x:190,y:50,hidden:true}, //KPC2fuelgasmiddle
+      {id: 47,x:50,y:50,hidden:true}, //KPC2fuelgasin
+
+
+      // FB labels =====================================================================
+
+      {id: 48, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // gas injection
+        x: 300, y: 750 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 51, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // KPC unit
+        x: 0, y: 350 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 52, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // Unit-2
+        x: 0, y: 650 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+
+      {id: 53, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // Unit-3
+        x: 900, y: 220 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 54, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // CPC oil
+        x: 400, y: 135 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 55, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  //  Unit-3 to KPC
+        x: 600, y: 165 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 56, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // Unit-2 to KPC
+        x: 460, y: 430 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 57, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // Unit-2 to Unit-3
+        x: 500, y: 535 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 58, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // KPC gas to Unit-2
+        x: 285, y: 420 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 59, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // KPC gas to Unit-3
+        x: 520, y: 315 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 60, font: { multi: 'html', size: 14 ,align:"right"}, label:'', // fuel gas
+        x: -130, y: 50 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 61, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // MTU oil
+        x: 1030, y: 100 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 62, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // OGP oil
+        x: 1030, y: 500 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 63, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // OGP gas
+        x: 1030, y: 650 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 64, font: { multi: 'html', size: 14 ,align:"right"}, label:'',   // KPC wells labels
+        x: -150, y: 200 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 65, font: { multi: 'html', size: 14 ,align:"right"}, label:'',   // Unit-2 wells labels
+        x: -150, y: 500 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+      {id: 66, font: { multi: 'html', size: 14 ,align:"right"}, label:'',  // Unit-3 wells labels
+        x: 1050, y: 350 ,
+        shape:"box",color:{border:"#cccccc",background:"#fcf5e9"},
+      },
+
+    ]);
+
+    // create an array with edges
+    edges = new vis.DataSet([
+      {from: 12, to: 13,arrows: 'to',color:'red',width:4},
+      {from: 14, to: 15,arrows: 'to',color:'red',width:4},
+      {from: 16, to: 17,color:'green',width:4},
+      {from: 17, to: 18,arrows: 'to',color:'green',width:4},
+      {from: 19, to: 20,color:'green',width:4},
+      {from: 20, to: 21,arrows: 'to',color:'green',width:4},
+      {from: 22, to: 23,color:'green',width:4},
+      {from: 23, to: 24,arrows: 'to',color:'green',width:4},
+
+      {from: 25, to: 26,color:'red',width:4},
+      {from: 26, to: 27,arrows: 'to',color:'red',width:4},
+
+      {from: 28, to: 29,color:'green',width:4},
+      {from: 29, to: 30,arrows: 'to',color:'green',width:4},
+
+      {from: 31, to: 32,color:'green',width:4},
+      {from: 32, to: 33,arrows: 'to',color:'green',width:4},
+
+      {from: 34, to: 35,arrows: 'to',color:'red',width:4},
+
+      {from: 36, to: 37,arrows: 'to',color:'green',width:4},
+
+      {from: 38, to: 39,arrows: 'to',color:'black',width:4},
+      {from: 40, to: 41,arrows: 'to',color:'black',width:4},
+      {from: 42, to: 43,arrows: 'to',color:'black',width:4},
+      {from: 45, to: 46,color:'red',width:4},
+      {from: 46, to: 47,arrows: 'to',color:'red',width:4},
+
+      {from: 49, to: 50,color:'gray',width:4},
+      {from: 1, to: 51,color:'gray',width:1},
+      // {from: 8, to: 48,color:'gray',width:1},
+      {from: 2, to: 52,color:'gray',width:1},
+      {from: 3, to: 53,color:'gray',width:1},
+      // {from: 1, to: 64,color:'gray',width:1},
+
+    ]);
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+    data = {
+      nodes: nodes,
+      edges: edges
+    };
+    options = {
+      locale:"en",
+      autoResize: false,
+      height: '100%',
+      width: '100%',
+      clickToUse: false,
+      nodes:{
+      },
+      layout: {},
+      edges:{
+        // arrows: 'middle',
+        smooth: {
+          enabled: false,
+        },
+        color:"#333333",
+        font: {align: 'bottom',bold:{mod: 'normal'}},
+      },
+      groups: {
+        unit: {image: '../static/img/unit.png', shape:'image',size:40,shadow:{enabled: false},},
+        oil_export: {image: '../static/img/oil_export.png', shape:'image',size:30,shadow:{enabled: false},},
+        gas_export: {image: '../static/img/gas_export.png', shape:'image',size:30,shadow:{enabled: false},},
+        gas_injection: {image: '../static/img/gas_injection.png', shape:'image',size:30,shadow:{enabled: false},},
+        wells: {image: '../static/img/wells.png', shape:'image',size:40,},
+        joint:{size:0,shadow:{enabled: false},},
+      },
+      physics:{
+        enabled: false,
+      },
+      interaction:{
+        zoomView: false,
+        selectable:false,
+        dragNodes:false,
+        dragView:false,
+      },
+    };
+    network = new vis.Network(container, data, options);
+
+
+    fb_update();
+    plot_pcs();
+    fb_table_update();
+
+
+    network.on("doubleClick", function (params) {
+      // alert(params);
+
+
+
+      // if (params.nodes.length > 0){
+      //   show_item_temp(["block","none","none"]);
+      //   get_pcs(params.nodes[0]);
+      //   var anim_div="#pcs";
+      // }else{
+      //   var pipe = network.body.edges[params.edges[0]].options.label;
+      //   show_item_temp(["none","none","block"]);
+      //   get_corr(pipe);
+      //   var anim_div="#corr";
+      // }
+      //
+      // $('html, body').animate({
+      //         scrollTop: $(anim_div).offset().top
+      //     }, 1000);
+
+      table_show=show_hide_fb_input_table(table_show);
+
+    });
+
+    return network;
+
+  }
+
+  function formatNumber(num){
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+  }
+
+  function fb_update(){
+
+    var updated_nodes=[];
+    var color;
+
+    //----------------------------------------
+
+    if (fb_data["streams"]["actuals"]["gas_inj"]>fb_data["streams"]["constraints"]["gas_inj_max"]*1.001){
+      color="#ff9999"
+    }else{
+      color="#fcf5e9"
+    }
+    updated_nodes.push(
+      { // gas injection
+        id: 48,
+        label:
+          '<b>Actual: </b>'+formatNumber(fb_data["streams"]["actuals"]["gas_inj"].toFixed(0))+'\n'+
+          '<b>>>Target: </b>'+formatNumber(fb_data["streams"]["constraints"]["gas_inj_max"].toFixed(0)),
+        color:{background:color}
+      }
+    )
+
+    //----------------------------------------
+
+    if (
+      fb_data["streams"]["actuals"]["kpc_free_gas"]>fb_data["streams"]["constraints"]["kpc_free_gas_max"]*1.001 ||
+      fb_data["streams"]["actuals"]["kpc_tot_gas"]>fb_data["streams"]["constraints"]["kpc_tot_gas_max"]*1.001
+    ){
+      color="#ff9999"
+    }else{
+      color="#fcf5e9"
+    }
+    updated_nodes.push(
+      {  // KPC unit
+        id: 51,
+        label:
+          '<b>Free Gas in MP sep: </b>'+formatNumber(fb_data["streams"]["actuals"]["kpc_free_gas"].toFixed(0))+'\n'+
+          '<b>>> Max Gas in MP sep: </b>'+formatNumber(fb_data["streams"]["constraints"]["kpc_free_gas_max"].toFixed(0))+'\n'+
+          '<b>Total Gas in KPC drizo: </b>'+formatNumber(fb_data["streams"]["actuals"]["kpc_tot_gas"].toFixed(0))+'\n'+
+          '<b>>> Max Gas in KPC drizo: </b>'+formatNumber(fb_data["streams"]["constraints"]["kpc_tot_gas_max"].toFixed(0))+'\n'+
+          '<b>Total oil: </b>'+formatNumber(fb_data["streams"]["actuals"]["kpc_tot_oil"].toFixed(0)),
+        color:{background:color}
+      }
+    )
+
+    //----------------------------------------
+
+    if (fb_data["streams"]["actuals"]["u2_free_gas"]>fb_data["streams"]["constraints"]["u2_free_gas_max"]*1.001){
+      color="#ff9999"
+    }else{
+      color="#fcf5e9"
+    }
+    updated_nodes.push(
+      { // Unit-2
+        id: 52,
+        label:
+          '<b>Free Gas in MP sep: </b>'+formatNumber(fb_data["streams"]["actuals"]["u2_free_gas"].toFixed(0))+'\n'+
+          '<b>>> Max Gas in MP sep: </b>'+formatNumber(fb_data["streams"]["constraints"]["u2_free_gas_max"].toFixed(0))+'\n'+
+          '<b>Total Gas: </b>'+formatNumber(fb_data["streams"]["actuals"]["u2_tot_gas"].toFixed(0))+'\n'+
+          '<b>Total oil: </b>'+formatNumber(fb_data["streams"]["actuals"]["u2_tot_oil"].toFixed(0)),
+        color:{background:color}
+      }
+    )
+
+    //----------------------------------------
+
+    if (fb_data["streams"]["actuals"]["u3_free_gas"]>fb_data["streams"]["constraints"]["u3_free_gas_max"]*1.001){
+      color="#ff9999"
+    }else{
+      color="#fcf5e9"
+    }
+    updated_nodes.push(
+      { // Unit-3
+        id: 53,
+        label:
+          '<b>Free Gas in MP sep: </b>'+formatNumber(fb_data["streams"]["actuals"]["u3_free_gas"].toFixed(0))+'\n'+
+          '<b>>> Max Gas in MP sep: </b>'+formatNumber(fb_data["streams"]["constraints"]["u3_free_gas_max"].toFixed(0))+'\n'+
+          '<b>Total Gas: </b>'+formatNumber(fb_data["streams"]["actuals"]["u3_tot_gas"].toFixed(0))+'\n'+
+          '<b>Total oil: </b>'+formatNumber(fb_data["streams"]["actuals"]["u3_tot_oil"].toFixed(0)),
+        color:{background:color}
+      }
+    )
+
+    //----------------------------------------
+
+    if (fb_data["streams"]["actuals"]["cpc_oil"]>fb_data["streams"]["constraints"]["cpc_oil_max"]*1.001){
+      color="#ff9999"
+    }else{
+      color="#fcf5e9"
+    }
+    updated_nodes.push(
+      {  // CPC oil
+        id: 54,
+        label:
+          '<b>Actual CPC: </b>'+formatNumber(fb_data["streams"]["actuals"]["cpc_oil"].toFixed(0))+'\n'+
+          '<b>>>Max CPC: </b>'+formatNumber(fb_data["streams"]["constraints"]["cpc_oil_max"].toFixed(0)),
+        color:{background:color}
+      },
+    )
+
+    //----------------------------------------
+
+    updated_nodes.push(
+      {  //  Unit-3 to KPC
+        id: 55,
+        label:
+          '<b>Unit-3 to KPC</b>\n'+
+          '<b>Qoil: </b>'+formatNumber(fb_data["streams"]["actuals"]["u3_oil_2_kpc"].toFixed(0))+'\n'+
+          '<b>Qgas: </b>'+formatNumber(fb_data["streams"]["actuals"]["u3_gas_2_kpc"].toFixed(0)),
+        // color:{background:color}
+      },
+    )
+
+    //----------------------------------------
+
+    updated_nodes.push(
+      {  // Unit-2 to KPC
+        id: 56,
+        label:
+          '<b>Unit-2 to KPC</b>\n'+
+          '<b>Qoil: </b>'+formatNumber(fb_data["streams"]["actuals"]["u2_oil_2_kpc"].toFixed(0))+'\n'+
+          '<b>Qgas: </b>'+formatNumber(fb_data["streams"]["actuals"]["u2_gas_2_kpc"].toFixed(0)),
+      },
+    )
+
+    //----------------------------------------
+
+    updated_nodes.push(
+      {  // Unit-2 to Unit-3
+        id: 57,
+        label:
+          '<b>Unit-2 to Unit-3</b>\n'+
+          '<b>Qoil: </b>'+formatNumber(fb_data["streams"]["actuals"]["u2_oil_2_u3"].toFixed(0))+'\n'+
+          '<b>Qgas: </b>'+formatNumber(fb_data["streams"]["actuals"]["u2_gas_2_u3"].toFixed(0)),
+      },
+    )
+
+    //----------------------------------------
+
+    if (fb_data["streams"]["actuals"]["kpc_gas_2_u2"]>fb_data["streams"]["constraints"]["kpc_gas_2_u2_max"]*1.001){
+      color="#ff9999"
+    }else{
+      color="#fcf5e9"
+    }
+    updated_nodes.push(
+      {  // KPC gas to Unit-2
+        id: 58,
+        label:
+          '<b>KPC gas to Unit-2</b>\n'+
+          '<b>Qgas: </b>'+formatNumber(fb_data["streams"]["actuals"]["kpc_gas_2_u2"].toFixed(0))+'\n'+
+          '<b>>>Max Qgas: </b>'+formatNumber(fb_data["streams"]["constraints"]["kpc_gas_2_u2_max"].toFixed(0)),
+        color:{background:color}
+      },
+    )
+
+    //----------------------------------------
+
+    if (fb_data["streams"]["actuals"]["kpc_gas_2_u3"]>fb_data["streams"]["constraints"]["kpc_gas_2_u3_max"]*1.001){
+      color="#ff9999"
+    }else{
+      color="#fcf5e9"
+    }
+    updated_nodes.push(
+      {  // KPC gas to Unit-3
+        id: 59,
+        label:
+          '<b>KPC gas to Unit-3</b>\n'+
+          '<b>Qgas: </b>'+formatNumber(fb_data["streams"]["actuals"]["kpc_gas_2_u3"].toFixed(0))+'\n'+
+          '<b>>>Max Qgas: </b>'+formatNumber(fb_data["streams"]["constraints"]["kpc_gas_2_u3_max"].toFixed(0)),
+        color:{background:color}
+      },
+    )
+
+    //----------------------------------------
+
+    if (fb_data["streams"]["actuals"]["kpc_gas_2_u3"]>fb_data["streams"]["constraints"]["kpc_gas_2_u3_max"]*1.001){
+      color="#ff9999"
+    }else{
+      color="#fcf5e9"
+    }
+    updated_nodes.push(
+      {  // KPC gas to Unit-3
+        id: 59,
+        label:
+          '<b>KPC gas to Unit-3</b>\n'+
+          '<b>Qgas: </b>'+formatNumber(fb_data["streams"]["actuals"]["kpc_gas_2_u3"].toFixed(0))+'\n'+
+          '<b>>>Max Qgas: </b>'+formatNumber(fb_data["streams"]["constraints"]["kpc_gas_2_u3_max"].toFixed(0)),
+        color:{background:color}
+      },
+    )
+
+    //----------------------------------------
+
+    if (fb_data["streams"]["actuals"]["fuel_gas"]>fb_data["streams"]["constraints"]["fuel_gas_max"]*1.001){
+      color="#ff9999"
+    }else{
+      color="#fcf5e9"
+    }
+    updated_nodes.push(
+      {  // fuel gas
+        id: 60,
+        label:
+          '<b>Qgas: </b>'+formatNumber(fb_data["streams"]["actuals"]["fuel_gas"].toFixed(0))+'\n'+
+          '<b>>>Max Qgas: </b>'+formatNumber(fb_data["streams"]["constraints"]["fuel_gas_max"].toFixed(0)),
+        color:{background:color}
+      },
+    )
+
+
+    //----------------------------------------
+
+    if (fb_data["streams"]["actuals"]["mtu_oil"]>fb_data["streams"]["constraints"]["mtu_oil_max"]*1.001){
+      color="#ff9999"
+    }else{
+      color="#fcf5e9"
+    }
+    updated_nodes.push(
+      {   // MTU oil
+        id: 61,
+        label:
+          '<b>Qoil: </b>'+formatNumber(fb_data["streams"]["actuals"]["mtu_oil"].toFixed(0))+'\n'+
+          '<b>>>Max Qoil: </b>'+formatNumber(fb_data["streams"]["constraints"]["mtu_oil_max"].toFixed(0)),
+        color:{background:color}
+      },
+    )
+
+
+    //----------------------------------------
+
+    if (fb_data["streams"]["actuals"]["ogp_oil"]>fb_data["streams"]["constraints"]["ogp_oil_max"]*1.001){
+      color="#ff9999"
+    }else{
+      color="#fcf5e9"
+    }
+    updated_nodes.push(
+      {  // OGP oil
+        id: 62,
+        label:
+          '<b>Qoil: </b>'+formatNumber(fb_data["streams"]["actuals"]["ogp_oil"].toFixed(0))+'\n'+
+          '<b>>>Max Qoil: </b>'+formatNumber(fb_data["streams"]["constraints"]["ogp_oil_max"].toFixed(0)),
+        color:{background:color}
+      },
+    )
+
+
+    //----------------------------------------
+
+    if (fb_data["streams"]["actuals"]["ogp_gas"]>fb_data["streams"]["constraints"]["ogp_gas_max"]*1.001){
+      color="#ff9999"
+    }else{
+      color="#fcf5e9"
+    }
+    updated_nodes.push(
+      {  // OGP gas
+        id: 63,
+        label:
+          '<b>Qgas: </b>'+formatNumber(fb_data["streams"]["actuals"]["ogp_gas"].toFixed(0))+'\n'+
+          '<b>>>Max Qgas: </b>'+formatNumber(fb_data["streams"]["constraints"]["ogp_gas_max"].toFixed(0)),
+        color:{background:color}
+      },
+    )
+
+    //----------------------------------------
+
+    updated_nodes.push(
+      {  // KPC wells labels
+        id: 64,
+        label:
+          '<b>Qoil: </b>'+formatNumber(fb_data["wells"]["kpc"]["qoil"].toFixed(0))+'\n'+
+          '<b>Qgas: </b>'+formatNumber(fb_data["wells"]["kpc"]["qgas"].toFixed(0))+'\n'+
+          '<b>GOR: </b>'+formatNumber(fb_data["wells"]["kpc"]["gor"].toFixed(0))+'\n'+
+          '<b>Qoil potential: </b>'+formatNumber(fb_data["wells"]["kpc"]["qoil_pot"].toFixed(0))+'\n'+
+          '<b>Qgas potential: </b>'+formatNumber(fb_data["wells"]["kpc"]["qgas_pot"].toFixed(0))+'\n'+
+          '<b>MP Rs: </b>'+formatNumber(fb_data["wells"]["kpc"]["mp_rs"].toFixed(0))+'\n'+
+          '<b>LP Rs: </b>'+formatNumber(fb_data["wells"]["kpc"]["lp_rs"].toFixed(0))+'\n'+
+          '<b>AF oil: </b>'+formatNumber(fb_data["wells"]["kpc"]["af_oil"].toFixed(2))+'\n'+
+          '<b>AF gas: </b>'+formatNumber(fb_data["wells"]["kpc"]["af_gas"].toFixed(2)),
+      },
+
+      {  // Unit-2 wells labels
+        id: 65,
+        label:
+          '<b>Qoil: </b>'+formatNumber(fb_data["wells"]["u2"]["qoil"].toFixed(0))+'\n'+
+          '<b>Qgas: </b>'+formatNumber(fb_data["wells"]["u2"]["qgas"].toFixed(0))+'\n'+
+          '<b>GOR: </b>'+formatNumber(fb_data["wells"]["u2"]["gor"].toFixed(0))+'\n'+
+          '<b>Qoil potential: </b>'+formatNumber(fb_data["wells"]["u2"]["qoil_pot"].toFixed(0))+'\n'+
+          '<b>Qgas potential: </b>'+formatNumber(fb_data["wells"]["u2"]["qgas_pot"].toFixed(0))+'\n'+
+          '<b>MP Rs: </b>'+formatNumber(fb_data["wells"]["u2"]["mp_rs"].toFixed(0))+'\n'+
+          '<b>LP Rs: </b>'+formatNumber(fb_data["wells"]["u2"]["lp_rs"].toFixed(0))+'\n'+
+          '<b>AF oil: </b>'+formatNumber(fb_data["wells"]["u2"]["af_oil"].toFixed(2))+'\n'+
+          '<b>AF gas: </b>'+formatNumber(fb_data["wells"]["u2"]["af_gas"].toFixed(2)),
+      },
+
+      {  // Unit-3 wells labels
+        id: 66,
+        label:
+          '<b>Qoil: </b>'+formatNumber(fb_data["wells"]["u3"]["qoil"].toFixed(0))+'\n'+
+          '<b>Qgas: </b>'+formatNumber(fb_data["wells"]["u3"]["qgas"].toFixed(0))+'\n'+
+          '<b>GOR: </b>'+formatNumber(fb_data["wells"]["u3"]["gor"].toFixed(0))+'\n'+
+          '<b>Qoil potential: </b>'+formatNumber(fb_data["wells"]["u3"]["qoil_pot"].toFixed(0))+'\n'+
+          '<b>Qgas potential: </b>'+formatNumber(fb_data["wells"]["u3"]["qgas_pot"].toFixed(0))+'\n'+
+          '<b>MP Rs: </b>'+formatNumber(fb_data["wells"]["u3"]["mp_rs"].toFixed(0))+'\n'+
+          '<b>LP Rs: </b>'+formatNumber(fb_data["wells"]["u3"]["lp_rs"].toFixed(0))+'\n'+
+          '<b>AF oil: </b>'+formatNumber(fb_data["wells"]["u3"]["af_oil"].toFixed(2))+'\n'+
+          '<b>AF gas: </b>'+formatNumber(fb_data["wells"]["u3"]["af_gas"].toFixed(2)),
+      },
+    )
+
+    data.nodes.update(updated_nodes);
+
+  }
+
+
+
+  $(document).ready(function() {
+      $('#apply_fb_input_updates').click(function(e) {
+
+        // update constraints from input table
+        for (var key in fb_data["streams"]["constraints"]){
+          fb_data["streams"]["constraints"][key]=Number($("#"+key).text());
+        }
+
+        // update Unit rates and gor from input table
+        // KPC rates and gor
+        fb_data["wells"]["kpc"]["qoil"]=Number($("#kpc_qoil").text());
+        fb_data["wells"]["kpc"]["qgas"]=Number($("#kpc_qgas").text());
+        if (fb_data["wells"]["kpc"]["qoil"]>0){
+          fb_data["wells"]["kpc"]["gor"]=fb_data["wells"]["kpc"]["qgas"]/fb_data["wells"]["kpc"]["qoil"]*1000;
+        }else{
+          fb_data["wells"]["kpc"]["gor"]=0;
+        }
+        // Unit-2 rates and gor
+        fb_data["wells"]["u2"]["qoil"]=Number($("#u2_qoil").text());
+        fb_data["wells"]["u2"]["qgas"]=Number($("#u2_qgas").text());
+        if (fb_data["wells"]["u2"]["qoil"]>0){
+          fb_data["wells"]["u2"]["gor"]=fb_data["wells"]["u2"]["qgas"]/fb_data["wells"]["u2"]["qoil"]*1000;
+        }else{
+          fb_data["wells"]["u2"]["gor"]=0;
+        }
+        // Unit-3 rates and gor
+        fb_data["wells"]["u3"]["qoil"]=Number($("#u3_qoil").text());
+        fb_data["wells"]["u3"]["qgas"]=Number($("#u3_qgas").text());
+        if (fb_data["wells"]["u3"]["qoil"]>0){
+          fb_data["wells"]["u3"]["gor"]=fb_data["wells"]["u3"]["qgas"]/fb_data["wells"]["u3"]["qoil"]*1000;
+        }else{
+          fb_data["wells"]["u3"]["gor"]=0;
+        }
+
+        // apply changes
+        apply_fb_input_updates();
+
+        // uom from input table
+        var uom_selected = $('#kpc_qoil_uom').find(":selected").text();
+        alert(uom_selected);
+
+      });
+
+      $('select').on('change', function() {
+        // fb_view[""]
+        alert( this.name );
+      })
+
+  });
+
+
+  function apply_fb_input_updates(){
+
+    // update fb diagram
+    fb_update();
+
+    // update unit pc charts
+    var kpc_series=update_pc_data("kpc");
+    var u2_series=update_pc_data("u2");
+    var u3_series=update_pc_data("u3");
+    kpc_pc_chart.series[0].setData(kpc_series[0]["data"]);
+    kpc_pc_chart.series[1].setData(kpc_series[1]["data"]);
+    u2_pc_chart.series[0].setData(u2_series[0]["data"]);
+    u2_pc_chart.series[1].setData(u2_series[1]["data"]);
+    u3_pc_chart.series[0].setData(u3_series[0]["data"]);
+    u3_pc_chart.series[1].setData(u3_series[1]["data"]);
+
+    // update fb table percentages
+    fb_table_update();
+
+  }
+
+
+  // Highcharts plots for Unit PCs =====================================
+
+  function plot_pcs(){
+
+
+    var kpc_series=update_pc_data("kpc");
+
+
+    kpc_pc_chart=Highcharts.chart('kpc_pcs_plot', {
+      chart: {
+        backgroundColor: "#f2f2f2",
+        style:{
+          fontSize:8,
+        },
+        spacing: [5,5,5,0],
+      },
+      title: {
+        text: "KPC operating envelope",
+        style:{
+          fontSize:10,
+        },
+        margin: 0,
+      },
+      xAxis: {
+        title: {
+          text: "Qgas,ksm3/d"
+        },
+        labels:{
+          style:{
+            fontSize:8,
+          },
+          padding: 0,
+        },
+        gridLineWidth: 1,
+        tickPixelInterval: 60,
+      },
+      yAxis: {
+        title: {
+          text: "Qoil,sm3/d"
+        },
+        labels:{
+          style:{
+            fontSize:8,
+          },
+        },
+        tickPixelInterval: 50,
+        min:0,
+      },
+      tooltip: {
+        enabled:false,
+      },
+
+      legend: {
+        enabled: false,
+      },
+      series:kpc_series,
+      plotOptions: {
+          series: {
+              animation: false,
+          }
+      }
+
+
+    });
+
+
+    var u2_series=update_pc_data("u2");
+
+    u2_pc_chart=Highcharts.chart('u2_pcs_plot', {
+      chart: {
+        backgroundColor: "#f2f2f2",
+        style:{
+          fontSize:8,
+        },
+        spacing: [5,5,5,0],
+      },
+      title: {
+        text: "Unit-2 operating envelope",
+        style:{
+          fontSize:10,
+        },
+        margin: 0,
+      },
+      xAxis: {
+        title: {
+          text: "Qgas,ksm3/d"
+        },
+        labels:{
+          style:{
+            fontSize:8,
+          },
+          padding: 0,
+        },
+        gridLineWidth: 1,
+        tickPixelInterval: 60,
+      },
+      yAxis: {
+        title: {
+          text: "Qoil,sm3/d"
+        },
+        labels:{
+          style:{
+            fontSize:8,
+          },
+        },
+        tickPixelInterval: 50,
+        min:0,
+      },
+      tooltip: {
+        enabled:false,
+      },
+
+      legend: {
+        enabled: false,
+      },
+      series:u2_series,
+      plotOptions: {
+          series: {
+              animation: false,
+          }
+      }
+
+
+    });
+
+
+    var u3_series=update_pc_data("u3");
+
+    u3_pc_chart=Highcharts.chart('u3_pcs_plot', {
+      chart: {
+        backgroundColor: "#f2f2f2",
+        style:{
+          fontSize:8,
+        },
+        spacing: [5,5,5,0],
+      },
+      title: {
+        text: "Unit-3 operating envelope",
+        style:{
+          fontSize:10,
+        },
+        margin: 0,
+      },
+      xAxis: {
+        title: {
+          text: "Qgas,ksm3/d"
+        },
+        labels:{
+          style:{
+            fontSize:8,
+          },
+          padding: 0,
+        },
+        gridLineWidth: 1,
+        tickPixelInterval: 60,
+      },
+      yAxis: {
+        title: {
+          text: "Qoil,sm3/d"
+        },
+        labels:{
+          style:{
+            fontSize:8,
+          },
+        },
+        tickPixelInterval: 50,
+        min:0,
+      },
+      tooltip: {
+        enabled:false,
+      },
+
+      legend: {
+        enabled: false,
+      },
+      series:u3_series,
+      plotOptions: {
+          series: {
+              animation: false,
+          }
+      }
+
+    });
+
+  }
+
+  function update_pc_data(unit){
+    var pc=fb_data["unit_pcs"][unit+"_pc"];
+    var point=[[fb_data["wells"][unit]["qgas"],fb_data["wells"][unit]["qoil"]]];
+    var series=[];
+
+    series[0]={
+      "data":pc,
+      "type": 'arearange',
+      marker: {
+        enabled: false
+      },
+    };
+    series[1]={
+      "data":point,
+    };
+    return series;
+  }
+
+  function fb_table_update(){
+    // update perc table values
+    for (var key in fb_data["streams"]["perc"]){
+      $('#'+key).text(fb_data["streams"]["perc"][key]);
+    }
+  }
+
+  function show_hide_fb_input_table(table_show){
+    // alert(table_show);
+    if (table_show==0){
+      $('#fb_input_table').css("display","");
+      table_show=1;
+    }else{
+      $('#fb_input_table').css("display","none");
+      table_show=0;
+      }
+      // alert(table_show);
+      return table_show;
+    }
+
+
+  </script>
+
+
+
+{% endblock %}

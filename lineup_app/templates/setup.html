@@ -1,0 +1,435 @@
+{% extends 'base.html' %}
+{% block currentpage %}
+
+
+<div class="container-fluid">
+
+
+
+  <div class="row">
+
+    <div class="col-lg-4">
+      <h3>Unit Constraints</h3>
+      <table class="table table-bordered">
+        <thead>
+          <tr class="info">
+            <th>Unit</th>
+            <th>Qgas</th>
+            <th>Qoil</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>KPC</b></td>
+            <td><input type="text" class="form-control input-sm" id="kpc_qgas_constr" value="{{ data.constraints.kpc.qgas}}"></td>
+            <td><input type="text" class="form-control input-sm" id="kpc_qoil_constr" value="{{ data.constraints.kpc.qoil}}"></td>
+          </tr>
+          <tr>
+            <td><b>Unit 3</b></td>
+            <td><input type="text" class="form-control input-sm" id="u3_qgas_constr" value="{{ data.constraints.u3.qgas}}"></td>
+            <td><input type="text" class="form-control input-sm" id="u3_qoil_constr" value="{{ data.constraints.u3.qoil}}"></td>
+          </tr>
+          <tr>
+            <td><b>Unit 2</b></td>
+            <td><input type="text" class="form-control input-sm" id="u2_qgas_constr" value="{{ data.constraints.u2.qgas}}"></td>
+            <td><input type="text" class="form-control input-sm" id="u2_qoil_constr" value="{{ data.constraints.u2.qoil}}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-lg-4">
+      <h3>AFs</h3>
+      <table class="table table-bordered">
+        <thead>
+          <tr class="info">
+            <th>Unit</th>
+            <th>Qgas AF</th>
+            <th>Qoil AF</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>KPC</b></td>
+            <td><input type="text" class="form-control input-sm" id="kpc_qgas_af"></td>
+            <td><input type="text" class="form-control input-sm" id="kpc_qoil_af"></td>
+          </tr>
+          <tr>
+            <td><b>Unit 3</b></td>
+            <td><input type="text" class="form-control input-sm" id="u3_qgas_af"></td>
+            <td><input type="text" class="form-control input-sm" id="u3_qoil_af"></td>
+          </tr>
+          <tr>
+            <td><b>Unit 2</b></td>
+            <td><input type="text" class="form-control input-sm" id="u2_qgas_af"></td>
+            <td><input type="text" class="form-control input-sm" id="u2_qoil_af"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-lg-3">
+      <h3>Unit Separator Pressure</h3>
+      <table class="table table-bordered">
+        <thead>
+          <tr class="info">
+            <th>Unit</th>
+            <th>Separator pressure</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>KPC</b></td>
+            <td><input type="text" class="form-control input-sm" id="kpc_sep" value="{{ data.sep.kpc_sep }}"></td>
+          </tr>
+          <tr>
+            <td><b>Unit 3</b></td>
+            <td><input type="text" class="form-control input-sm" id="u3_sep" value="{{ data.sep.u3_sep }}"></td>
+          </tr>
+          <tr>
+            <td><b>Unit 2</b></td>
+            <td><input type="text" class="form-control input-sm" id="u2_sep" value="{{ data.sep.u2_sep }}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+  </div> <!-- row div end -->
+
+  <hr>
+
+  <div class="row">
+    <div class="col-lg-2">
+      <button type="button" class="btn btn-default btn-lg btn-block" id="#save_state" onclick="save_state();" style="background-color:#e5ffec;">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save state
+      </button>
+    </div>
+    <div class="col-lg-2">
+      <button type="button" class="btn btn-default btn-lg btn-block" id="#clear_state" onclick="clear_state();" style="background-color:#ffe5e5;">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>  Clear state
+      </button>
+    </div>
+  </div> <!-- row div end -->
+
+
+  <hr>
+
+
+  {% for unit in data.well_data %} <!-- loop through units in well_data -->
+
+    <div class="row">
+      <div class="col-lg-12">
+
+        <!-- TABLE HEADERS ============================================ -->
+        {% if unit[0].unit_id == 0 %}
+          <h3>KPC</h3>
+        {% elif unit[0].unit_id == 1 %}
+          <h3>Unit 3</h3>
+        {% elif unit[0].unit_id == 2 %}
+          <h3>Unit 2</h3>
+        {% endif %}
+        <!-- ========================================================== -->
+
+        <table class="table table-hover  table-condensed" id="sort_table{{unit[0].unit_id}}" style="font-size: 12px;">
+          <thead class="thead-default">
+            <tr>
+              <th>Wellname</th>
+              <th>GOR</th>
+              <th>Connected</th>
+              <th>Comingled</th>
+              <th>DD limit</th>
+              <th>Qliq limit</th>
+              <th>Flow to</th>
+              <th>MAP</th>
+              <th>
+                <a href="javascript:void(0);" id="#reset_to_map{{ unit[0].unit_id }}" onclick="reset_to_map({{ unit[0].unit_id }});">
+                  Reset all to MAP
+                </a>
+                <hr style="margin-bottom:5px;margin-top:5px;">
+                Target FWHP
+              </th>
+              <th>
+                <a href="javascript:void(0);" id="#invert_select{{ unit[0].unit_id }}" onclick="invert_select({{ unit[0].unit_id }});">
+                  Invert select
+                </a>
+                <hr style="margin-bottom:5px;margin-top:5px;">
+                Optimize?
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for key, row in unit.items() %} <!-- loop through wells in units -->
+              <tr>
+
+                <td name="wellname">{{ row.wellname }}</td>
+                <td>{{ row.gor }}</td>
+                <td>{{ row.connected }}</td>
+                <td>{{ row.routes[0].comingled }}</td>
+                <td>{{ row.dd_lim }}</td>
+                <td>{{ row.qliq_lim }}</td>
+
+                {% if row.routes|length >1 %} <!-- if there are mutiple routes for the well -->
+                  <td style="padding: 0px;vertical-align: middle;">
+                    <select class="form-control input-sm" name="selected_route" style="padding:1px;width:200px;height:20px;">
+                      {% for r in row.routes %} <!-- loop through routes for well -->
+                        {% if loop.index0==row.curr_route %} <!-- check if the route is selected -->
+                          <option selected>{{ r.unit }}--{{ r.rms }}--{{ r.tl }}--slot {{ r.slot }}</option>
+                        {% else %} <!-- if route is not selected -->
+                          <option>{{ r.unit }}--{{ r.rms }}--{{ r.tl }}--slot {{ r.slot }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                    {% if row.route_cnt>1 %} <!-- QC if more than 1 routes is currently selected -->
+                      <span style="color:red;">Warning! >1 route open! {{row.route_cnt}}</span>
+                    {% endif %}
+                  </td>
+                {% else %} <!-- if only 1 route for the well then just show the path-->
+                  <td>{{ row.routes[0].unit }}--{{ row.routes[0].rms }}--{{ row.routes[0].tl }}--slot {{ row.routes[0].slot }}</td>
+                {% endif %}
+                <td name="map">{{ row.map }}</td>
+                <td>
+                  <input class="form-control input-small" type="text"
+                    style="padding:1px;width:60px;height:18px;font-size:12px;" name="fwhp" value="{{ row.fwhp }}">
+                </td>
+                <td>
+                  {% if row.in_opt==1 %}
+                    <input type="checkbox" name="in_opt" value="" checked='checked'>
+                  {% else %}
+                    <input type="checkbox" name="in_opt" value="">
+                  {% endif %}
+                </td>
+
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div> <!-- col end -->
+    </div> <!-- row end -->
+
+  {% endfor %}
+
+</div> <!-- container end -->
+
+
+
+
+
+<script type="text/javascript">
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Enable sorting of table using table sorter library. Check "tablesorter.js" library for more details.
+  $( document ).ready(function() {
+    $("#sort_table{{data.well_data[0][0].unit_id}}").tablesorter();
+    $("#sort_table{{data.well_data[1][0].unit_id}}").tablesorter();
+    $("#sort_table{{data.well_data[2][0].unit_id}}").tablesorter();
+  });
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  function save_state() {
+
+    var state=get_state(); // get state data from target fwhp, route and optimize columns
+
+    // Make AJAX call to save state data to session in the server, see "savestate" url call in views.py
+    // AJAX standard form for calling
+    $.ajax({
+        type: "POST",
+        url: "/savestate", // url to call in the views.py
+        // The key needs to match your method's input parameter (case-sensitive).
+        data: JSON.stringify(state),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
+        }
+    });
+    alert("Routes and target FWHPs saved. Reload page to update table"); // send message after saving to state
+    return state;
+
+  };
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // read tables in setup page and gather state data
+  function get_state(){
+
+    var state={}; // init state
+    state["wells"]={}; // init wells in state
+
+    for (i=0; i<3; ++i) { // loop from 0 to 2 (table number corresponding to each unit table)
+      table="#sort_table" + i.toString()+" tbody"; // table ID
+      $(table).children('tr').each(function () { // loop through rows in table
+
+        var wellname=$(this).find("[name=wellname]").text() // get wellname
+        state["wells"][wellname]={}; // init dict in state dict for this well
+        if ($(this).find("[name=selected_route]").val()){ // get route from row
+          state["wells"][wellname]["selected_route"]=$(this).find("[name=selected_route]").val();
+        }else{
+          state["wells"][wellname]["selected_route"]="";
+        };
+
+        var map=parseFloat($(this).find("[name=map]").text()) // get MAP from row
+
+        if ($(this).find("[name=fwhp]").val()){ // get target FWHP from row
+          var fwhp_val=parseFloat($(this).find("[name=fwhp]").val());
+          // QC fwhp value. Make sure fwhp is not less than MAP. If it is, then set it to MAP
+          if (fwhp_val>map){
+            state["wells"][wellname]["fwhp"]=fwhp_val;
+          }else if (fwhp_val==-1){
+            state["wells"][wellname]["fwhp"]=-1;
+          }else{
+            state["wells"][wellname]["fwhp"]=map;
+          }
+        }else{
+          state["wells"][wellname]["fwhp"]=map;
+        };
+
+        if ($(this).find("[name=in_opt]").is(":checked")){ // get in_opt from row
+          state["wells"][wellname]["in_opt"]=1
+        }else{
+          state["wells"][wellname]["in_opt"]=0
+        }
+
+      })
+    }
+    ////////////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // Get constraints in constraints table
+    state["constraints"]={};
+    state["constraints"]["kpc"]={};
+    state["constraints"]["u3"]={};
+    state["constraints"]["u2"]={};
+
+    if ($("#kpc_qgas_constr").val()){
+      state["constraints"]["kpc"]["qgas"]=parseFloat($("#kpc_qgas_constr").val());
+    }else{
+      state["constraints"]["kpc"]["qgas"]=100000;
+    }
+
+    if ($("#u3_qgas_constr").val()){
+      state["constraints"]["u3"]["qgas"]=parseFloat($("#u3_qgas_constr").val());
+    }else{
+      state["constraints"]["u3"]["qgas"]=100000;
+    }
+
+    if ($("#u2_qgas_constr").val()){
+      state["constraints"]["u2"]["qgas"]=parseFloat($("#u2_qgas_constr").val());
+    }else{
+      state["constraints"]["u2"]["qgas"]=100000;
+    }
+
+
+    if ($("#kpc_qoil_constr").val()){
+      state["constraints"]["kpc"]["qoil"]=parseFloat($("#kpc_qoil_constr").val());
+    }else{
+      state["constraints"]["kpc"]["qoil"]=100000;
+    }
+
+    if ($("#u3_qoil_constr").val()){
+      state["constraints"]["u3"]["qoil"]=parseFloat($("#u3_qoil_constr").val());
+    }else{
+      state["constraints"]["u3"]["qoil"]=100000;
+    }
+
+    if ($("#u2_qoil_constr").val()){
+      state["constraints"]["u2"]["qoil"]=parseFloat($("#u2_qoil_constr").val());
+    }else{
+      state["constraints"]["u2"]["qoil"]=100000;
+    }
+    ////////////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // Get separator pressure from separtor pressure table
+    state["sep"]={};
+    if ($("#kpc_sep").val()){
+      state["sep"]["kpc_sep"]=parseFloat($("#kpc_sep").val());
+    }else{
+      state["sep"]["kpc_sep"]=78;
+    }
+
+    if ($("#u3_sep").val()){
+      state["sep"]["u3_sep"]=parseFloat($("#u3_sep").val());
+    }else{
+      state["sep"]["u3_sep"]=130;
+    }
+
+    if ($("#u2_sep").val()){
+      state["sep"]["u2_sep"]=parseFloat($("#u2_sep").val());
+    }else{
+      state["sep"]["u2_sep"]=78;
+    }
+
+    return state;
+  }
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Resets all target fwhps in a selected unit table to MAPs. Each unit table is reset individually
+  function reset_to_map(tbl){
+    table="#sort_table" + tbl.toString()+" tbody";
+
+    $(table).children('tr').each(function () { // loop through rows
+
+      var map=$(this).find("[name=map]").text() // get map from row
+      $(this).find("[name=fwhp]").val(map) // set fwhp as remembered map
+
+    })
+  }
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // change in_opt set on the page. Each unit table is set individually
+  function invert_select(tbl){
+    table="#sort_table" + tbl.toString()+" tbody";
+
+    $(table).children('tr').each(function () { // loop through rows
+
+      if ($(this).find("[name=in_opt]").is(":checked")){
+        $(this).find("[name=in_opt]").prop('checked', false); // if checked, then uncheck
+      } else {
+        $(this).find("[name=in_opt]").prop('checked', true); // if unchecked, then check
+      }
+
+    })
+  }
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // clear state
+  function clear_state() {
+    $.ajax({
+        type: "POST",
+        url: "/clearstate", // url called in views.py
+        // The key needs to match your method's input parameter (case-sensitive).
+        data: "",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
+        }
+    });
+    alert("State cleared!");
+  };
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+</script>
+
+
+
+{% endblock %}
