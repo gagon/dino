@@ -3,7 +3,9 @@
 
 
 <div class="container-fluid">
-<hr>
+
+  <!-- <hr style="background-color:#E0E0E0;height:1px;"> -->
+  <br>
   <div class="row">
     <div class="col-lg-2">
       <button type="button" class="btn btn-default btn-lg btn-block" id="#save_state" onclick="save_state();" style="background-color:#e5ffec;">
@@ -18,253 +20,237 @@
   </div> <!-- row div end -->
 
 
-  <hr>
-      <!-- <div class="" id="fb_input_table" style="display:none;"> -->
-
-        <h3><b><a href="#" id="show_hide_units_section">Units</a></b></h3>
-
-        <div class="row" id="units_section">
-
-          <div class="col-lg-7">
-            <h4><b>Constraints and AF</b></h4>
-            <table class="table table-bordered table-condensed">
-
-              <tr>
-                <td style="width:20%;"><b></b></td>
-                <td style='width:20%;'><b>KPC</b></td>
-                <td style='width:20%;'><b>Unit-3</b></td>
-                <td style='width:20%;'><b>Unit-2</b></td>
-                <td style='width:20%;'><b></b></td>
-              </tr>
-
-              <tr>
-                <td style="width:20%;">Qoil constraint</td>
-
-                <td style='width:20%;' id="kpc_qoil_max" contenteditable >22000</td>
-                <td style='width:20%;' id="u3_qoil_max" contenteditable >22000</td>
-                <td style='width:20%;' id="u2_qoil_max" contenteditable >22000</td>
-                <td style='width:20%;' id="qoil_max_uom">
-                  <select class="form-control input-sm" name="qoil_max_uom_selected" style="padding:1px;height:20px;">
-                    <option selected>Sm3/d</option>
-                    <option>St.tons/d</option>
-                  </select>
-                </td>
-              </tr>
-
-              <tr>
-                <td style="width:20%;">Qgas constraint</td>
-                <td style='width:20%;' id="kpc_qgas_max" contenteditable >22000</td>
-                <td style='width:20%;' id="u3_qgas_max" contenteditable >22000</td>
-                <td style='width:20%;' id="u2_qgas_max" contenteditable >22000</td>
-                <td style='width:20%;' id="qgas_max_uom">sm3/d</td>
-              </tr>
-
-              <tr>
-                <td style="width:20%;">Qoil AF</td>
-                <td style='width:20%;' id="kpc_qoil_af" contenteditable >22000</td>
-                <td style='width:20%;' id="u3_qoil_af" contenteditable >22000</td>
-                <td style='width:20%;' id="u2_qoil_af" contenteditable >22000</td>
-                <td style='width:20%;' id="qoil_af_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:20%;">Qgas AF</td>
-                <td style='width:20%;' id="kpc_qgas_af" contenteditable >22000</td>
-                <td style='width:20%;' id="u3_qgas_af" contenteditable >22000</td>
-                <td style='width:20%;' id="u2_qgas_af" contenteditable >22000</td>
-                <td style='width:20%;' id="qgas_af_uom">sm3/d</td>
-              </tr>
-
-            </table>
-          </div>
+  <hr style="background-color:#E0E0E0;height:1px;">
 
 
+  <h3><b><a href="#" id="show_hide_units_section">Units</a></b></h3>
 
-          <div class="col-lg-5">
-            <h4><b>Separtor Pressure</b></h4>
-            <table class="table table-bordered table-condensed">
+  <div class="row" id="units_section">
 
-              <tr>
-                <td style="width:50%;">KPC Sep Pressure</td>
-                <td style='width:30%;' id="kpc_sep_pres" contenteditable >22000</td>
-                <td style='width:20%;' id="kpc_sep_pres_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:50%;">Unit-2 Sep Pressure</td>
-                <td style='width:30%;' id="u2_sep_pres" contenteditable >22000</td>
-                <td style='width:20%;' id="u2_sep_pres_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:50%;">Unit-3 Train-1 Sep Pressure</td>
-                <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
-                <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:50%;">Unit-3 Train-2 Sep Pressure</td>
-                <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
-                <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:50%;">Unit-3 Train-3 Sep Pressure</td>
-                <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
-                <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:50%;">Unit-3 Train-4 Sep Pressure</td>
-                <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
-                <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
-              </tr>
-            </table>
-          </div>
+    <div class="col-lg-7">
+      <h4><b>Constraints and AF</b></h4>
+      <table class="table table-bordered table-condensed">
 
-        </div>
+        <tr>
+          <td style="width:20%;border-top: 1px solid transparent;border-left: 1px solid transparent;" ><b></b></td>
+          <td style='width:20%;'><b>KPC</b></td>
+          <td style='width:20%;'><b>Unit-3</b></td>
+          <td style='width:20%;'><b>Unit-2</b></td>
+          <td style='width:20%;border-top: 1px solid transparent;border-right: 1px solid transparent;'><b></b></td>
+        </tr>
 
-        <hr>
-        <h3><b><a href="#" id="show_hide_fb_section">Field Balance</a></b></h3>
-        <div class="row"  id="fb_section">
-          <div class="col-lg-4">
-            <h4><b>Export</b></h4>
-            <table class="table table-bordered table-condensed">
-              <tr>
-                <td style="width:40%;">CPC oil max</td>
-                <td style='width:40%;' id="cpc_oil_max" contenteditable >22000</td>
-                <td style='width:20%;' id="cpc_oil_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:40%;">OGP gas max</td>
-                <td style='width:40%;' id="ogp_gas_max" contenteditable >25000</td>
-                <td style='width:20%;' id="ogp_gas_uom">ksm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:40%;">Gas injection Target</td>
-                <td style='width:40%;' id="gas_inj_max" contenteditable >22000</td>
-                <td style='width:20%;' id="gas_inj_uom">ksm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:40%;">Fuel gas max</td>
-                <td style='width:40%;' id="fuel_gas_max" contenteditable >2500</td>
-                <td style='width:20%;' id="fuel_gas_uom">ksm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:40%;">MTU oil max</td>
-                <td style='width:40%;' id="mtu_oil_max" contenteditable >25000</td>
-                <td style='width:20%;' id="mtu_oil_uom">ksm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:40%;">OGP oil max</td>
-                <td style='width:40%;' id="ogp_oil_max" contenteditable >25000</td>
-                <td style='width:20%;' id="ogp_oil_uom">ksm3/d</td>
-              </tr>
-            </table>
-          </div>
+        <tr>
+          <td style="width:20%;">Qoil constraint</td>
 
-          <div class="col-lg-4">
-            <h4><b>Process constraints</b></h4>
-            <table class="table table-bordered table-condensed">
-              <tr>
-                <td style="width:40%;">KPC Max gas in MP Sep</td>
-                <td style='width:40%;' id="kpc_free_gas_max" contenteditable >25000</td>
-                <td style='width:20%;' id="kpc_free_gas_uom">ksm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:40%;">KPC Max Tot gas in Drizo</td>
-                <td style='width:40%;' id="kpc_tot_gas_max" contenteditable >25000</td>
-                <td style='width:20%;' id="kpc_tot_gas_uom">ksm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:40%;">Unit-2 Max gas in MP Sep</td>
-                <td style='width:40%;' id="u2_free_gas_max" contenteditable >25000</td>
-                <td style='width:20%;' id="u2_free_gas_uom">ksm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:40%;">Unit-3 Max gas in MP Sep</td>
-                <td style='width:40%;' id="u3_free_gas_max" contenteditable >25000</td>
-                <td style='width:20%;' id="u3_free_gas_uom">ksm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:40%;">KPC Qgas Max to Unit-2</td>
-                <td style='width:40%;' id="kpc_gas_2_u2_max" contenteditable >25000</td>
-                <td style='width:20%;' id="kpc_gas_2_u2_uom">ksm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:40%;">KPC Qgas Max to Unit-3</td>
-                <td style='width:40%;' id="kpc_gas_2_u3_max" contenteditable >25000</td>
-                <td style='width:20%;' id="kpc_gas_2_u3_uom">ksm3/d</td>
-              </tr>
-            </table>
+          <td style='width:20%;' id="kpc_qoil_max" contenteditable >22000</td>
+          <td style='width:20%;' id="u3_qoil_max" contenteditable >22000</td>
+          <td style='width:20%;' id="u2_qoil_max" contenteditable >22000</td>
+          <td style='width:20%;' id="qoil_max_uom">
+            <select class="form-control input-sm" name="qoil_max_uom_selected" style="padding:1px;height:20px;">
+              <option selected>Sm3/d</option>
+              <option>St.tons/d</option>
+            </select>
+          </td>
+        </tr>
 
+        <tr>
+          <td style="width:20%;">Qgas constraint</td>
+          <td style='width:20%;' id="kpc_qgas_max" contenteditable >22000</td>
+          <td style='width:20%;' id="u3_qgas_max" contenteditable >22000</td>
+          <td style='width:20%;' id="u2_qgas_max" contenteditable >22000</td>
+          <td style='width:20%;' id="qgas_max_uom">sm3/d</td>
+        </tr>
 
-          </div>
+        <tr>
+          <td style="width:20%;">Qoil AF</td>
+          <td style='width:20%;' id="kpc_qoil_af" contenteditable >22000</td>
+          <td style='width:20%;' id="u3_qoil_af" contenteditable >22000</td>
+          <td style='width:20%;' id="u2_qoil_af" contenteditable >22000</td>
+          <td style='width:20%;' id="qoil_af_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:20%;">Qgas AF</td>
+          <td style='width:20%;' id="kpc_qgas_af" contenteditable >22000</td>
+          <td style='width:20%;' id="u3_qgas_af" contenteditable >22000</td>
+          <td style='width:20%;' id="u2_qgas_af" contenteditable >22000</td>
+          <td style='width:20%;' id="qgas_af_uom">sm3/d</td>
+        </tr>
 
-
-          <div class="col-lg-4">
-            <h4><b>Lab data</b></h4>
-            <table class="table table-bordered table-condensed">
-              <tr>
-                <td style="width:50%;">Unstable oil Density Unit-3</td>
-                <td style='width:30%;' id="u3_unst_dens" contenteditable >22000</td>
-                <td style='width:20%;' id="u3_unst_dens_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:50%;">Unstable oil Density Unit-2</td>
-                <td style='width:30%;' id="u2_unst_dens" contenteditable >22000</td>
-                <td style='width:20%;' id="u2_unst_dens_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:50%;">St/unst oil Conversion Unit-3</td>
-                <td style='width:30%;' id="u3_st_unst_conv" contenteditable >22000</td>
-                <td style='width:20%;' id="u3_st_unst_conv_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:50%;">St/unst oil Conversion Unit-2</td>
-                <td style='width:30%;' id="u2_st_unst_conv" contenteditable >22000</td>
-                <td style='width:20%;' id="u2_st_unst_conv_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:50%;">Rs Unit-3</td>
-                <td style='width:30%;' id="u3_rs" contenteditable >22000</td>
-                <td style='width:20%;' id="u3_rs_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:50%;">Rs Unit-2</td>
-                <td style='width:30%;' id="u2_rs" contenteditable >22000</td>
-                <td style='width:20%;' id="u2_rs_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:50%;">Oil shrinkage Unit-3</td>
-                <td style='width:30%;' id="u3_shrinkage" contenteditable >22000</td>
-                <td style='width:20%;' id="u3_shrinkage_uom">sm3/d</td>
-              </tr>
-              <tr>
-                <td style="width:50%;">Oil shrinkage Unit-2</td>
-                <td style='width:30%;' id="u2_shrinkage" contenteditable >22000</td>
-                <td style='width:20%;' id="u2_shrinkage_uom">sm3/d</td>
-              </tr>
-            </table>
-
-
-          </div>
-
-        </div>
-
-
-  <!-- <hr> -->
-
-  <!-- <div class="row">
-    <div class="col-lg-2">
-      <button type="button" class="btn btn-default btn-lg btn-block" id="#save_state" onclick="save_state();" style="background-color:#e5ffec;">
-        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save state
-      </button>
+      </table>
     </div>
-    <div class="col-lg-2">
-      <button type="button" class="btn btn-default btn-lg btn-block" id="#clear_state" onclick="clear_state();" style="background-color:#ffe5e5;">
-        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>  Clear state
-      </button>
+
+
+
+    <div class="col-lg-5">
+      <h4><b>Separator Pressure</b></h4>
+      <table class="table table-bordered table-condensed">
+
+        <tr>
+          <td style="width:50%;">KPC Sep Pressure</td>
+          <td style='width:30%;' id="kpc_sep_pres" contenteditable >22000</td>
+          <td style='width:20%;' id="kpc_sep_pres_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:50%;">Unit-2 Sep Pressure</td>
+          <td style='width:30%;' id="u2_sep_pres" contenteditable >22000</td>
+          <td style='width:20%;' id="u2_sep_pres_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:50%;">Unit-3 Train-1 Sep Pressure</td>
+          <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
+          <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:50%;">Unit-3 Train-2 Sep Pressure</td>
+          <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
+          <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:50%;">Unit-3 Train-3 Sep Pressure</td>
+          <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
+          <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:50%;">Unit-3 Train-4 Sep Pressure</td>
+          <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
+          <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
+        </tr>
+      </table>
     </div>
-  </div>  -->
-  <!-- row div end -->
+
+  </div>
+
+  <hr style="background-color:#E0E0E0;height:1px;">
+  <h3><b><a href="#" id="show_hide_fb_section">Field Balance</a></b></h3>
+  <div class="row"  id="fb_section">
+    <div class="col-lg-4">
+      <h4><b>Export</b></h4>
+      <table class="table table-bordered table-condensed">
+        <tr>
+          <td style="width:40%;">CPC oil max</td>
+          <td style='width:40%;' id="cpc_oil_max" contenteditable >22000</td>
+          <td style='width:20%;' id="cpc_oil_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:40%;">OGP gas max</td>
+          <td style='width:40%;' id="ogp_gas_max" contenteditable >25000</td>
+          <td style='width:20%;' id="ogp_gas_uom">ksm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:40%;">Gas injection Target</td>
+          <td style='width:40%;' id="gas_inj_max" contenteditable >22000</td>
+          <td style='width:20%;' id="gas_inj_uom">ksm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:40%;">Fuel gas max</td>
+          <td style='width:40%;' id="fuel_gas_max" contenteditable >2500</td>
+          <td style='width:20%;' id="fuel_gas_uom">ksm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:40%;">MTU oil max</td>
+          <td style='width:40%;' id="mtu_oil_max" contenteditable >25000</td>
+          <td style='width:20%;' id="mtu_oil_uom">ksm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:40%;">OGP oil max</td>
+          <td style='width:40%;' id="ogp_oil_max" contenteditable >25000</td>
+          <td style='width:20%;' id="ogp_oil_uom">ksm3/d</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="col-lg-4">
+      <h4><b>Process constraints</b></h4>
+      <table class="table table-bordered table-condensed">
+        <tr>
+          <td style="width:40%;">KPC Max gas in MP Sep</td>
+          <td style='width:40%;' id="kpc_free_gas_max" contenteditable >25000</td>
+          <td style='width:20%;' id="kpc_free_gas_uom">ksm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:40%;">KPC Max Tot gas in Drizo</td>
+          <td style='width:40%;' id="kpc_tot_gas_max" contenteditable >25000</td>
+          <td style='width:20%;' id="kpc_tot_gas_uom">ksm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:40%;">Unit-2 Max gas in MP Sep</td>
+          <td style='width:40%;' id="u2_free_gas_max" contenteditable >25000</td>
+          <td style='width:20%;' id="u2_free_gas_uom">ksm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:40%;">Unit-3 Max gas in MP Sep</td>
+          <td style='width:40%;' id="u3_free_gas_max" contenteditable >25000</td>
+          <td style='width:20%;' id="u3_free_gas_uom">ksm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:40%;">KPC Qgas Max to Unit-2</td>
+          <td style='width:40%;' id="kpc_gas_2_u2_max" contenteditable >25000</td>
+          <td style='width:20%;' id="kpc_gas_2_u2_uom">ksm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:40%;">KPC Qgas Max to Unit-3</td>
+          <td style='width:40%;' id="kpc_gas_2_u3_max" contenteditable >25000</td>
+          <td style='width:20%;' id="kpc_gas_2_u3_uom">ksm3/d</td>
+        </tr>
+      </table>
 
 
-  <hr>
+    </div>
+
+
+    <div class="col-lg-4">
+      <h4><b>Lab data</b></h4>
+      <table class="table table-bordered table-condensed">
+        <tr>
+          <td style="width:50%;">Unstable oil Density Unit-3</td>
+          <td style='width:30%;' id="u3_unst_dens" contenteditable >22000</td>
+          <td style='width:20%;' id="u3_unst_dens_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:50%;">Unstable oil Density Unit-2</td>
+          <td style='width:30%;' id="u2_unst_dens" contenteditable >22000</td>
+          <td style='width:20%;' id="u2_unst_dens_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:50%;">St/unst oil Conversion Unit-3</td>
+          <td style='width:30%;' id="u3_st_unst_conv" contenteditable >22000</td>
+          <td style='width:20%;' id="u3_st_unst_conv_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:50%;">St/unst oil Conversion Unit-2</td>
+          <td style='width:30%;' id="u2_st_unst_conv" contenteditable >22000</td>
+          <td style='width:20%;' id="u2_st_unst_conv_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:50%;">Rs Unit-3</td>
+          <td style='width:30%;' id="u3_rs" contenteditable >22000</td>
+          <td style='width:20%;' id="u3_rs_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:50%;">Rs Unit-2</td>
+          <td style='width:30%;' id="u2_rs" contenteditable >22000</td>
+          <td style='width:20%;' id="u2_rs_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:50%;">Oil shrinkage Unit-3</td>
+          <td style='width:30%;' id="u3_shrinkage" contenteditable >22000</td>
+          <td style='width:20%;' id="u3_shrinkage_uom">sm3/d</td>
+        </tr>
+        <tr>
+          <td style="width:50%;">Oil shrinkage Unit-2</td>
+          <td style='width:30%;' id="u2_shrinkage" contenteditable >22000</td>
+          <td style='width:20%;' id="u2_shrinkage_uom">sm3/d</td>
+        </tr>
+      </table>
+
+
+    </div>
+
+  </div>
+
+
+
+  <hr style="background-color:#E0E0E0;height:1px;">
 
 
   <h3><b><a href="#" id="show_hide_wells_section">Wells</a></b></h3>
@@ -365,7 +351,7 @@
 
     {% endfor %}
   </div>
-  <hr>
+  <hr style="background-color:#E0E0E0;height:1px;">
 
 </div> <!-- container end -->
 
