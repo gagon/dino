@@ -123,8 +123,9 @@ def live():
     # check is session "state" exists, if not send message and stop
     if not "state" in session:
         return "NO session state. Go back to setup and save state"
+    page_active={"load_pcs":"","load_state":"","setup":"","live":"active","results":""}
     # else load live page
-    return render_template('live.html')
+    return render_template('live.html',page_active=page_active)
 """ ========================================================================================================= """
 
 
@@ -222,7 +223,9 @@ def results():
     # put all data into dictionary to pass to html
     data={"totals":totals,"wells":pc_data,"field":{"qgas":field_gas,"qoil":field_oil},"fb_data":fb_data}
 
-    return render_template('results.html',data=data)
+    page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":"active"}
+
+    return render_template('results.html',data=data,page_active=page_active)
 """========================================================================================="""
 
 
@@ -231,7 +234,8 @@ def results():
 @app.route('/load')
 @login_required
 def load():
-    return render_template('load.html')
+    page_active={"load_pcs":"active","load_state":"","setup":"","live":"","results":""}
+    return render_template('load.html',page_active=page_active)
 """========================================================================================="""
 
 
@@ -243,7 +247,8 @@ def load_state():
     # check is session "state" exists, if not send message and stop
     if not "state" in session:
         return "NO session state. Go back to setup and save state"
-    return render_template('load_state.html')
+    page_active={"load_pcs":"","load_state":"active","setup":"","live":"","results":""}
+    return render_template('load_state.html',page_active=page_active)
 """========================================================================================="""
 
 
@@ -324,8 +329,9 @@ def setup():
                 # then overwrite constraints as per session
                 data["constraints"]=session["state"]["constraints"]
 
+    page_active={"load_pcs":"","load_state":"","setup":"active","live":"","results":""}
     # render page, pass data dictionary to the page
-    return render_template('setup.html',data=data)
+    return render_template('setup.html',data=data,page_active=page_active)
 """========================================================================================="""
 
 

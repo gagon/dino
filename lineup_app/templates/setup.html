@@ -3,102 +3,7 @@
 
 
 <div class="container-fluid">
-
-
-
-  <div class="row">
-
-    <div class="col-lg-4">
-      <h3>Unit Constraints</h3>
-      <table class="table table-bordered">
-        <thead>
-          <tr class="info">
-            <th>Unit</th>
-            <th>Qgas</th>
-            <th>Qoil</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>KPC</b></td>
-            <td><input type="text" class="form-control input-sm" id="kpc_qgas_constr" value="{{ data.constraints.kpc.qgas}}"></td>
-            <td><input type="text" class="form-control input-sm" id="kpc_qoil_constr" value="{{ data.constraints.kpc.qoil}}"></td>
-          </tr>
-          <tr>
-            <td><b>Unit 3</b></td>
-            <td><input type="text" class="form-control input-sm" id="u3_qgas_constr" value="{{ data.constraints.u3.qgas}}"></td>
-            <td><input type="text" class="form-control input-sm" id="u3_qoil_constr" value="{{ data.constraints.u3.qoil}}"></td>
-          </tr>
-          <tr>
-            <td><b>Unit 2</b></td>
-            <td><input type="text" class="form-control input-sm" id="u2_qgas_constr" value="{{ data.constraints.u2.qgas}}"></td>
-            <td><input type="text" class="form-control input-sm" id="u2_qoil_constr" value="{{ data.constraints.u2.qoil}}"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="col-lg-4">
-      <h3>AFs</h3>
-      <table class="table table-bordered">
-        <thead>
-          <tr class="info">
-            <th>Unit</th>
-            <th>Qgas AF</th>
-            <th>Qoil AF</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>KPC</b></td>
-            <td><input type="text" class="form-control input-sm" id="kpc_qgas_af"></td>
-            <td><input type="text" class="form-control input-sm" id="kpc_qoil_af"></td>
-          </tr>
-          <tr>
-            <td><b>Unit 3</b></td>
-            <td><input type="text" class="form-control input-sm" id="u3_qgas_af"></td>
-            <td><input type="text" class="form-control input-sm" id="u3_qoil_af"></td>
-          </tr>
-          <tr>
-            <td><b>Unit 2</b></td>
-            <td><input type="text" class="form-control input-sm" id="u2_qgas_af"></td>
-            <td><input type="text" class="form-control input-sm" id="u2_qoil_af"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="col-lg-3">
-      <h3>Unit Separator Pressure</h3>
-      <table class="table table-bordered">
-        <thead>
-          <tr class="info">
-            <th>Unit</th>
-            <th>Separator pressure</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>KPC</b></td>
-            <td><input type="text" class="form-control input-sm" id="kpc_sep" value="{{ data.sep.kpc_sep }}"></td>
-          </tr>
-          <tr>
-            <td><b>Unit 3</b></td>
-            <td><input type="text" class="form-control input-sm" id="u3_sep" value="{{ data.sep.u3_sep }}"></td>
-          </tr>
-          <tr>
-            <td><b>Unit 2</b></td>
-            <td><input type="text" class="form-control input-sm" id="u2_sep" value="{{ data.sep.u2_sep }}"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-
-  </div> <!-- row div end -->
-
-  <hr>
-
+<hr>
   <div class="row">
     <div class="col-lg-2">
       <button type="button" class="btn btn-default btn-lg btn-block" id="#save_state" onclick="save_state();" style="background-color:#e5ffec;">
@@ -114,101 +19,353 @@
 
 
   <hr>
+      <!-- <div class="" id="fb_input_table" style="display:none;"> -->
 
+        <h3><b><a href="#" id="show_hide_units_section">Units</a></b></h3>
 
-  {% for unit in data.well_data %} <!-- loop through units in well_data -->
+        <div class="row" id="units_section">
 
-    <div class="row">
-      <div class="col-lg-12">
+          <div class="col-lg-7">
+            <h4><b>Constraints and AF</b></h4>
+            <table class="table table-bordered table-condensed">
 
-        <!-- TABLE HEADERS ============================================ -->
-        {% if unit[0].unit_id == 0 %}
-          <h3>KPC</h3>
-        {% elif unit[0].unit_id == 1 %}
-          <h3>Unit 3</h3>
-        {% elif unit[0].unit_id == 2 %}
-          <h3>Unit 2</h3>
-        {% endif %}
-        <!-- ========================================================== -->
-
-        <table class="table table-hover  table-condensed" id="sort_table{{unit[0].unit_id}}" style="font-size: 12px;">
-          <thead class="thead-default">
-            <tr>
-              <th>Wellname</th>
-              <th>GOR</th>
-              <th>Connected</th>
-              <th>Comingled</th>
-              <th>DD limit</th>
-              <th>Qliq limit</th>
-              <th>Flow to</th>
-              <th>MAP</th>
-              <th>
-                <a href="javascript:void(0);" id="#reset_to_map{{ unit[0].unit_id }}" onclick="reset_to_map({{ unit[0].unit_id }});">
-                  Reset all to MAP
-                </a>
-                <hr style="margin-bottom:5px;margin-top:5px;">
-                Target FWHP
-              </th>
-              <th>
-                <a href="javascript:void(0);" id="#invert_select{{ unit[0].unit_id }}" onclick="invert_select({{ unit[0].unit_id }});">
-                  Invert select
-                </a>
-                <hr style="margin-bottom:5px;margin-top:5px;">
-                Optimize?
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for key, row in unit.items() %} <!-- loop through wells in units -->
               <tr>
+                <td style="width:20%;"><b></b></td>
+                <td style='width:20%;'><b>KPC</b></td>
+                <td style='width:20%;'><b>Unit-3</b></td>
+                <td style='width:20%;'><b>Unit-2</b></td>
+                <td style='width:20%;'><b></b></td>
+              </tr>
 
-                <td name="wellname">{{ row.wellname }}</td>
-                <td>{{ row.gor }}</td>
-                <td>{{ row.connected }}</td>
-                <td>{{ row.routes[0].comingled }}</td>
-                <td>{{ row.dd_lim }}</td>
-                <td>{{ row.qliq_lim }}</td>
+              <tr>
+                <td style="width:20%;">Qoil constraint</td>
 
-                {% if row.routes|length >1 %} <!-- if there are mutiple routes for the well -->
-                  <td style="padding: 0px;vertical-align: middle;">
-                    <select class="form-control input-sm" name="selected_route" style="padding:1px;width:200px;height:20px;">
-                      {% for r in row.routes %} <!-- loop through routes for well -->
-                        {% if loop.index0==row.curr_route %} <!-- check if the route is selected -->
-                          <option selected>{{ r.unit }}--{{ r.rms }}--{{ r.tl }}--slot {{ r.slot }}</option>
-                        {% else %} <!-- if route is not selected -->
-                          <option>{{ r.unit }}--{{ r.rms }}--{{ r.tl }}--slot {{ r.slot }}</option>
-                        {% endif %}
-                      {% endfor %}
-                    </select>
-                    {% if row.route_cnt>1 %} <!-- QC if more than 1 routes is currently selected -->
-                      <span style="color:red;">Warning! >1 route open! {{row.route_cnt}}</span>
+                <td style='width:20%;' id="kpc_qoil_max" contenteditable >22000</td>
+                <td style='width:20%;' id="u3_qoil_max" contenteditable >22000</td>
+                <td style='width:20%;' id="u2_qoil_max" contenteditable >22000</td>
+                <td style='width:20%;' id="qoil_max_uom">
+                  <select class="form-control input-sm" name="qoil_max_uom_selected" style="padding:1px;height:20px;">
+                    <option selected>Sm3/d</option>
+                    <option>St.tons/d</option>
+                  </select>
+                </td>
+              </tr>
+
+              <tr>
+                <td style="width:20%;">Qgas constraint</td>
+                <td style='width:20%;' id="kpc_qgas_max" contenteditable >22000</td>
+                <td style='width:20%;' id="u3_qgas_max" contenteditable >22000</td>
+                <td style='width:20%;' id="u2_qgas_max" contenteditable >22000</td>
+                <td style='width:20%;' id="qgas_max_uom">sm3/d</td>
+              </tr>
+
+              <tr>
+                <td style="width:20%;">Qoil AF</td>
+                <td style='width:20%;' id="kpc_qoil_af" contenteditable >22000</td>
+                <td style='width:20%;' id="u3_qoil_af" contenteditable >22000</td>
+                <td style='width:20%;' id="u2_qoil_af" contenteditable >22000</td>
+                <td style='width:20%;' id="qoil_af_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:20%;">Qgas AF</td>
+                <td style='width:20%;' id="kpc_qgas_af" contenteditable >22000</td>
+                <td style='width:20%;' id="u3_qgas_af" contenteditable >22000</td>
+                <td style='width:20%;' id="u2_qgas_af" contenteditable >22000</td>
+                <td style='width:20%;' id="qgas_af_uom">sm3/d</td>
+              </tr>
+
+            </table>
+          </div>
+
+
+
+          <div class="col-lg-5">
+            <h4><b>Separtor Pressure</b></h4>
+            <table class="table table-bordered table-condensed">
+
+              <tr>
+                <td style="width:50%;">KPC Sep Pressure</td>
+                <td style='width:30%;' id="kpc_sep_pres" contenteditable >22000</td>
+                <td style='width:20%;' id="kpc_sep_pres_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:50%;">Unit-2 Sep Pressure</td>
+                <td style='width:30%;' id="u2_sep_pres" contenteditable >22000</td>
+                <td style='width:20%;' id="u2_sep_pres_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:50%;">Unit-3 Train-1 Sep Pressure</td>
+                <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
+                <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:50%;">Unit-3 Train-2 Sep Pressure</td>
+                <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
+                <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:50%;">Unit-3 Train-3 Sep Pressure</td>
+                <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
+                <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:50%;">Unit-3 Train-4 Sep Pressure</td>
+                <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
+                <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
+              </tr>
+            </table>
+          </div>
+
+        </div>
+
+        <hr>
+        <h3><b><a href="#" id="show_hide_fb_section">Field Balance</a></b></h3>
+        <div class="row"  id="fb_section">
+          <div class="col-lg-4">
+            <h4><b>Export</b></h4>
+            <table class="table table-bordered table-condensed">
+              <tr>
+                <td style="width:40%;">CPC oil max</td>
+                <td style='width:40%;' id="cpc_oil_max" contenteditable >22000</td>
+                <td style='width:20%;' id="cpc_oil_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:40%;">OGP gas max</td>
+                <td style='width:40%;' id="ogp_gas_max" contenteditable >25000</td>
+                <td style='width:20%;' id="ogp_gas_uom">ksm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:40%;">Gas injection Target</td>
+                <td style='width:40%;' id="gas_inj_max" contenteditable >22000</td>
+                <td style='width:20%;' id="gas_inj_uom">ksm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:40%;">Fuel gas max</td>
+                <td style='width:40%;' id="fuel_gas_max" contenteditable >2500</td>
+                <td style='width:20%;' id="fuel_gas_uom">ksm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:40%;">MTU oil max</td>
+                <td style='width:40%;' id="mtu_oil_max" contenteditable >25000</td>
+                <td style='width:20%;' id="mtu_oil_uom">ksm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:40%;">OGP oil max</td>
+                <td style='width:40%;' id="ogp_oil_max" contenteditable >25000</td>
+                <td style='width:20%;' id="ogp_oil_uom">ksm3/d</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="col-lg-4">
+            <h4><b>Process constraints</b></h4>
+            <table class="table table-bordered table-condensed">
+              <tr>
+                <td style="width:40%;">KPC Max gas in MP Sep</td>
+                <td style='width:40%;' id="kpc_free_gas_max" contenteditable >25000</td>
+                <td style='width:20%;' id="kpc_free_gas_uom">ksm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:40%;">KPC Max Tot gas in Drizo</td>
+                <td style='width:40%;' id="kpc_tot_gas_max" contenteditable >25000</td>
+                <td style='width:20%;' id="kpc_tot_gas_uom">ksm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:40%;">Unit-2 Max gas in MP Sep</td>
+                <td style='width:40%;' id="u2_free_gas_max" contenteditable >25000</td>
+                <td style='width:20%;' id="u2_free_gas_uom">ksm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:40%;">Unit-3 Max gas in MP Sep</td>
+                <td style='width:40%;' id="u3_free_gas_max" contenteditable >25000</td>
+                <td style='width:20%;' id="u3_free_gas_uom">ksm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:40%;">KPC Qgas Max to Unit-2</td>
+                <td style='width:40%;' id="kpc_gas_2_u2_max" contenteditable >25000</td>
+                <td style='width:20%;' id="kpc_gas_2_u2_uom">ksm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:40%;">KPC Qgas Max to Unit-3</td>
+                <td style='width:40%;' id="kpc_gas_2_u3_max" contenteditable >25000</td>
+                <td style='width:20%;' id="kpc_gas_2_u3_uom">ksm3/d</td>
+              </tr>
+            </table>
+
+
+          </div>
+
+
+          <div class="col-lg-4">
+            <h4><b>Lab data</b></h4>
+            <table class="table table-bordered table-condensed">
+              <tr>
+                <td style="width:50%;">Unstable oil Density Unit-3</td>
+                <td style='width:30%;' id="u3_unst_dens" contenteditable >22000</td>
+                <td style='width:20%;' id="u3_unst_dens_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:50%;">Unstable oil Density Unit-2</td>
+                <td style='width:30%;' id="u2_unst_dens" contenteditable >22000</td>
+                <td style='width:20%;' id="u2_unst_dens_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:50%;">St/unst oil Conversion Unit-3</td>
+                <td style='width:30%;' id="u3_st_unst_conv" contenteditable >22000</td>
+                <td style='width:20%;' id="u3_st_unst_conv_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:50%;">St/unst oil Conversion Unit-2</td>
+                <td style='width:30%;' id="u2_st_unst_conv" contenteditable >22000</td>
+                <td style='width:20%;' id="u2_st_unst_conv_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:50%;">Rs Unit-3</td>
+                <td style='width:30%;' id="u3_rs" contenteditable >22000</td>
+                <td style='width:20%;' id="u3_rs_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:50%;">Rs Unit-2</td>
+                <td style='width:30%;' id="u2_rs" contenteditable >22000</td>
+                <td style='width:20%;' id="u2_rs_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:50%;">Oil shrinkage Unit-3</td>
+                <td style='width:30%;' id="u3_shrinkage" contenteditable >22000</td>
+                <td style='width:20%;' id="u3_shrinkage_uom">sm3/d</td>
+              </tr>
+              <tr>
+                <td style="width:50%;">Oil shrinkage Unit-2</td>
+                <td style='width:30%;' id="u2_shrinkage" contenteditable >22000</td>
+                <td style='width:20%;' id="u2_shrinkage_uom">sm3/d</td>
+              </tr>
+            </table>
+
+
+          </div>
+
+        </div>
+
+
+  <!-- <hr> -->
+
+  <!-- <div class="row">
+    <div class="col-lg-2">
+      <button type="button" class="btn btn-default btn-lg btn-block" id="#save_state" onclick="save_state();" style="background-color:#e5ffec;">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save state
+      </button>
+    </div>
+    <div class="col-lg-2">
+      <button type="button" class="btn btn-default btn-lg btn-block" id="#clear_state" onclick="clear_state();" style="background-color:#ffe5e5;">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>  Clear state
+      </button>
+    </div>
+  </div>  -->
+  <!-- row div end -->
+
+
+  <hr>
+
+
+  <h3><b><a href="#" id="show_hide_wells_section">Wells</a></b></h3>
+
+  <div id="wells_section">
+
+    {% for unit in data.well_data %} <!-- loop through units in well_data -->
+
+      <div class="row">
+        <div class="col-lg-12">
+
+          <!-- TABLE HEADERS ============================================ -->
+          {% if unit[0].unit_id == 0 %}
+            <h4>KPC</h4>
+          {% elif unit[0].unit_id == 1 %}
+            <h4>Unit 3</h4>
+          {% elif unit[0].unit_id == 2 %}
+            <h4>Unit 2</h4>
+          {% endif %}
+          <!-- ========================================================== -->
+
+          <table class="table table-hover  table-condensed" id="sort_table{{unit[0].unit_id}}" style="font-size: 12px;">
+            <thead class="thead-default">
+              <tr>
+                <th>Wellname</th>
+                <th>GOR</th>
+                <th>Connected</th>
+                <th>Comingled</th>
+                <th>DD limit</th>
+                <th>Qliq limit</th>
+                <th>Flow to</th>
+                <th>MAP</th>
+                <th>
+                  <a href="javascript:void(0);" id="#reset_to_map{{ unit[0].unit_id }}" onclick="reset_to_map({{ unit[0].unit_id }});">
+                    Reset all to MAP
+                  </a>
+                  <hr style="margin-bottom:5px;margin-top:5px;">
+                  Target FWHP
+                </th>
+                <th>
+                  <a href="javascript:void(0);" id="#invert_select{{ unit[0].unit_id }}" onclick="invert_select({{ unit[0].unit_id }});">
+                    Invert select
+                  </a>
+                  <hr style="margin-bottom:5px;margin-top:5px;">
+                  Optimize?
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for key, row in unit.items() %} <!-- loop through wells in units -->
+                <tr>
+
+                  <td name="wellname">{{ row.wellname }}</td>
+                  <td>{{ row.gor }}</td>
+                  <td>{{ row.connected }}</td>
+                  <td>{{ row.routes[0].comingled }}</td>
+                  <td>{{ row.dd_lim }}</td>
+                  <td>{{ row.qliq_lim }}</td>
+
+                  {% if row.routes|length >1 %} <!-- if there are mutiple routes for the well -->
+                    <td style="padding: 0px;vertical-align: middle;">
+                      <select class="form-control input-sm" name="selected_route" style="padding:1px;width:200px;height:20px;">
+                        {% for r in row.routes %} <!-- loop through routes for well -->
+                          {% if loop.index0==row.curr_route %} <!-- check if the route is selected -->
+                            <option selected>{{ r.unit }}--{{ r.rms }}--{{ r.tl }}--slot {{ r.slot }}</option>
+                          {% else %} <!-- if route is not selected -->
+                            <option>{{ r.unit }}--{{ r.rms }}--{{ r.tl }}--slot {{ r.slot }}</option>
+                          {% endif %}
+                        {% endfor %}
+                      </select>
+                      {% if row.route_cnt>1 %} <!-- QC if more than 1 routes is currently selected -->
+                        <span style="color:red;">Warning! >1 route open! {{row.route_cnt}}</span>
+                      {% endif %}
+                    </td>
+                  {% else %} <!-- if only 1 route for the well then just show the path-->
+                    <td>{{ row.routes[0].unit }}--{{ row.routes[0].rms }}--{{ row.routes[0].tl }}--slot {{ row.routes[0].slot }}</td>
+                  {% endif %}
+                  <td name="map">{{ row.map }}</td>
+                  <td>
+                    <input class="form-control input-small" type="text"
+                      style="padding:1px;width:60px;height:18px;font-size:12px;" name="fwhp" value="{{ row.fwhp }}">
+                  </td>
+                  <td>
+                    {% if row.in_opt==1 %}
+                      <input type="checkbox" name="in_opt" value="" checked='checked'>
+                    {% else %}
+                      <input type="checkbox" name="in_opt" value="">
                     {% endif %}
                   </td>
-                {% else %} <!-- if only 1 route for the well then just show the path-->
-                  <td>{{ row.routes[0].unit }}--{{ row.routes[0].rms }}--{{ row.routes[0].tl }}--slot {{ row.routes[0].slot }}</td>
-                {% endif %}
-                <td name="map">{{ row.map }}</td>
-                <td>
-                  <input class="form-control input-small" type="text"
-                    style="padding:1px;width:60px;height:18px;font-size:12px;" name="fwhp" value="{{ row.fwhp }}">
-                </td>
-                <td>
-                  {% if row.in_opt==1 %}
-                    <input type="checkbox" name="in_opt" value="" checked='checked'>
-                  {% else %}
-                    <input type="checkbox" name="in_opt" value="">
-                  {% endif %}
-                </td>
 
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
 
-      </div> <!-- col end -->
-    </div> <!-- row end -->
+        </div> <!-- col end -->
+      </div> <!-- row end -->
 
-  {% endfor %}
+    {% endfor %}
+  </div>
+  <hr>
 
 </div> <!-- container end -->
 
@@ -218,6 +375,10 @@
 
 <script type="text/javascript">
 
+  var units_section=1;
+  var fb_section=1;
+  var wells_section=1;
+
 
   ////////////////////////////////////////////////////////////////////////////////
   // Enable sorting of table using table sorter library. Check "tablesorter.js" library for more details.
@@ -225,7 +386,23 @@
     $("#sort_table{{data.well_data[0][0].unit_id}}").tablesorter();
     $("#sort_table{{data.well_data[1][0].unit_id}}").tablesorter();
     $("#sort_table{{data.well_data[2][0].unit_id}}").tablesorter();
+
+    $('#show_hide_units_section').click(function(e) {
+      units_section=show_hide_section("units_section",units_section);
+    })
+
+    $('#show_hide_fb_section').click(function(e) {
+      fb_section=show_hide_section("fb_section",fb_section);
+    })
+
+    $('#show_hide_wells_section').click(function(e) {
+      wells_section=show_hide_section("wells_section",wells_section);
+    })
+
   });
+
+
+
   ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -426,6 +603,20 @@
     alert("State cleared!");
   };
   ////////////////////////////////////////////////////////////////////////////////
+
+
+
+  function show_hide_section (section,section_show) {
+    // alert(section_show);
+    if (section_show==0){
+      $('#'+section).css("display","");
+      section_show=1;
+    }else{
+      $('#'+section).css("display","none");
+      section_show=0;
+    }
+    return section_show;
+  }
 
 
 </script>
