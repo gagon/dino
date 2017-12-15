@@ -18,40 +18,40 @@
         <table class="table table-bordered table-condensed" style="font-size:10px;" cellpadding="5">
          <tbody>
            <tr>
-             <td><b><u>CPC oil</u></b></td><td id="cpc_oil_perc"></td>
+             <td><b><u>CPC oil</u></b></td><td id="cpc_oil_perc">{{ data.fb_data.streams.perc.cpc_oil_perc }}</td>
            </tr>
            <tr>
-             <td><b><u>OGP gas</u></b></td><td id="ogp_gas_perc"></td>
+             <td><b><u>OGP gas</u></b></td><td id="ogp_gas_perc">{{ data.fb_data.streams.perc.ogp_gas_perc }}</td>
            </tr>
            <tr>
-             <td><b><u>Gas injection</u></b></td><td id="gas_inj_perc"></td>
+             <td><b><u>Gas injection</u></b></td><td id="gas_inj_perc">{{ data.fb_data.streams.perc.gas_inj_perc }}</td>
            </tr>
            <tr>
-             <td><b><u>OGP oil</u></b></td><td id="ogp_oil_perc"></td>
+             <td><b><u>OGP oil</u></b></td><td id="ogp_oil_perc">{{ data.fb_data.streams.perc.ogp_oil_perc }}</td>
            </tr>
            <tr>
-             <td><b><u>MTU oil</u></b></td><td id="mtu_oil_perc"></td>
+             <td><b><u>MTU oil</u></b></td><td id="mtu_oil_perc">{{ data.fb_data.streams.perc.mtu_oil_perc }}</td>
            </tr>
            <tr>
-             <td><b><u>Fuel gas</u></b></td><td id="fuel_gas_perc"></td>
+             <td><b><u>Fuel gas</u></b></td><td id="fuel_gas_perc">{{ data.fb_data.streams.perc.fuel_gas_perc }}</td>
            </tr>
            <tr>
-             <td>KPC Free gas in MP Sep</td><td id="kpc_free_gas_perc"></td>
+             <td>KPC Free gas in MP Sep</td><td id="kpc_free_gas_perc">{{ data.fb_data.streams.perc.kpc_free_gas_perc }}</td>
            </tr>
            <tr>
-             <td>KPC Total gas</td><td id="kpc_tot_gas_perc"></td>
+             <td>KPC Total gas</td><td id="kpc_tot_gas_perc">{{ data.fb_data.streams.perc.kpc_tot_gas_perc }}</td>
            </tr>
            <tr>
-             <td>Unit-2 Free gas in MP Sep</td><td id="u2_free_gas_perc"></td>
+             <td>Unit-2 Free gas in MP Sep</td><td id="u2_free_gas_perc">{{ data.fb_data.streams.perc.u2_free_gas_perc }}</td>
            </tr>
            <tr>
-             <td>Unit-3 Free gas in MP Sep</td><td id="u3_free_gas_perc"></td>
+             <td>Unit-3 Free gas in MP Sep</td><td id="u3_free_gas_perc">{{ data.fb_data.streams.perc.u3_free_gas_perc }}</td>
            </tr>
            <tr>
-             <td>KPC gas to Unit-2</td><td id="kpc_gas_2_u2_perc"></td>
+             <td>KPC gas to Unit-2</td><td id="kpc_gas_2_u2_perc">{{ data.fb_data.streams.perc.kpc_gas_2_u2_perc }}</td>
            </tr>
            <tr>
-             <td>KPC gas to Unit-3</td><td id="kpc_gas_2_u3_perc"></td>
+             <td>KPC gas to Unit-3</td><td id="kpc_gas_2_u3_perc">{{ data.fb_data.streams.perc.kpc_gas_2_u3_perc }}</td>
            </tr>
          </tbody>
         </table>
@@ -344,7 +344,7 @@
 
       <span><h3>WELLS PRODUCTION</h3></span>
 
-      {% for d in data.wells %}
+      {% for d in data.well_data %}
 
         <div class="row">
           <div class="col-lg-12">
@@ -421,9 +421,9 @@
 <script type="text/javascript">
 
   $( document ).ready(function() {
-    $("#sort_table{{data.wells[0][0].unit_id}}").tablesorter();
-    $("#sort_table{{data.wells[1][0].unit_id}}").tablesorter();
-    $("#sort_table{{data.wells[2][0].unit_id}}").tablesorter();
+    $("#sort_table{{data.well_data[0][0].unit_id}}").tablesorter();
+    $("#sort_table{{data.well_data[1][0].unit_id}}").tablesorter();
+    $("#sort_table{{data.well_data[2][0].unit_id}}").tablesorter();
   });
 
 

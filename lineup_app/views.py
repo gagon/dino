@@ -156,14 +156,14 @@ def results():
     # get well results from GAP
     #------------------------------------------------------------------------------
     # pc_data=ggr.get_all_unit_pc(well_details,session["state"]["wells"])
-    pc_data=xlggr.xl_get_all_unit_pc(well_details,session["state"]["wells"])
+    pc_data=xlggr.xl_get_all_unit_pc(well_details,session["state"]["well_state"])
     #------------------------------------------------------------------------------
 
     # a dictionary for mapping unit index and name
     unit_map={0:"KPC",1:"U3",2:"U2"}
 
-    fb_data=fb.fb_init()
-    fb_data=fb.calculate(pc_data,fb_data)
+    # fb_data=fb.fb_init()
+    fb_data=fb.calculate(pc_data,session["state"]["fb_data"])
 
     #
     # get current directory using os library
@@ -191,7 +191,7 @@ def results():
             # merge pc_data with map from Deliverability
             well=pc_data[unit][rank]["wellname"]
             pc_data[unit][rank]["map"]=well_maps[well]["map"]
-            pc_data[unit][rank]["target_fwhp"]=session["state"]["wells"][well]["fwhp"]
+            pc_data[unit][rank]["target_fwhp"]=session["state"]["well_state"][well]["fwhp"]
 
             # remove DD and Qliq limits if not set in GAP
             if pc_data[unit][rank]["dd_lim"]>10000.0:
@@ -230,7 +230,7 @@ def results():
     field_oil=round(totals[0]["qoil"]+totals[1]["qoil"]+totals[2]["qoil"],1)
 
     # put all data into dictionary to pass to html
-    data={"totals":totals,"wells":pc_data,"field":{"qgas":field_gas,"qoil":field_oil},"fb_data":fb_data}
+    data={"totals":totals,"well_data":pc_data,"field":{"qgas":field_gas,"qoil":field_oil},"fb_data":fb_data}
 
     page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":"active"}
 
