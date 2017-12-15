@@ -20,6 +20,7 @@ from lineup_app import gathering_parser as gath_par
 import xlrd
 import json
 from lineup_app import field_balance as fb
+from lineup_app import state_init
 
 
 
@@ -97,7 +98,9 @@ def login():
                 flash("Incorrect")
         else:
             return render_template('login.html')
-    return render_template('login.html')
+
+    page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":""}
+    return render_template('login.html',page_active=page_active)
 
 # error handing in case of incorrect or no login, redirects to login page
 @app.errorhandler(401)
@@ -108,7 +111,13 @@ def custom_401(error):
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html')
+    loaded_state=state_init.init()
+    session["state"]={} # initialize state if no state
+    session["state"]=loaded_state # save loaded data to state
+    session.modified=True
+    print(session["state"]["fb_data"]["streams"]["constraints"])
+    page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":""}
+    return render_template('index.html',page_active=page_active)
 
 """ ========================================================================================================== """
 
@@ -263,41 +272,33 @@ def setup():
     # get MAPs from "Deliverability.xlsx" file
     well_maps=xl_setup.read_maps()
 
-    # get or set well routes and Separator pressure depending on state
-    if len(session)>0: # if session exists
-        if "state" in session: # if state has been saved in session
-            # for sss,ss in session["state"]["wells"].items():
-            #     print(sss,ss)
 
-            #------------------------------------------------------------------------------
-            #st.set_unit_routes(well_details,session["state"]["wells"]) # set well routes as per state
-            xlst.xl_set_unit_routes(well_details,session["state"]["wells"]) # set well routes as per state
-            #------------------------------------------------------------------------------
-
-            #------------------------------------------------------------------------------
-            #st.set_sep_pres(session["state"]["sep"]) # set separator pressure as per state
-            xlst.xl_set_sep_pres(session["state"]["sep"]) # set separator pressure as per state
-            #------------------------------------------------------------------------------
-
-            sep=session["state"]["sep"] # remember what set to separator pressure to show it on setup page
-        else:
-            #------------------------------------------------------------------------------
-            #sep=st.get_sep_pres() # get separator pressure if state doesn't exist
-            sep=xlst.xl_get_sep_pres() # get separator pressure if state doesn't exist
-            #------------------------------------------------------------------------------
-    else:
+    if "well_state" in session["state"]:
         #------------------------------------------------------------------------------
-        # sep=st.get_sep_pres() # get separator pressure if state doesn't exist
-        sep=xlst.xl_get_sep_pres() # get separator pressure if state doesn't exist
+        #st.set_unit_routes(well_details,session["state"]["well_state"]) # set well routes as per state
+        xlst.xl_set_unit_routes(well_details,session["state"]["well_state"]) # set well routes as per state
         #------------------------------------------------------------------------------
 
-    data={} # initialize data dictionary to pass to setup.html
-    data["sep"]=sep # save separator pressures to data dict
+    if "sep" in session["state"]["unit_data"]:
+        #------------------------------------------------------------------------------
+        #st.set_sep_pres(session["state"]["sep"]) # set separator pressure as per state
+        xlst.xl_set_sep_pres(session["state"]["sep"]) # set separator pressure as per state
+        #------------------------------------------------------------------------------
+
+
+    data=session["state"]
 
     #------------------------------------------------------------------------------
     #data["well_data"]=st.get_all_well_data(well_details) # get well data from GAP such as GOR, limits and current routes
     data["well_data"]=xlst.xl_get_all_well_data(well_details) # get well data from GAP such as GOR, limits and current routes
     #------------------------------------------------------------------------------
+
+    #------------------------------------------------------------------------------
+    # data["sep"]=st.get_sep_pres() # get separator pressure if state doesn't exist
+    data["unit_data"]["sep"]=xlst.xl_get_sep_pres() # get separator pressure if state doesn't exist
+    #------------------------------------------------------------------------------
+
+
 
     for unit,unit_wells in enumerate(data["well_data"]): # loop through units
         for rank,val in unit_wells.items(): # loop through wells in unit
@@ -306,28 +307,14 @@ def setup():
             data["well_data"][unit][rank]["map"]=well_maps[well]["map"] # merge well data with well MAPs to pass it to page
 
 
-            # initialize well data fwhp and in_opt to default
-            data["well_data"][unit][rank]["fwhp"]=""
-            data["well_data"][unit][rank]["in_opt"]=1
-            if len(session)>0: # if session exists
-                if "state" in session: # if state exists in session
-                    if well in session["state"]["wells"]: # if well exists in session
-                        # then overwrite well data fwhp and in_opt as per session
-                        data["well_data"][unit][rank]["fwhp"]=session["state"]["wells"][well]["fwhp"]
-                        data["well_data"][unit][rank]["in_opt"]=session["state"]["wells"][well]["in_opt"]
+            if "well_state" in session["state"]:
+                data["well_data"][unit][rank]["fwhp"]=session["state"]["well_state"][well]["fwhp"]
+                data["well_data"][unit][rank]["in_opt"]=session["state"]["well_state"][well]["in_opt"]
+            else:
+                # initialize well data fwhp and in_opt to default
+                data["well_data"][unit][rank]["fwhp"]=""
+                data["well_data"][unit][rank]["in_opt"]=1
 
-
-    # initialise constraints to default
-    data["constraints"]={
-        "kpc":{"qgas":100000,"qoil":100000},
-        "u3":{"qgas":100000,"qoil":100000},
-        "u2":{"qgas":100000,"qoil":100000},
-    }
-    if len(session)>0: # if session exists
-        if "state" in session: # if state in session
-            if "constraints" in session["state"]: # if constraints in state
-                # then overwrite constraints as per session
-                data["constraints"]=session["state"]["constraints"]
 
     page_active={"load_pcs":"","load_state":"","setup":"active","live":"","results":""}
     # render page, pass data dictionary to the page

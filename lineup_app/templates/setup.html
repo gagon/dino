@@ -42,9 +42,9 @@
         <tr>
           <td style="width:20%;">Qoil constraint</td>
 
-          <td style='width:20%;' id="kpc_qoil_max" contenteditable >22000</td>
-          <td style='width:20%;' id="u3_qoil_max" contenteditable >22000</td>
-          <td style='width:20%;' id="u2_qoil_max" contenteditable >22000</td>
+          <td style='width:20%;' id="kpc_qoil_max" contenteditable >{{ data.unit_data.constraints.kpc_qoil_max }}</td>
+          <td style='width:20%;' id="u3_qoil_max" contenteditable >{{ data.unit_data.constraints.u3_qoil_max }}</td>
+          <td style='width:20%;' id="u2_qoil_max" contenteditable >{{ data.unit_data.constraints.u2_qoil_max }}</td>
           <td style='width:20%;' id="qoil_max_uom">
             <select class="form-control input-sm" name="qoil_max_uom_selected" style="padding:1px;height:20px;">
               <option selected>Sm3/d</option>
@@ -55,25 +55,25 @@
 
         <tr>
           <td style="width:20%;">Qgas constraint</td>
-          <td style='width:20%;' id="kpc_qgas_max" contenteditable >22000</td>
-          <td style='width:20%;' id="u3_qgas_max" contenteditable >22000</td>
-          <td style='width:20%;' id="u2_qgas_max" contenteditable >22000</td>
-          <td style='width:20%;' id="qgas_max_uom">sm3/d</td>
+          <td style='width:20%;' id="kpc_qgas_max" contenteditable >{{ data.unit_data.constraints.kpc_qgas_max }}</td>
+          <td style='width:20%;' id="u3_qgas_max" contenteditable >{{ data.unit_data.constraints.u3_qgas_max }}</td>
+          <td style='width:20%;' id="u2_qgas_max" contenteditable >{{ data.unit_data.constraints.u2_qgas_max }}</td>
+          <td style='width:20%;' id="qgas_max_uom">ksm3/d</td>
         </tr>
 
         <tr>
           <td style="width:20%;">Qoil AF</td>
-          <td style='width:20%;' id="kpc_qoil_af" contenteditable >22000</td>
-          <td style='width:20%;' id="u3_qoil_af" contenteditable >22000</td>
-          <td style='width:20%;' id="u2_qoil_af" contenteditable >22000</td>
-          <td style='width:20%;' id="qoil_af_uom">sm3/d</td>
+          <td style='width:20%;' id="kpc_qoil_af" contenteditable >{{ data.unit_data.af.kpc_qoil_af }}</td>
+          <td style='width:20%;' id="u3_qoil_af" contenteditable >{{ data.unit_data.af.u3_qoil_af }}</td>
+          <td style='width:20%;' id="u2_qoil_af" contenteditable >{{ data.unit_data.af.u2_qoil_af }}</td>
+          <td style='width:20%;' id="qoil_af_uom">-</td>
         </tr>
         <tr>
           <td style="width:20%;">Qgas AF</td>
-          <td style='width:20%;' id="kpc_qgas_af" contenteditable >22000</td>
-          <td style='width:20%;' id="u3_qgas_af" contenteditable >22000</td>
-          <td style='width:20%;' id="u2_qgas_af" contenteditable >22000</td>
-          <td style='width:20%;' id="qgas_af_uom">sm3/d</td>
+          <td style='width:20%;' id="kpc_qgas_af" contenteditable >{{ data.unit_data.af.kpc_qgas_af }}</td>
+          <td style='width:20%;' id="u3_qgas_af" contenteditable >{{ data.unit_data.af.u2_qgas_af }}</td>
+          <td style='width:20%;' id="u2_qgas_af" contenteditable >{{ data.unit_data.af.u3_qgas_af }}</td>
+          <td style='width:20%;' id="qgas_af_uom">-</td>
         </tr>
 
       </table>
@@ -87,33 +87,33 @@
 
         <tr>
           <td style="width:50%;">KPC Sep Pressure</td>
-          <td style='width:30%;' id="kpc_sep_pres" contenteditable >22000</td>
-          <td style='width:20%;' id="kpc_sep_pres_uom">sm3/d</td>
+          <td style='width:30%;' id="kpc_sep_pres" contenteditable >{{ data.unit_data.sep.kpc_sep_pres }}</td>
+          <td style='width:20%;' id="kpc_sep_pres_uom">bar</td>
         </tr>
         <tr>
           <td style="width:50%;">Unit-2 Sep Pressure</td>
-          <td style='width:30%;' id="u2_sep_pres" contenteditable >22000</td>
-          <td style='width:20%;' id="u2_sep_pres_uom">sm3/d</td>
+          <td style='width:30%;' id="u2_sep_pres" contenteditable >{{ data.unit_data.sep.u2_sep_pres }}</td>
+          <td style='width:20%;' id="u2_sep_pres_uom">bar</td>
         </tr>
         <tr>
           <td style="width:50%;">Unit-3 Train-1 Sep Pressure</td>
-          <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
-          <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
+          <td style='width:30%;' id="u3_train1_sep_pres" contenteditable >{{ data.unit_data.sep.u3_train1_sep_pres }}</td>
+          <td style='width:20%;' id="u3_sep_pres_uom">bar</td>
         </tr>
         <tr>
           <td style="width:50%;">Unit-3 Train-2 Sep Pressure</td>
-          <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
-          <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
+          <td style='width:30%;' id="u3_train2_sep_pres" contenteditable >{{ data.unit_data.sep.u3_train2_sep_pres }}</td>
+          <td style='width:20%;' id="u3_sep_pres_uom">bar</td>
         </tr>
         <tr>
           <td style="width:50%;">Unit-3 Train-3 Sep Pressure</td>
-          <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
-          <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
+          <td style='width:30%;' id="u3_train3_sep_pres" contenteditable >{{ data.unit_data.sep.u3_train3_sep_pres }}</td>
+          <td style='width:20%;' id="u3_sep_pres_uom">bar</td>
         </tr>
         <tr>
           <td style="width:50%;">Unit-3 Train-4 Sep Pressure</td>
-          <td style='width:30%;' id="u3_sep_pres" contenteditable >22000</td>
-          <td style='width:20%;' id="u3_sep_pres_uom">sm3/d</td>
+          <td style='width:30%;' id="u3_train4_sep_pres" contenteditable >{{ data.unit_data.sep.u3_train4_sep_pres }}</td>
+          <td style='width:20%;' id="u3_sep_pres_uom">bar</td>
         </tr>
       </table>
     </div>
@@ -128,32 +128,32 @@
       <table class="table table-bordered table-condensed">
         <tr>
           <td style="width:40%;">CPC oil max</td>
-          <td style='width:40%;' id="cpc_oil_max" contenteditable >22000</td>
+          <td style='width:40%;' id="cpc_oil_max" contenteditable >{{ data.fb_data.streams.constraints.cpc_oil_max }}</td>
           <td style='width:20%;' id="cpc_oil_uom">sm3/d</td>
         </tr>
         <tr>
           <td style="width:40%;">OGP gas max</td>
-          <td style='width:40%;' id="ogp_gas_max" contenteditable >25000</td>
+          <td style='width:40%;' id="ogp_gas_max" contenteditable >{{ data.fb_data.streams.constraints.ogp_gas_max }}</td>
           <td style='width:20%;' id="ogp_gas_uom">ksm3/d</td>
         </tr>
         <tr>
           <td style="width:40%;">Gas injection Target</td>
-          <td style='width:40%;' id="gas_inj_max" contenteditable >22000</td>
+          <td style='width:40%;' id="gas_inj_max" contenteditable >{{ data.fb_data.streams.constraints.gas_inj_max }}</td>
           <td style='width:20%;' id="gas_inj_uom">ksm3/d</td>
         </tr>
         <tr>
           <td style="width:40%;">Fuel gas max</td>
-          <td style='width:40%;' id="fuel_gas_max" contenteditable >2500</td>
+          <td style='width:40%;' id="fuel_gas_max" contenteditable >{{ data.fb_data.streams.constraints.fuel_gas_max }}</td>
           <td style='width:20%;' id="fuel_gas_uom">ksm3/d</td>
         </tr>
         <tr>
           <td style="width:40%;">MTU oil max</td>
-          <td style='width:40%;' id="mtu_oil_max" contenteditable >25000</td>
+          <td style='width:40%;' id="mtu_oil_max" contenteditable >{{ data.fb_data.streams.constraints.mtu_oil_max }}</td>
           <td style='width:20%;' id="mtu_oil_uom">ksm3/d</td>
         </tr>
         <tr>
           <td style="width:40%;">OGP oil max</td>
-          <td style='width:40%;' id="ogp_oil_max" contenteditable >25000</td>
+          <td style='width:40%;' id="ogp_oil_max" contenteditable >{{ data.fb_data.streams.constraints.ogp_oil_max }}</td>
           <td style='width:20%;' id="ogp_oil_uom">ksm3/d</td>
         </tr>
       </table>
@@ -164,32 +164,32 @@
       <table class="table table-bordered table-condensed">
         <tr>
           <td style="width:40%;">KPC Max gas in MP Sep</td>
-          <td style='width:40%;' id="kpc_free_gas_max" contenteditable >25000</td>
+          <td style='width:40%;' id="kpc_free_gas_max" contenteditable >{{ data.fb_data.streams.constraints.kpc_free_gas_max }}</td>
           <td style='width:20%;' id="kpc_free_gas_uom">ksm3/d</td>
         </tr>
         <tr>
           <td style="width:40%;">KPC Max Tot gas in Drizo</td>
-          <td style='width:40%;' id="kpc_tot_gas_max" contenteditable >25000</td>
+          <td style='width:40%;' id="kpc_tot_gas_max" contenteditable >{{ data.fb_data.streams.constraints.kpc_tot_gas_max }}</td>
           <td style='width:20%;' id="kpc_tot_gas_uom">ksm3/d</td>
         </tr>
         <tr>
           <td style="width:40%;">Unit-2 Max gas in MP Sep</td>
-          <td style='width:40%;' id="u2_free_gas_max" contenteditable >25000</td>
+          <td style='width:40%;' id="u2_free_gas_max" contenteditable >{{ data.fb_data.streams.constraints.u2_free_gas_max }}</td>
           <td style='width:20%;' id="u2_free_gas_uom">ksm3/d</td>
         </tr>
         <tr>
           <td style="width:40%;">Unit-3 Max gas in MP Sep</td>
-          <td style='width:40%;' id="u3_free_gas_max" contenteditable >25000</td>
+          <td style='width:40%;' id="u3_free_gas_max" contenteditable >{{ data.fb_data.streams.constraints.u3_free_gas_max }}</td>
           <td style='width:20%;' id="u3_free_gas_uom">ksm3/d</td>
         </tr>
         <tr>
           <td style="width:40%;">KPC Qgas Max to Unit-2</td>
-          <td style='width:40%;' id="kpc_gas_2_u2_max" contenteditable >25000</td>
+          <td style='width:40%;' id="kpc_gas_2_u2_max" contenteditable >{{ data.fb_data.streams.constraints.kpc_gas_2_u2_max }}</td>
           <td style='width:20%;' id="kpc_gas_2_u2_uom">ksm3/d</td>
         </tr>
         <tr>
           <td style="width:40%;">KPC Qgas Max to Unit-3</td>
-          <td style='width:40%;' id="kpc_gas_2_u3_max" contenteditable >25000</td>
+          <td style='width:40%;' id="kpc_gas_2_u3_max" contenteditable >{{ data.fb_data.streams.constraints.kpc_gas_2_u3_max }}</td>
           <td style='width:20%;' id="kpc_gas_2_u3_uom">ksm3/d</td>
         </tr>
       </table>
@@ -203,42 +203,42 @@
       <table class="table table-bordered table-condensed">
         <tr>
           <td style="width:50%;">Unstable oil Density Unit-3</td>
-          <td style='width:30%;' id="u3_unst_dens" contenteditable >22000</td>
+          <td style='width:30%;' id="u3_unst_dens" contenteditable >{{ data.fb_data.lab.u3_unst_dens }}</td>
           <td style='width:20%;' id="u3_unst_dens_uom">sm3/d</td>
         </tr>
         <tr>
           <td style="width:50%;">Unstable oil Density Unit-2</td>
-          <td style='width:30%;' id="u2_unst_dens" contenteditable >22000</td>
+          <td style='width:30%;' id="u2_unst_dens" contenteditable >{{ data.fb_data.lab.u2_unst_dens }}</td>
           <td style='width:20%;' id="u2_unst_dens_uom">sm3/d</td>
         </tr>
         <tr>
           <td style="width:50%;">St/unst oil Conversion Unit-3</td>
-          <td style='width:30%;' id="u3_st_unst_conv" contenteditable >22000</td>
+          <td style='width:30%;' id="u3_st_unst_conv" contenteditable >{{ data.fb_data.lab.u3_st_unst_conv }}</td>
           <td style='width:20%;' id="u3_st_unst_conv_uom">sm3/d</td>
         </tr>
         <tr>
           <td style="width:50%;">St/unst oil Conversion Unit-2</td>
-          <td style='width:30%;' id="u2_st_unst_conv" contenteditable >22000</td>
+          <td style='width:30%;' id="u2_st_unst_conv" contenteditable >{{ data.fb_data.lab.u2_st_unst_conv }}</td>
           <td style='width:20%;' id="u2_st_unst_conv_uom">sm3/d</td>
         </tr>
         <tr>
           <td style="width:50%;">Rs Unit-3</td>
-          <td style='width:30%;' id="u3_rs" contenteditable >22000</td>
+          <td style='width:30%;' id="u3_rs" contenteditable >{{ data.fb_data.lab.u3_rs }}</td>
           <td style='width:20%;' id="u3_rs_uom">sm3/d</td>
         </tr>
         <tr>
           <td style="width:50%;">Rs Unit-2</td>
-          <td style='width:30%;' id="u2_rs" contenteditable >22000</td>
+          <td style='width:30%;' id="u2_rs" contenteditable >{{ data.fb_data.lab.u2_rs }}</td>
           <td style='width:20%;' id="u2_rs_uom">sm3/d</td>
         </tr>
         <tr>
           <td style="width:50%;">Oil shrinkage Unit-3</td>
-          <td style='width:30%;' id="u3_shrinkage" contenteditable >22000</td>
+          <td style='width:30%;' id="u3_shrinkage" contenteditable >{{ data.fb_data.lab.u3_shrinkage }}</td>
           <td style='width:20%;' id="u3_shrinkage_uom">sm3/d</td>
         </tr>
         <tr>
           <td style="width:50%;">Oil shrinkage Unit-2</td>
-          <td style='width:30%;' id="u2_shrinkage" contenteditable >22000</td>
+          <td style='width:30%;' id="u2_shrinkage" contenteditable >{{ data.fb_data.lab.u2_shrinkage }}</td>
           <td style='width:20%;' id="u2_shrinkage_uom">sm3/d</td>
         </tr>
       </table>
@@ -424,44 +424,8 @@
   function get_state(){
 
     var state={}; // init state
-    state["wells"]={}; // init wells in state
 
-    for (i=0; i<3; ++i) { // loop from 0 to 2 (table number corresponding to each unit table)
-      table="#sort_table" + i.toString()+" tbody"; // table ID
-      $(table).children('tr').each(function () { // loop through rows in table
 
-        var wellname=$(this).find("[name=wellname]").text() // get wellname
-        state["wells"][wellname]={}; // init dict in state dict for this well
-        if ($(this).find("[name=selected_route]").val()){ // get route from row
-          state["wells"][wellname]["selected_route"]=$(this).find("[name=selected_route]").val();
-        }else{
-          state["wells"][wellname]["selected_route"]="";
-        };
-
-        var map=parseFloat($(this).find("[name=map]").text()) // get MAP from row
-
-        if ($(this).find("[name=fwhp]").val()){ // get target FWHP from row
-          var fwhp_val=parseFloat($(this).find("[name=fwhp]").val());
-          // QC fwhp value. Make sure fwhp is not less than MAP. If it is, then set it to MAP
-          if (fwhp_val>map){
-            state["wells"][wellname]["fwhp"]=fwhp_val;
-          }else if (fwhp_val==-1){
-            state["wells"][wellname]["fwhp"]=-1;
-          }else{
-            state["wells"][wellname]["fwhp"]=map;
-          }
-        }else{
-          state["wells"][wellname]["fwhp"]=map;
-        };
-
-        if ($(this).find("[name=in_opt]").is(":checked")){ // get in_opt from row
-          state["wells"][wellname]["in_opt"]=1
-        }else{
-          state["wells"][wellname]["in_opt"]=0
-        }
-
-      })
-    }
     ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -535,6 +499,51 @@
     return state;
   }
   ////////////////////////////////////////////////////////////////////////////////
+
+
+function get_well_state(){
+  
+  var well_state={}; // init wells in state
+
+  for (i=0; i<3; ++i) { // loop from 0 to 2 (table number corresponding to each unit table)
+    table="#sort_table" + i.toString()+" tbody"; // table ID
+    $(table).children('tr').each(function () { // loop through rows in table
+
+      var wellname=$(this).find("[name=wellname]").text() // get wellname
+      state["wells"][wellname]={}; // init dict in state dict for this well
+      if ($(this).find("[name=selected_route]").val()){ // get route from row
+        state["wells"][wellname]["selected_route"]=$(this).find("[name=selected_route]").val();
+      }else{
+        state["wells"][wellname]["selected_route"]="";
+      };
+
+      var map=parseFloat($(this).find("[name=map]").text()) // get MAP from row
+
+      if ($(this).find("[name=fwhp]").val()){ // get target FWHP from row
+        var fwhp_val=parseFloat($(this).find("[name=fwhp]").val());
+        // QC fwhp value. Make sure fwhp is not less than MAP. If it is, then set it to MAP
+        if (fwhp_val>map){
+          state["wells"][wellname]["fwhp"]=fwhp_val;
+        }else if (fwhp_val==-1){
+          state["wells"][wellname]["fwhp"]=-1;
+        }else{
+          state["wells"][wellname]["fwhp"]=map;
+        }
+      }else{
+        state["wells"][wellname]["fwhp"]=map;
+      };
+
+      if ($(this).find("[name=in_opt]").is(":checked")){ // get in_opt from row
+        state["wells"][wellname]["in_opt"]=1
+      }else{
+        state["wells"][wellname]["in_opt"]=0
+      }
+
+    })
+  }
+  return well_state;
+}
+
 
 
   ////////////////////////////////////////////////////////////////////////////////
