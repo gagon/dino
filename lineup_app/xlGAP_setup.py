@@ -134,9 +134,9 @@ def xl_set_sep_pres(sep):
 
     xlwells,xlunits,xlgap_wb=xlgap_conn()
 
-    xlunits.range((2,4)).value=sep["kpc_sep"]
-    xlunits.range((3,4)).value=sep["u2_sep"]
-    xlunits.range((4,4)).value=sep["u3_sep"]
+    xlunits.range((2,4)).value=sep["kpc_sep_pres"]
+    xlunits.range((3,4)).value=sep["u2_sep_pres"]
+    xlunits.range((4,4)).value=sep["u3_train1_sep_pres"]
 
     xlgap_wb.save()
 

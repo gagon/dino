@@ -282,7 +282,7 @@ def setup():
     if "sep" in session["state"]["unit_data"]:
         #------------------------------------------------------------------------------
         #st.set_sep_pres(session["state"]["sep"]) # set separator pressure as per state
-        xlst.xl_set_sep_pres(session["state"]["sep"]) # set separator pressure as per state
+        xlst.xl_set_sep_pres(session["state"]["unit_data"]["sep"]) # set separator pressure as per state
         #------------------------------------------------------------------------------
 
 

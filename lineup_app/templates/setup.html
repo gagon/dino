@@ -365,6 +365,9 @@
   var fb_section=1;
   var wells_section=1;
 
+  var state_init;
+  state_init={{ data|safe }};
+
 
   ////////////////////////////////////////////////////////////////////////////////
   // Enable sorting of table using table sorter library. Check "tablesorter.js" library for more details.
@@ -412,7 +415,7 @@
             alert(errMsg);
         }
     });
-    alert("Routes and target FWHPs saved. Reload page to update table"); // send message after saving to state
+    alert("State saved. Reload page to update table"); // send message after saving to state
     return state;
 
   };
@@ -425,125 +428,91 @@
 
     var state={}; // init state
 
-
-    ////////////////////////////////////////////////////////////////////////////////
-
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // Get constraints in constraints table
-    state["constraints"]={};
-    state["constraints"]["kpc"]={};
-    state["constraints"]["u3"]={};
-    state["constraints"]["u2"]={};
-
-    if ($("#kpc_qgas_constr").val()){
-      state["constraints"]["kpc"]["qgas"]=parseFloat($("#kpc_qgas_constr").val());
-    }else{
-      state["constraints"]["kpc"]["qgas"]=100000;
-    }
-
-    if ($("#u3_qgas_constr").val()){
-      state["constraints"]["u3"]["qgas"]=parseFloat($("#u3_qgas_constr").val());
-    }else{
-      state["constraints"]["u3"]["qgas"]=100000;
-    }
-
-    if ($("#u2_qgas_constr").val()){
-      state["constraints"]["u2"]["qgas"]=parseFloat($("#u2_qgas_constr").val());
-    }else{
-      state["constraints"]["u2"]["qgas"]=100000;
-    }
-
-
-    if ($("#kpc_qoil_constr").val()){
-      state["constraints"]["kpc"]["qoil"]=parseFloat($("#kpc_qoil_constr").val());
-    }else{
-      state["constraints"]["kpc"]["qoil"]=100000;
-    }
-
-    if ($("#u3_qoil_constr").val()){
-      state["constraints"]["u3"]["qoil"]=parseFloat($("#u3_qoil_constr").val());
-    }else{
-      state["constraints"]["u3"]["qoil"]=100000;
-    }
-
-    if ($("#u2_qoil_constr").val()){
-      state["constraints"]["u2"]["qoil"]=parseFloat($("#u2_qoil_constr").val());
-    }else{
-      state["constraints"]["u2"]["qoil"]=100000;
-    }
-    ////////////////////////////////////////////////////////////////////////////////
-
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // Get separator pressure from separtor pressure table
-    state["sep"]={};
-    if ($("#kpc_sep").val()){
-      state["sep"]["kpc_sep"]=parseFloat($("#kpc_sep").val());
-    }else{
-      state["sep"]["kpc_sep"]=78;
-    }
-
-    if ($("#u3_sep").val()){
-      state["sep"]["u3_sep"]=parseFloat($("#u3_sep").val());
-    }else{
-      state["sep"]["u3_sep"]=130;
-    }
-
-    if ($("#u2_sep").val()){
-      state["sep"]["u2_sep"]=parseFloat($("#u2_sep").val());
-    }else{
-      state["sep"]["u2_sep"]=78;
-    }
+    state["well_state"]=get_well_state();
+    state["unit_data"]=get_unit_data();
+    state["fb_data"]=get_fb_data();
+    // console.log(state);
 
     return state;
   }
   ////////////////////////////////////////////////////////////////////////////////
 
 
-function get_well_state(){
-  
-  var well_state={}; // init wells in state
+  function get_well_state(){
 
-  for (i=0; i<3; ++i) { // loop from 0 to 2 (table number corresponding to each unit table)
-    table="#sort_table" + i.toString()+" tbody"; // table ID
-    $(table).children('tr').each(function () { // loop through rows in table
+    var well_state={}; // init wells in state
 
-      var wellname=$(this).find("[name=wellname]").text() // get wellname
-      state["wells"][wellname]={}; // init dict in state dict for this well
-      if ($(this).find("[name=selected_route]").val()){ // get route from row
-        state["wells"][wellname]["selected_route"]=$(this).find("[name=selected_route]").val();
-      }else{
-        state["wells"][wellname]["selected_route"]="";
-      };
+    for (i=0; i<3; ++i) { // loop from 0 to 2 (table number corresponding to each unit table)
+      table="#sort_table" + i.toString()+" tbody"; // table ID
+      $(table).children('tr').each(function () { // loop through rows in table
 
-      var map=parseFloat($(this).find("[name=map]").text()) // get MAP from row
-
-      if ($(this).find("[name=fwhp]").val()){ // get target FWHP from row
-        var fwhp_val=parseFloat($(this).find("[name=fwhp]").val());
-        // QC fwhp value. Make sure fwhp is not less than MAP. If it is, then set it to MAP
-        if (fwhp_val>map){
-          state["wells"][wellname]["fwhp"]=fwhp_val;
-        }else if (fwhp_val==-1){
-          state["wells"][wellname]["fwhp"]=-1;
+        var wellname=$(this).find("[name=wellname]").text() // get wellname
+        well_state[wellname]={}; // init dict in state dict for this well
+        if ($(this).find("[name=selected_route]").val()){ // get route from row
+          well_state[wellname]["selected_route"]=$(this).find("[name=selected_route]").val();
         }else{
-          state["wells"][wellname]["fwhp"]=map;
+          well_state[wellname]["selected_route"]="";
+        };
+
+        var map=parseFloat($(this).find("[name=map]").text()) // get MAP from row
+
+        if ($(this).find("[name=fwhp]").val()){ // get target FWHP from row
+          var fwhp_val=parseFloat($(this).find("[name=fwhp]").val());
+          // QC fwhp value. Make sure fwhp is not less than MAP. If it is, then set it to MAP
+          if (fwhp_val>map){
+            well_state[wellname]["fwhp"]=fwhp_val;
+          }else if (fwhp_val==-1){
+            well_state[wellname]["fwhp"]=-1;
+          }else{
+            well_state[wellname]["fwhp"]=map;
+          }
+        }else{
+          well_state[wellname]["fwhp"]=map;
+        };
+
+        if ($(this).find("[name=in_opt]").is(":checked")){ // get in_opt from row
+          well_state[wellname]["in_opt"]=1
+        }else{
+          well_state[wellname]["in_opt"]=0
         }
-      }else{
-        state["wells"][wellname]["fwhp"]=map;
-      };
 
-      if ($(this).find("[name=in_opt]").is(":checked")){ // get in_opt from row
-        state["wells"][wellname]["in_opt"]=1
-      }else{
-        state["wells"][wellname]["in_opt"]=0
-      }
-
-    })
+      })
+    }
+    return well_state;
   }
-  return well_state;
-}
 
+
+  function get_unit_data(){
+    var unit_data={};
+
+    var items=state_init["unit_data"];
+    for (var item in items){
+      unit_data[item]={};
+      for (var i in items[item]){
+        unit_data[item][i]=parseFloat($("#"+i).text());
+      }
+    }
+
+    return unit_data;
+  }
+
+
+  function get_fb_data(){
+    var fb_data={};
+    fb_data=state_init["fb_data"]
+
+    var items=state_init["fb_data"]["streams"]["constraints"];
+    for (var item in items){
+      fb_data["streams"]["constraints"][item]=parseFloat($("#"+item).text());
+    }
+
+    items=state_init["fb_data"]["lab"];
+    for (var item in items){
+      fb_data["lab"][item]=parseFloat($("#"+item).text());
+    }
+
+    return fb_data;
+  }
 
 
   ////////////////////////////////////////////////////////////////////////////////
