@@ -256,9 +256,23 @@
 
     </div>
 
-
-      <!-- </div> -->
     <hr style="background-color:#E0E0E0;height:1px;">
+
+    <div class="row">
+      <div class="col-lg-3">
+        <button type="button" class="btn btn-default btn-lg btn-block" id="#save_state" onclick="save_state();" style="background-color:#e5ffec;">
+          <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save FWHPs to state
+        </button>
+      </div>
+      <div class="col-lg-3">
+        <button type="button" class="btn btn-default btn-lg btn-block" id="#save2ref" onclick="save2ref();" style="background-color:#e6e6e6;">
+          <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save to Reference case
+        </button>
+      </div>
+    </div>
+
+    <hr style="background-color:#E0E0E0;height:1px;">
+
     <div class="row">
       <div class="col-lg-12">
         <h3>TOTALS FIELD PRODUCTION</h3>
@@ -275,67 +289,112 @@
       </div>
     </div>
 
-  <div class="row">
+    <div class="row">
 
-    {% for tots in data.totals %}
+      <div class="col-lg-6">
+
+        <!-- <div class="row"> -->
+
+          {% for tots in data.totals %}
 
 
-      <div class="col-lg-4">
-
-        {% if loop.index0==0 %}
-          <h3>KPC</h3>
-        {% elif loop.index0==1 %}
-          <h3>Unit 3</h3>
-        {% elif loop.index0==2 %}
-          <h3>Unit 2</h3>
-        {% endif %}
-
-        <table class="table table-bordered">
-          <thead class="thead-default">
-            <tr class="info">
-
+            <div class="col-lg-4">
               {% if loop.index0==0 %}
-                <th>KPC</th>
+                <h3>KPC</h3>
               {% elif loop.index0==1 %}
-                <th>Unit 3</th>
+                <h3>Unit 3</h3>
               {% elif loop.index0==2 %}
-                <th>Unit 2</th>
+                <h3>Unit 2</h3>
               {% endif %}
-              <th>Qgas (ksm3/d)</th>
-              <th>Qoil (sm3/d)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="color:#339933;"><b>Total</b></td>
-              <td style="color:#339933;"><b>{{ tots.qgas }}</b></td>
-              <td style="color:#339933;"><b>{{ tots.qoil }}</b></td>
-            </tr>
-            {% for rms,d in tots.subtotals.items() %}
-              <tr>
-                <td><b>{{ rms }}</b></td>
-                <td>{{ d.qgas }}</td>
-                <td>{{ d.qoil }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
 
-      </div>
+              <div class="row">
 
-    {% endfor %}
 
-  </div>
+                <div class="col-lg-6">
+                  <table class="table table-bordered">
+                    <thead class="thead-default">
+                      <tr class="info">
 
-  <hr style="background-color:#E0E0E0;height:1px;">
+                        {% if loop.index0==0 %}
+                          <th>KPC</th>
+                        {% elif loop.index0==1 %}
+                          <th>Unit 3</th>
+                        {% elif loop.index0==2 %}
+                          <th>Unit 2</th>
+                        {% endif %}
+                        <th>Qgas (ksm3/d)</th>
+                        <th>Qoil (sm3/d)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="color:#339933;"><b>Total</b></td>
+                        <td style="color:#339933;"><b>{{ tots.qgas }}</b></td>
+                        <td style="color:#339933;"><b>{{ tots.qoil }}</b></td>
+                      </tr>
+                      {% for rms,d in tots.subtotals.items() %}
+                        <tr>
+                          <td><b>{{ rms }}</b></td>
+                          <td>{{ d.qgas }}</td>
+                          <td>{{ d.qoil }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
 
-  <div class="row">
-    <div class="col-lg-2">
-      <button type="button" class="btn btn-default btn-lg btn-block" id="#save_state" onclick="save_state();" style="background-color:#e5ffec;">
-        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save FWHPs to state
-      </button>
+                <div class="col-lg-6">
+                  <table class="table table-bordered">
+                    <thead class="thead-default">
+                      <tr class="info">
+
+                        {% if loop.index0==0 %}
+                          <th>KPC</th>
+                        {% elif loop.index0==1 %}
+                          <th>Unit 3</th>
+                        {% elif loop.index0==2 %}
+                          <th>Unit 2</th>
+                        {% endif %}
+                        <th>Qgas (ksm3/d)</th>
+                        <th>Qoil (sm3/d)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="color:#339933;"><b>Total</b></td>
+                        <td style="color:#339933;"><b>{{ tots.qgas }}</b></td>
+                        <td style="color:#339933;"><b>{{ tots.qoil }}</b></td>
+                      </tr>
+                      {% for rms,d in tots.subtotals.items() %}
+                        <tr>
+                          <td><b>{{ rms }}</b></td>
+                          <td>{{ d.qgas }}</td>
+                          <td>{{ d.qoil }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+
+
+              </div>
+
+
+
+
+            </div>
+
+
+
+          {% endfor %}
+
     </div>
   </div>
+
+
+
+</div>
+
 
   <hr style="background-color:#E0E0E0;height:1px;">
 
@@ -499,85 +558,85 @@
     // loaded_data={{data|safe}}
     network = network_build(fb_data);
   });
-
-  uoms={
-    "category":{
-      "qoil":"oil_rate",
-      "qgas":"gas_rate",
-      "gor":"gas_oil_ratio",
-      "qoil_pot":"oil_rate",
-      "qgas_pot":"gas_rate",
-      "mp_rs":"gas_oil_ratio",
-      "lp_rs":"gas_oil_ratio",
-      "af_oil":"fraction",
-      "af_gas":"fraction",
-      "cpc_oil":"oil_rate",
-      "fuel_gas":"gas_rate",
-      "gas_inj":"gas_rate",
-      "ogp_gas":"gas_rate",
-      "ogp_oil":"oil_rate",
-      "mtu_oil":"oil_rate",
-      "kpc_gas_2_u2":"gas_rate",
-      "kpc_gas_2_u3":"gas_rate",
-      "u3_oil_2_kpc":"oil_rate",
-      "u3_gas_2_kpc":"gas_rate",
-      "u2_oil_2_kpc":"oil_rate",
-      "u2_gas_2_kpc":"gas_rate",
-      "u2_oil_2_u3":"oil_rate",
-      "u2_gas_2_u3":"gas_rate",
-      "kpc_free_gas":"gas_rate",
-      "kpc_tot_gas":"gas_rate",
-      "kpc_tot_oil":"oil_rate",
-      "u2_free_gas":"gas_rate",
-      "u2_tot_gas":"gas_rate",
-      "u2_tot_oil":"oil_rate",
-      "u3_free_gas":"gas_rate",
-      "u3_tot_gas":"gas_rate",
-      "u3_tot_oil":"oil_rate",
-      "cpc_oil_max":"oil_rate",
-      "fuel_gas_max":"gas_rate",
-      "gas_inj_max":"gas_rate",
-      "ogp_gas_max":"gas_rate",
-      "ogp_oil_max":"oil_rate",
-      "mtu_oil_max":"oil_rate",
-      "kpc_gas_2_u2_max":"gas_rate",
-      "kpc_gas_2_u3_max":"gas_rate",
-      "kpc_free_gas_max":"gas_rate",
-      "kpc_tot_gas_max":"gas_rate",
-      "u2_free_gas_max":"gas_rate",
-      "u3_free_gas_max":"gas_rate",
-      "cpc_oil_perc":"percent",
-      "fuel_gas_perc":"percent",
-      "gas_inj_perc":"percent",
-      "ogp_gas_perc":"percent",
-      "ogp_oil_perc":"percent",
-      "mtu_oil_perc":"percent",
-      "kpc_gas_2_u2_perc":"percent",
-      "kpc_gas_2_u3_perc":"percent",
-      "kpc_free_gas_perc":"percent",
-      "kpc_tot_gas_perc":"percent",
-      "u2_free_gas_perc":"percent",
-      "u3_free_gas_perc":"percent",
-    },
-    "uom":{
-      "oil_rate":[
-        "Sm3/d",
-        "St.tons/d",
-        "Unst.tons/d",
-        "Sm3/hr",
-        "St.tons/hr",
-        "Unst.tons/hr"
-      ],
-      "gas_rate":[
-        "KSm3/d",
-        "MMSm3/d",
-        "KSm3/hr",
-        "MMSm3/hr",
-      ],
-      "fraction":["-"],
-      "percent":["%"],
-    }
-  }
+  //
+  // uoms={
+  //   "category":{
+  //     "qoil":"oil_rate",
+  //     "qgas":"gas_rate",
+  //     "gor":"gas_oil_ratio",
+  //     "qoil_pot":"oil_rate",
+  //     "qgas_pot":"gas_rate",
+  //     "mp_rs":"gas_oil_ratio",
+  //     "lp_rs":"gas_oil_ratio",
+  //     "af_oil":"fraction",
+  //     "af_gas":"fraction",
+  //     "cpc_oil":"oil_rate",
+  //     "fuel_gas":"gas_rate",
+  //     "gas_inj":"gas_rate",
+  //     "ogp_gas":"gas_rate",
+  //     "ogp_oil":"oil_rate",
+  //     "mtu_oil":"oil_rate",
+  //     "kpc_gas_2_u2":"gas_rate",
+  //     "kpc_gas_2_u3":"gas_rate",
+  //     "u3_oil_2_kpc":"oil_rate",
+  //     "u3_gas_2_kpc":"gas_rate",
+  //     "u2_oil_2_kpc":"oil_rate",
+  //     "u2_gas_2_kpc":"gas_rate",
+  //     "u2_oil_2_u3":"oil_rate",
+  //     "u2_gas_2_u3":"gas_rate",
+  //     "kpc_free_gas":"gas_rate",
+  //     "kpc_tot_gas":"gas_rate",
+  //     "kpc_tot_oil":"oil_rate",
+  //     "u2_free_gas":"gas_rate",
+  //     "u2_tot_gas":"gas_rate",
+  //     "u2_tot_oil":"oil_rate",
+  //     "u3_free_gas":"gas_rate",
+  //     "u3_tot_gas":"gas_rate",
+  //     "u3_tot_oil":"oil_rate",
+  //     "cpc_oil_max":"oil_rate",
+  //     "fuel_gas_max":"gas_rate",
+  //     "gas_inj_max":"gas_rate",
+  //     "ogp_gas_max":"gas_rate",
+  //     "ogp_oil_max":"oil_rate",
+  //     "mtu_oil_max":"oil_rate",
+  //     "kpc_gas_2_u2_max":"gas_rate",
+  //     "kpc_gas_2_u3_max":"gas_rate",
+  //     "kpc_free_gas_max":"gas_rate",
+  //     "kpc_tot_gas_max":"gas_rate",
+  //     "u2_free_gas_max":"gas_rate",
+  //     "u3_free_gas_max":"gas_rate",
+  //     "cpc_oil_perc":"percent",
+  //     "fuel_gas_perc":"percent",
+  //     "gas_inj_perc":"percent",
+  //     "ogp_gas_perc":"percent",
+  //     "ogp_oil_perc":"percent",
+  //     "mtu_oil_perc":"percent",
+  //     "kpc_gas_2_u2_perc":"percent",
+  //     "kpc_gas_2_u3_perc":"percent",
+  //     "kpc_free_gas_perc":"percent",
+  //     "kpc_tot_gas_perc":"percent",
+  //     "u2_free_gas_perc":"percent",
+  //     "u3_free_gas_perc":"percent",
+  //   },
+  //   "uom":{
+  //     "oil_rate":[
+  //       "Sm3/d",
+  //       "St.tons/d",
+  //       "Unst.tons/d",
+  //       "Sm3/hr",
+  //       "St.tons/hr",
+  //       "Unst.tons/hr"
+  //     ],
+  //     "gas_rate":[
+  //       "KSm3/d",
+  //       "MMSm3/d",
+  //       "KSm3/hr",
+  //       "MMSm3/hr",
+  //     ],
+  //     "fraction":["-"],
+  //     "percent":["%"],
+  //   }
+  // }
 
   fb_data={{ data.fb_data|safe }};
 
@@ -1466,17 +1525,21 @@
   }
 
   function show_hide_fb_input_table(table_show){
-    // alert(table_show);
     if (table_show==0){
       $('#fb_input_table').css("display","");
       table_show=1;
     }else{
       $('#fb_input_table').css("display","none");
       table_show=0;
-      }
-      // alert(table_show);
-      return table_show;
     }
+    return table_show;
+  }
+
+
+  function save2ref(){
+
+  }
+
 
 
   </script>
