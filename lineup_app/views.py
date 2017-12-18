@@ -166,11 +166,11 @@ def results():
     fb_data=fb.calculate(pc_data,session["state"]["fb_data"])
 
     #
-    # get current directory using os library
-    #dirname, filename = os.path.split(os.path.abspath(__file__))
-    # construct excel file full path
-    #json_fullpath=os.path.join(dirname,"static\\field_balance_plot.json")
-    #fb_plot = json.load(open(json_fullpath))
+    # # get current directory using os library
+    # dirname, filename = os.path.split(os.path.abspath(__file__))
+    # # construct excel file full path
+    # json_fullpath=os.path.join(dirname,"static\\field_balance_plot.json")
+    # fb_plot = json.load(open(json_fullpath))
 
 
 
@@ -185,6 +185,8 @@ def results():
         unit_total_qoil=0.0 # initialise unit totals for Qoil
         rmss=[] # initialise RMS list
 
+        # print(pc_data)
+
         # loop through wells in unit
         for rank,val in unit_wells.items():
 
@@ -192,6 +194,7 @@ def results():
             well=pc_data[unit][rank]["wellname"]
             pc_data[unit][rank]["map"]=well_maps[well]["map"]
             pc_data[unit][rank]["target_fwhp"]=session["state"]["well_state"][well]["fwhp"]
+            # pc_data[unit][rank]["target_fwhp_ref"]=ref_data[unit][well]["fwhp"]
 
             # remove DD and Qliq limits if not set in GAP
             if pc_data[unit][rank]["dd_lim"]>10000.0:
@@ -231,6 +234,24 @@ def results():
 
     # put all data into dictionary to pass to html
     data={"totals":totals,"well_data":pc_data,"field":{"qgas":field_gas,"qoil":field_oil},"fb_data":fb_data}
+
+    # get current directory using os library
+    dirname, filename = os.path.split(os.path.abspath(__file__))
+    json_fullpath=os.path.join(dirname,r"temp\results.json")
+    json.dump(data, open(json_fullpath, 'w'))
+
+    json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
+    data_ref = json.load(open(json_fullpath_ref))
+
+    for ref in data_ref["totals"]:
+        print(ref)
+
+    # print(data_ref["totals"][0])
+
+    # print(data_ref2["totals"])
+
+    # # put all data into dictionary to pass to html
+    # ref_data={"totals":totals,"well_data":pc_data,"field":{"qgas":field_gas,"qoil":field_oil},"fb_data":fb_data}
 
     page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":"active"}
 

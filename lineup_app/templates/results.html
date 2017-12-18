@@ -265,7 +265,7 @@
         </button>
       </div>
       <div class="col-lg-3">
-        <button type="button" class="btn btn-default btn-lg btn-block" id="#save2ref" onclick="save2ref();" style="background-color:#e6e6e6;">
+        <button type="button" class="btn btn-default btn-lg btn-block" id="#save2ref" onclick="save2ref();" style="background-color:#f2f2f2;">
           <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save to Reference case
         </button>
       </div>
@@ -278,6 +278,8 @@
         <h3>TOTALS FIELD PRODUCTION</h3>
         <h4 style="color:#339933;">Qgas (ksm3/d) - {{ data.field.qgas }}</h4>
         <h4 style="color:#339933;">Qoil (sm3/d) - {{ data.field.qoil }}</h4>
+        <h4>Qgas (ksm3/d) ref case - {{ data.field.qgas }}</h4>
+        <h4>Qoil (sm3/d) ref case - {{ data.field.qoil }}</h4>
       </div>
     </div>
 
@@ -291,7 +293,7 @@
 
     <div class="row">
 
-      <div class="col-lg-6">
+      <div class="col-lg-12">
 
         <!-- <div class="row"> -->
 
@@ -310,8 +312,8 @@
               <div class="row">
 
 
-                <div class="col-lg-6">
-                  <table class="table table-bordered">
+                <div class="col-lg-12">
+                  <table class="table table-bordered" style="font-size: 12px;">
                     <thead class="thead-default">
                       <tr class="info">
 
@@ -324,6 +326,8 @@
                         {% endif %}
                         <th>Qgas (ksm3/d)</th>
                         <th>Qoil (sm3/d)</th>
+                        <th style="background-color:#f2f2f2;">Qgas (ksm3/d)<br>ref case</th>
+                        <th style="background-color:#f2f2f2;">Qoil (sm3/d)<br>ref case</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -331,50 +335,23 @@
                         <td style="color:#339933;"><b>Total</b></td>
                         <td style="color:#339933;"><b>{{ tots.qgas }}</b></td>
                         <td style="color:#339933;"><b>{{ tots.qoil }}</b></td>
+                        <td style="background-color:#f2f2f2;"><b>{{ tots.qgas }}</b></td>
+                        <td style="background-color:#f2f2f2;"><b>{{ tots.qoil }}</b></td>
                       </tr>
                       {% for rms,d in tots.subtotals.items() %}
                         <tr>
                           <td><b>{{ rms }}</b></td>
                           <td>{{ d.qgas }}</td>
                           <td>{{ d.qoil }}</td>
+                          <td style="background-color:#f2f2f2;">{{ d.qgas }}</td>
+                          <td style="background-color:#f2f2f2;">{{ d.qoil }}</td>
                         </tr>
                       {% endfor %}
                     </tbody>
                   </table>
                 </div>
 
-                <div class="col-lg-6">
-                  <table class="table table-bordered">
-                    <thead class="thead-default">
-                      <tr class="info">
 
-                        {% if loop.index0==0 %}
-                          <th>KPC</th>
-                        {% elif loop.index0==1 %}
-                          <th>Unit 3</th>
-                        {% elif loop.index0==2 %}
-                          <th>Unit 2</th>
-                        {% endif %}
-                        <th>Qgas (ksm3/d)</th>
-                        <th>Qoil (sm3/d)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td style="color:#339933;"><b>Total</b></td>
-                        <td style="color:#339933;"><b>{{ tots.qgas }}</b></td>
-                        <td style="color:#339933;"><b>{{ tots.qoil }}</b></td>
-                      </tr>
-                      {% for rms,d in tots.subtotals.items() %}
-                        <tr>
-                          <td><b>{{ rms }}</b></td>
-                          <td>{{ d.qgas }}</td>
-                          <td>{{ d.qoil }}</td>
-                        </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
 
 
               </div>
@@ -393,7 +370,7 @@
 
 
 
-</div>
+<!-- </div> -->
 
 
   <hr style="background-color:#E0E0E0;height:1px;">
@@ -416,15 +393,16 @@
               <h3>Unit 2</h3>
             {% endif %}
 
-            <table class="table table-hover table-condensed" id="sort_table{{d[0].unit_id}}" style="font-size: 12px;">
+            <table class="table table-hover table-condensed" id="sort_table{{d[0].unit_id}}" style="font-size: 10px;">
               <thead class="thead-default">
                 <tr>
                   <th>Wellname</th>
                   <th>GOR</th>
                   <th>Connected</th>
-                  <th>Flow to</th>
                   <th>Comingled</th>
                   <th>MAP</th>
+
+                  <th>Flow to</th>
                   <th>Target FWHP</th>
                   <th>FWHP</th>
                   <th>dPChoke</th>
@@ -432,10 +410,16 @@
                   <th>Slot pressure</th>
                   <th>Qoil</th>
                   <th>Qgas</th>
-                  <th>DD</th>
-                  <th>DD limit</th>
-                  <th>Qliq</th>
-                  <th>Qliq limit</th>
+
+                  <th style="background-color:#f2f2f2;">Flow to ref</th>
+                  <th style="background-color:#f2f2f2;">Target FWHP ref</th>
+                  <th style="background-color:#f2f2f2;">FWHP ref</th>
+                  <th style="background-color:#f2f2f2;">dPChoke ref</th>
+                  <th style="background-color:#f2f2f2;">FL pressure ref</th>
+                  <th style="background-color:#f2f2f2;">Slot pressure ref</th>
+                  <th style="background-color:#f2f2f2;">Qoil ref</th>
+                  <th style="background-color:#f2f2f2;">Qgas ref</th>
+
                 </tr>
               </thead>
               <tbody>
@@ -444,11 +428,13 @@
                     <td name="wellname">{{ row.wellname }}</td>
                     <td title="GOR">{{ row.gor|round(1, 'common') }}</td>
                     <td title="Connected">{{ row.connected }}</td>
+                    <td title="Comingled">{{ row.route.comingled }}</td>
+                    <td title="MAP" name="map">{{ row.map }}</td>
+
+
                     <td title="Flow to">
                       {{ row.route.unit }}--{{ row.route.rms }}--{{ row.route.tl }}--slot {{ row.route.slot }}
                     </td>
-                    <td title="Comingled">{{ row.route.comingled }}</td>
-                    <td title="MAP" name="map">{{ row.map }}</td>
                     <td title="Target FWHP" name="target_fwhp">{{ row.target_fwhp }}</td>
                     <td title="FWHP" name="fwhp" value="{{ row.fwhp_raw }}">{{ row.fwhp|round(1, 'common') }}</td>
                     <td title="dP Choke" name="dp">{{ row.dp|round(1, 'common') }}</td>
@@ -456,10 +442,19 @@
                     <td title="Slot pressure" name="slotpres">{{ row.slotpres|round(1, 'common') }}</td>
                     <td title="Qgas">{{ row.qoil|round(1, 'common') }}</td>
                     <td title="Qoil">{{ row.qgas|round(1, 'common') }}</td>
-                    <td title="DD">{{ row.dd|round(1, 'common') }}</td>
-                    <td title="DD limit">{{ row.dd_lim }}</td>
-                    <td title="Qliq">{{ row.qliq|round(1, 'common') }}</td>
-                    <td title="Qliq limit">{{ row.qliq_lim }}</td>
+
+
+                    <td title="Flow to ref" style="background-color:#f2f2f2;">
+                      {{ row.route.unit }}--{{ row.route.rms }}--{{ row.route.tl }}--slot {{ row.route.slot }}
+                    </td>
+                    <td title="Target FWHP ref" name="target_fwhp" style="background-color:#f2f2f2;">{{ row.target_fwhp }}</td>
+                    <td title="FWHP ref" name="fwhp" value="{{ row.fwhp_raw }}" style="background-color:#f2f2f2;">{{ row.fwhp|round(1, 'common') }}</td>
+                    <td title="dP Choke ref" name="dp" style="background-color:#f2f2f2;">{{ row.dp|round(1, 'common') }}</td>
+                    <td title="FL pressure ref" name="flp" style="background-color:#f2f2f2;">{{ (row.fwhp-row.dp)|round(1, 'common') }}</td>
+                    <td title="Slot pressure ref" name="slotpres" style="background-color:#f2f2f2;">{{ row.slotpres|round(1, 'common') }}</td>
+                    <td title="Qgas ref" style="background-color:#f2f2f2;">{{ row.qoil|round(1, 'common') }}</td>
+                    <td title="Qoil ref"  style="background-color:#f2f2f2;">{{ row.qgas|round(1, 'common') }}</td>
+
                   </tr>
                 {% endfor %}
               </tbody>
