@@ -23,226 +23,159 @@
   <hr style="background-color:#E0E0E0;height:1px;">
 
 
-  <h3><b><a href="#" id="show_hide_units_section">Units</a></b></h3>
+  <h3><b><a href="#" id="show_hide_field_section">Field</a></b></h3>
 
-  <div class="row" id="units_section">
+  <div class="row" id="field_section">
 
-    <div class="col-lg-7">
-      <h4><b>Constraints and AF</b></h4>
-      <table class="table table-bordered table-condensed">
+    <div class="col-lg-6">
+      <h4>Units</h4>
+      <table class="table table-bordered table-condensed" style="font-size:12px;">
 
         <tr>
-          <td style="width:20%;border-top: 1px solid transparent;border-left: 1px solid transparent;" ><b></b></td>
-          <td style='width:20%;background-color:#f2f2f2;'><b>KPC</b></td>
-          <td style='width:20%;background-color:#f2f2f2;'><b>Unit-3</b></td>
-          <td style='width:20%;background-color:#f2f2f2;'><b>Unit-2</b></td>
-          <td style='width:20%;border-top: 1px solid transparent;border-right: 1px solid transparent;'><b></b></td>
+          <td style="width:40%;border-top: 1px solid transparent;border-left: 1px solid transparent;" ><b></b></td>
+          <td class="text-center" style='width:20%;background-color:#f2f2f2;'><b>KPC</b></td>
+          <td class="text-center" style='width:32%;background-color:#f2f2f2;'colspan="4"><b>Unit-3</b></td>
+          <td class="text-center" style='width:20%;background-color:#f2f2f2;'><b>Unit-2</b></td>
         </tr>
 
         <tr>
-          <td style='width:20%;background-color:#f2f2f2;'>Qoil constraint</td>
-
-          <td style='width:20%;' id="kpc_qoil_max" contenteditable >{{ data.unit_data.constraints.kpc_qoil_max }}</td>
-          <td style='width:20%;' id="u3_qoil_max" contenteditable >{{ data.unit_data.constraints.u3_qoil_max }}</td>
-          <td style='width:20%;' id="u2_qoil_max" contenteditable >{{ data.unit_data.constraints.u2_qoil_max }}</td>
-          <td style='width:20%;' id="qoil_max_uom">
-            <select class="form-control input-sm" name="qoil_max_uom_selected" style="padding:1px;height:20px;">
-              <option selected>Sm3/d</option>
-              <option>St.tons/d</option>
-            </select>
-          </td>
+          <td style='width:40%;background-color:#f2f2f2;'>Qoil constraint</td>
+          <td class="text-center" style='width:20%;' id="kpc_qoil_max" contenteditable >{{ data.unit_data.constraints.kpc_qoil_max }}</td>
+          <td class="text-center" style='width:20%;' id="u3_qoil_max" contenteditable colspan="4">{{ data.unit_data.constraints.u3_qoil_max }}</td>
+          <td class="text-center" style='width:20%;' id="u2_qoil_max" contenteditable >{{ data.unit_data.constraints.u2_qoil_max }}</td>
         </tr>
 
         <tr>
-          <td style='width:20%;background-color:#f2f2f2;'>Qgas constraint</td>
-          <td style='width:20%;' id="kpc_qgas_max" contenteditable >{{ data.unit_data.constraints.kpc_qgas_max }}</td>
-          <td style='width:20%;' id="u3_qgas_max" contenteditable >{{ data.unit_data.constraints.u3_qgas_max }}</td>
-          <td style='width:20%;' id="u2_qgas_max" contenteditable >{{ data.unit_data.constraints.u2_qgas_max }}</td>
-          <td style='width:20%;' id="qgas_max_uom">ksm3/d</td>
+          <td style='width:40%;background-color:#f2f2f2;'>Qgas constraint</td>
+          <td class="text-center" style='width:20%;' id="kpc_qgas_max" contenteditable >{{ data.unit_data.constraints.kpc_qgas_max }}</td>
+          <td class="text-center" style='width:20%;' id="u3_qgas_max" contenteditable colspan="4">{{ data.unit_data.constraints.u3_qgas_max }}</td>
+          <td class="text-center" style='width:20%;' id="u2_qgas_max" contenteditable >{{ data.unit_data.constraints.u2_qgas_max }}</td>
+        </tr>
+        <tr>
+          <td style='width:40%;background-color:#f2f2f2;'>Qwater constraint</td>
+          <td class="text-center" style='width:20%;' id="kpc_qwat_max" contenteditable ></td>
+          <td class="text-center" style='width:20%;' id="u3_qwat_max" contenteditable colspan="4"></td>
+          <td class="text-center" style='width:20%;' id="u2_qwat_max" contenteditable ></td>
+        </tr>
+        <tr>
+          <td style='width:40%;background-color:#f2f2f2;'>Qoil AF</td>
+          <td class="text-center" style='width:20%;' id="kpc_qoil_af" contenteditable >{{ data.unit_data.af.kpc_qoil_af }}</td>
+          <td class="text-center" style='width:20%;' id="u3_qoil_af" contenteditable colspan="4">{{ data.unit_data.af.u3_qoil_af }}</td>
+          <td class="text-center" style='width:20%;' id="u2_qoil_af" contenteditable >{{ data.unit_data.af.u2_qoil_af }}</td>
+        </tr>
+        <tr>
+          <td style='width:40%;background-color:#f2f2f2;'>Qgas AF</td>
+          <td class="text-center" style='width:20%;' id="kpc_qgas_af" contenteditable >{{ data.unit_data.af.kpc_qgas_af }}</td>
+          <td class="text-center" style='width:20%;' id="u3_qgas_af" contenteditable colspan="4">{{ data.unit_data.af.u2_qgas_af }}</td>
+          <td class="text-center" style='width:20%;' id="u2_qgas_af" contenteditable >{{ data.unit_data.af.u3_qgas_af }}</td>
+        </tr>
+        <tr>
+          <td style='width:40%;background-color:#f2f2f2;'>Unit Inlet Pressure</td>
+          <td class="text-center" style='width:20%;' id="kpc_sep_pres" contenteditable >{{ data.unit_data.sep.kpc_sep_pres }}</td>
+          <td class="text-center" style='width:5%;' id="u3_train1_sep_pres" contenteditable >{{ data.unit_data.sep.u3_train1_sep_pres }}</td>
+          <td class="text-center" style='width:5%;' id="u3_train2_sep_pres" contenteditable >{{ data.unit_data.sep.u3_train2_sep_pres }}</td>
+          <td class="text-center" style='width:5%;' id="u3_train3_sep_pres" contenteditable >{{ data.unit_data.sep.u3_train3_sep_pres }}</td>
+          <td class="text-center" style='width:5%;' id="u3_train4_sep_pres" contenteditable >{{ data.unit_data.sep.u3_train4_sep_pres }}</td>
+          <td class="text-center" style='width:20%;' id="u2_sep_pres" contenteditable >{{ data.unit_data.sep.u2_sep_pres }}</td>
+        </tr>
+      </table>
+    </div>
+
+
+    <div class="col-lg-3">
+      <h4>Field Balance</h4>
+      <table class="table table-bordered table-condensed" style="font-size:12px;">
+        <tr>
+          <td style="width:80%;background-color:#f2f2f2;">CPC oil max</td>
+          <td style='width:20%;' id="cpc_oil_max" contenteditable >{{ data.fb_data.streams.constraints.cpc_oil_max }}</td>
+        </tr>
+        <tr>
+          <td style="width:80%;background-color:#f2f2f2;">OGP gas max</td>
+          <td style='width:20%;' id="ogp_gas_max" contenteditable >{{ data.fb_data.streams.constraints.ogp_gas_max }}</td>
+        </tr>
+        <tr>
+          <td style="width:80%;background-color:#f2f2f2;">Gas injection Target</td>
+          <td style='width:20%;' id="gas_inj_max" contenteditable >{{ data.fb_data.streams.constraints.gas_inj_max }}</td>
+        </tr>
+        <tr>
+          <td style="width:80%;background-color:#f2f2f2;">Fuel gas max</td>
+          <td style='width:20%;' id="fuel_gas_max" contenteditable >{{ data.fb_data.streams.constraints.fuel_gas_max }}</td>
+        </tr>
+        <tr>
+          <td style="width:80%;background-color:#f2f2f2;">MTU oil max</td>
+          <td style='width:20%;' id="mtu_oil_max" contenteditable >{{ data.fb_data.streams.constraints.mtu_oil_max }}</td>
+        </tr>
+        <tr>
+          <td style="width:80%;background-color:#f2f2f2;">OGP oil max</td>
+          <td style='width:20%;' id="ogp_oil_max" contenteditable >{{ data.fb_data.streams.constraints.ogp_oil_max }}</td>
         </tr>
 
         <tr>
-          <td style='width:20%;background-color:#f2f2f2;'>Qoil AF</td>
-          <td style='width:20%;' id="kpc_qoil_af" contenteditable >{{ data.unit_data.af.kpc_qoil_af }}</td>
-          <td style='width:20%;' id="u3_qoil_af" contenteditable >{{ data.unit_data.af.u3_qoil_af }}</td>
-          <td style='width:20%;' id="u2_qoil_af" contenteditable >{{ data.unit_data.af.u2_qoil_af }}</td>
-          <td style='width:20%;' id="qoil_af_uom">-</td>
+          <td style="width:80%;background-color:#f2f2f2;">KPC Max gas in MP Sep</td>
+          <td style='width:20%;' id="kpc_free_gas_max" contenteditable >{{ data.fb_data.streams.constraints.kpc_free_gas_max }}</td>
         </tr>
         <tr>
-          <td style='width:20%;background-color:#f2f2f2;'>Qgas AF</td>
-          <td style='width:20%;' id="kpc_qgas_af" contenteditable >{{ data.unit_data.af.kpc_qgas_af }}</td>
-          <td style='width:20%;' id="u3_qgas_af" contenteditable >{{ data.unit_data.af.u2_qgas_af }}</td>
-          <td style='width:20%;' id="u2_qgas_af" contenteditable >{{ data.unit_data.af.u3_qgas_af }}</td>
-          <td style='width:20%;' id="qgas_af_uom">-</td>
+          <td style="width:80%;background-color:#f2f2f2;">KPC Max Tot gas in Drizo</td>
+          <td style='width:20%;' id="kpc_tot_gas_max" contenteditable >{{ data.fb_data.streams.constraints.kpc_tot_gas_max }}</td>
         </tr>
+        <tr>
+          <td style="width:80%;background-color:#f2f2f2;">Unit-2 Max gas in MP Sep</td>
+          <td style='width:20%;' id="u2_free_gas_max" contenteditable >{{ data.fb_data.streams.constraints.u2_free_gas_max }}</td>
+        </tr>
+        <tr>
+          <td style="width:80%;background-color:#f2f2f2;">Unit-3 Max gas in MP Sep</td>
+          <td style='width:20%;' id="u3_free_gas_max" contenteditable >{{ data.fb_data.streams.constraints.u3_free_gas_max }}</td>
+        </tr>
+        <tr>
+          <td style="width:80%;background-color:#f2f2f2;">KPC Qgas Max to Unit-2</td>
+          <td style='width:20%;' id="kpc_gas_2_u2_max" contenteditable >{{ data.fb_data.streams.constraints.kpc_gas_2_u2_max }}</td>
+        </tr>
+        <tr>
+          <td style="width:80%;background-color:#f2f2f2;">KPC Qgas Max to Unit-3</td>
+          <td style='width:20%;' id="kpc_gas_2_u3_max" contenteditable >{{ data.fb_data.streams.constraints.kpc_gas_2_u3_max }}</td>
+        </tr>
+
 
       </table>
     </div>
 
 
-
-    <div class="col-lg-5">
-      <h4><b>Separator Pressure</b></h4>
-      <table class="table table-bordered table-condensed">
-
+    <div class="col-lg-3">
+      <h4>Lab data</h4>
+      <table class="table table-bordered table-condensed" style="font-size:12px;">
         <tr>
-          <td style="width:50%;background-color:#f2f2f2;">KPC Sep Pressure</td>
-          <td style='width:30%;' id="kpc_sep_pres" contenteditable >{{ data.unit_data.sep.kpc_sep_pres }}</td>
-          <td style='width:20%;' id="kpc_sep_pres_uom">bar</td>
+          <td style="width:80%;background-color:#f2f2f2;">Unstable oil Density Unit-3</td>
+          <td style='width:20%;' id="u3_unst_dens" contenteditable >{{ data.fb_data.lab.u3_unst_dens }}</td>
         </tr>
         <tr>
-          <td style="width:50%;background-color:#f2f2f2;">Unit-2 Sep Pressure</td>
-          <td style='width:30%;' id="u2_sep_pres" contenteditable >{{ data.unit_data.sep.u2_sep_pres }}</td>
-          <td style='width:20%;' id="u2_sep_pres_uom">bar</td>
+          <td style="width:80%;background-color:#f2f2f2;">Unstable oil Density Unit-2</td>
+          <td style='width:20%;' id="u2_unst_dens" contenteditable >{{ data.fb_data.lab.u2_unst_dens }}</td>
         </tr>
         <tr>
-          <td style="width:50%;background-color:#f2f2f2;">Unit-3 Train-1 Sep Pressure</td>
-          <td style='width:30%;' id="u3_train1_sep_pres" contenteditable >{{ data.unit_data.sep.u3_train1_sep_pres }}</td>
-          <td style='width:20%;' id="u3_sep_pres_uom">bar</td>
+          <td style="width:80%;background-color:#f2f2f2;">St/unst oil Conversion Unit-3</td>
+          <td style='width:20%;' id="u3_st_unst_conv" contenteditable >{{ data.fb_data.lab.u3_st_unst_conv }}</td>
         </tr>
         <tr>
-          <td style="width:50%;background-color:#f2f2f2;">Unit-3 Train-2 Sep Pressure</td>
-          <td style='width:30%;' id="u3_train2_sep_pres" contenteditable >{{ data.unit_data.sep.u3_train2_sep_pres }}</td>
-          <td style='width:20%;' id="u3_sep_pres_uom">bar</td>
+          <td style="width:80%;background-color:#f2f2f2;">St/unst oil Conversion Unit-2</td>
+          <td style='width:20%;' id="u2_st_unst_conv" contenteditable >{{ data.fb_data.lab.u2_st_unst_conv }}</td>
         </tr>
         <tr>
-          <td style="width:50%;background-color:#f2f2f2;">Unit-3 Train-3 Sep Pressure</td>
-          <td style='width:30%;' id="u3_train3_sep_pres" contenteditable >{{ data.unit_data.sep.u3_train3_sep_pres }}</td>
-          <td style='width:20%;' id="u3_sep_pres_uom">bar</td>
+          <td style="width:80%;background-color:#f2f2f2;">Rs Unit-3</td>
+          <td style='width:20%;' id="u3_rs" contenteditable >{{ data.fb_data.lab.u3_rs }}</td>
         </tr>
         <tr>
-          <td style="width:50%;background-color:#f2f2f2;">Unit-3 Train-4 Sep Pressure</td>
-          <td style='width:30%;' id="u3_train4_sep_pres" contenteditable >{{ data.unit_data.sep.u3_train4_sep_pres }}</td>
-          <td style='width:20%;' id="u3_sep_pres_uom">bar</td>
-        </tr>
-      </table>
-    </div>
-
-  </div>
-
-  <hr style="background-color:#E0E0E0;height:1px;">
-  <h3><b><a href="#" id="show_hide_fb_section">Field Balance</a></b></h3>
-  <div class="row"  id="fb_section">
-    <div class="col-lg-4">
-      <h4><b>Export</b></h4>
-      <table class="table table-bordered table-condensed">
-        <tr>
-          <td style="width:40%;background-color:#f2f2f2;">CPC oil max</td>
-          <td style='width:40%;' id="cpc_oil_max" contenteditable >{{ data.fb_data.streams.constraints.cpc_oil_max }}</td>
-          <td style='width:20%;' id="cpc_oil_uom">sm3/d</td>
+          <td style="width:80%;background-color:#f2f2f2;">Rs Unit-2</td>
+          <td style='width:20%;' id="u2_rs" contenteditable >{{ data.fb_data.lab.u2_rs }}</td>
         </tr>
         <tr>
-          <td style="width:40%;background-color:#f2f2f2;">OGP gas max</td>
-          <td style='width:40%;' id="ogp_gas_max" contenteditable >{{ data.fb_data.streams.constraints.ogp_gas_max }}</td>
-          <td style='width:20%;' id="ogp_gas_uom">ksm3/d</td>
+          <td style="width:80%;background-color:#f2f2f2;">Oil shrinkage Unit-3</td>
+          <td style='width:20%;' id="u3_shrinkage" contenteditable >{{ data.fb_data.lab.u3_shrinkage }}</td>
         </tr>
         <tr>
-          <td style="width:40%;background-color:#f2f2f2;">Gas injection Target</td>
-          <td style='width:40%;' id="gas_inj_max" contenteditable >{{ data.fb_data.streams.constraints.gas_inj_max }}</td>
-          <td style='width:20%;' id="gas_inj_uom">ksm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:40%;background-color:#f2f2f2;">Fuel gas max</td>
-          <td style='width:40%;' id="fuel_gas_max" contenteditable >{{ data.fb_data.streams.constraints.fuel_gas_max }}</td>
-          <td style='width:20%;' id="fuel_gas_uom">ksm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:40%;background-color:#f2f2f2;">MTU oil max</td>
-          <td style='width:40%;' id="mtu_oil_max" contenteditable >{{ data.fb_data.streams.constraints.mtu_oil_max }}</td>
-          <td style='width:20%;' id="mtu_oil_uom">ksm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:40%;background-color:#f2f2f2;">OGP oil max</td>
-          <td style='width:40%;' id="ogp_oil_max" contenteditable >{{ data.fb_data.streams.constraints.ogp_oil_max }}</td>
-          <td style='width:20%;' id="ogp_oil_uom">ksm3/d</td>
+          <td style="width:80%;background-color:#f2f2f2;">Oil shrinkage Unit-2</td>
+          <td style='width:20%;' id="u2_shrinkage" contenteditable >{{ data.fb_data.lab.u2_shrinkage }}</td>
         </tr>
       </table>
-    </div>
-
-    <div class="col-lg-4">
-      <h4><b>Process constraints</b></h4>
-      <table class="table table-bordered table-condensed">
-        <tr>
-          <td style="width:40%;background-color:#f2f2f2;">KPC Max gas in MP Sep</td>
-          <td style='width:40%;' id="kpc_free_gas_max" contenteditable >{{ data.fb_data.streams.constraints.kpc_free_gas_max }}</td>
-          <td style='width:20%;' id="kpc_free_gas_uom">ksm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:40%;background-color:#f2f2f2;">KPC Max Tot gas in Drizo</td>
-          <td style='width:40%;' id="kpc_tot_gas_max" contenteditable >{{ data.fb_data.streams.constraints.kpc_tot_gas_max }}</td>
-          <td style='width:20%;' id="kpc_tot_gas_uom">ksm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:40%;background-color:#f2f2f2;">Unit-2 Max gas in MP Sep</td>
-          <td style='width:40%;' id="u2_free_gas_max" contenteditable >{{ data.fb_data.streams.constraints.u2_free_gas_max }}</td>
-          <td style='width:20%;' id="u2_free_gas_uom">ksm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:40%;background-color:#f2f2f2;">Unit-3 Max gas in MP Sep</td>
-          <td style='width:40%;' id="u3_free_gas_max" contenteditable >{{ data.fb_data.streams.constraints.u3_free_gas_max }}</td>
-          <td style='width:20%;' id="u3_free_gas_uom">ksm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:40%;background-color:#f2f2f2;">KPC Qgas Max to Unit-2</td>
-          <td style='width:40%;' id="kpc_gas_2_u2_max" contenteditable >{{ data.fb_data.streams.constraints.kpc_gas_2_u2_max }}</td>
-          <td style='width:20%;' id="kpc_gas_2_u2_uom">ksm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:40%;background-color:#f2f2f2;">KPC Qgas Max to Unit-3</td>
-          <td style='width:40%;' id="kpc_gas_2_u3_max" contenteditable >{{ data.fb_data.streams.constraints.kpc_gas_2_u3_max }}</td>
-          <td style='width:20%;' id="kpc_gas_2_u3_uom">ksm3/d</td>
-        </tr>
-      </table>
-
-
-    </div>
-
-
-    <div class="col-lg-4">
-      <h4><b>Lab data</b></h4>
-      <table class="table table-bordered table-condensed">
-        <tr>
-          <td style="width:50%;background-color:#f2f2f2;">Unstable oil Density Unit-3</td>
-          <td style='width:30%;' id="u3_unst_dens" contenteditable >{{ data.fb_data.lab.u3_unst_dens }}</td>
-          <td style='width:20%;' id="u3_unst_dens_uom">sm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:50%;background-color:#f2f2f2;">Unstable oil Density Unit-2</td>
-          <td style='width:30%;' id="u2_unst_dens" contenteditable >{{ data.fb_data.lab.u2_unst_dens }}</td>
-          <td style='width:20%;' id="u2_unst_dens_uom">sm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:50%;background-color:#f2f2f2;">St/unst oil Conversion Unit-3</td>
-          <td style='width:30%;' id="u3_st_unst_conv" contenteditable >{{ data.fb_data.lab.u3_st_unst_conv }}</td>
-          <td style='width:20%;' id="u3_st_unst_conv_uom">sm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:50%;background-color:#f2f2f2;">St/unst oil Conversion Unit-2</td>
-          <td style='width:30%;' id="u2_st_unst_conv" contenteditable >{{ data.fb_data.lab.u2_st_unst_conv }}</td>
-          <td style='width:20%;' id="u2_st_unst_conv_uom">sm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:50%;background-color:#f2f2f2;">Rs Unit-3</td>
-          <td style='width:30%;' id="u3_rs" contenteditable >{{ data.fb_data.lab.u3_rs }}</td>
-          <td style='width:20%;' id="u3_rs_uom">sm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:50%;background-color:#f2f2f2;">Rs Unit-2</td>
-          <td style='width:30%;' id="u2_rs" contenteditable >{{ data.fb_data.lab.u2_rs }}</td>
-          <td style='width:20%;' id="u2_rs_uom">sm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:50%;background-color:#f2f2f2;">Oil shrinkage Unit-3</td>
-          <td style='width:30%;' id="u3_shrinkage" contenteditable >{{ data.fb_data.lab.u3_shrinkage }}</td>
-          <td style='width:20%;' id="u3_shrinkage_uom">sm3/d</td>
-        </tr>
-        <tr>
-          <td style="width:50%;background-color:#f2f2f2;">Oil shrinkage Unit-2</td>
-          <td style='width:30%;' id="u2_shrinkage" contenteditable >{{ data.fb_data.lab.u2_shrinkage }}</td>
-          <td style='width:20%;' id="u2_shrinkage_uom">sm3/d</td>
-        </tr>
-      </table>
-
 
     </div>
 
@@ -362,6 +295,7 @@
 <script type="text/javascript">
 
   var units_section=1;
+  var field_section=1;
   var fb_section=1;
   var wells_section=1;
 
@@ -376,8 +310,12 @@
     $("#sort_table{{data.well_data[1][0].unit_id}}").tablesorter();
     $("#sort_table{{data.well_data[2][0].unit_id}}").tablesorter();
 
-    $('#show_hide_units_section').click(function(e) {
-      units_section=show_hide_section("units_section",units_section);
+    // $('#show_hide_units_section').click(function(e) {
+    //   units_section=show_hide_section("units_section",units_section);
+    // })
+
+    $('#show_hide_field_section').click(function(e) {
+      field_section=show_hide_section("field_section",field_section);
     })
 
     $('#show_hide_fb_section').click(function(e) {

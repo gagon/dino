@@ -240,11 +240,11 @@ def results():
     json_fullpath=os.path.join(dirname,r"temp\results.json")
     json.dump(data, open(json_fullpath, 'w'))
 
-    json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
-    data_ref = json.load(open(json_fullpath_ref))
-
-    for ref in data_ref["totals"]:
-        print(ref)
+    # json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
+    # data_ref = json.load(open(json_fullpath_ref))
+    #
+    # for ref in data_ref["totals"]:
+    #     print(ref)
 
     # print(data_ref["totals"][0])
 
@@ -473,6 +473,39 @@ def load_pcs():
     well_pcs=xl_setup.read_pcs()
     emit('load_progress',{"data":"Well PCs read from Deliverability complete"})
     pcs2gap.load_pcs2gap(well_pcs)
+    return "None"
+"""========================================================================================="""
+
+
+""" SAVE RESULTS TO REFEREENCE JSON FILE==================================================== """
+@socketio.on('save_2ref')
+def save_2ref():
+    print('received start command!')
+
+
+
+    # get current directory using os library
+    dirname, filename = os.path.split(os.path.abspath(__file__))
+
+    json_fullpath=os.path.join(dirname,r"temp\results.json")
+    data = json.load(open(json_fullpath))
+
+
+    json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
+    json.dump(data, open(json_fullpath_ref, 'w'))
+
+    # json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
+    # data_ref = json.load(open(json_fullpath_ref))
+    #
+    # for ref in data_ref["totals"]:
+    #     print(ref)
+
+
+
+    #------------------------------------------------------------------------------
+    # post_opt_state=gob.run_optimization(session["state"]) # pass state to GAP to make calculations
+    emit('save_complete',{"data":"Reference case saved"})
+    #------------------------------------------------------------------------------
     return "None"
 """========================================================================================="""
 

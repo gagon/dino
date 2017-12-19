@@ -71,7 +71,7 @@ def wellname_type(wn):
 
 
 
-def xl_optimization2(opt_vals,opt_counter,xlwells,xlunits,xlgap_wb):
+def xl_optimization2(opt_vals,opt_counter,xlwells,xlunits,xlgap_wb,unit):
     """
 
     """
@@ -80,12 +80,13 @@ def xl_optimization2(opt_vals,opt_counter,xlwells,xlunits,xlgap_wb):
 
     """ GET DP AND NO FLOW PRESSURE ====================================== """
     # initialize dp = 0, except for SI wells
-    dp_orig=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].PControlResult")
+    # dp_orig=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].PControlResult")
 
     if opt_counter==0:
         dp=np.zeros(len(opt_vals["fixed_thp"]))
     else:
-        dp=ut.filtermasked(dp_orig,opt_vals["status"],"float")
+        # dp=ut.filtermasked(dp_orig,opt_vals["status"],"float")
+        dp=xl_get_allwell_results(xlwells,unit,)
 
     for d,d_ in enumerate(opt_vals["fixed_thp"]):
         if d_<0: # if fixed THP=-1 then keep welll SI
@@ -194,7 +195,7 @@ def xl_optimization2(opt_vals,opt_counter,xlwells,xlunits,xlgap_wb):
 def xl_optimization1(unit,unit_constraints,opt_vals,xlwells,xlunits,xlgap_wb):
     opt_counter=0
     # optimization2(PE_server,opt_vals,opt_counter)
-    xl_optimization2(opt_vals,opt_counter,xlwells,xlunits,xlgap_wb)
+    xl_optimization2(opt_vals,opt_counter,xlwells,xlunits,xlgap_wb,unit)
     # unit_qgas=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverResults[0].GasRate"))
     unit_qgas=xl_get_unit_qgas(xlunits)
 
@@ -501,6 +502,21 @@ def xl_get_allwell_results(xlwells,unit,param):
     unit_idx=well_params["Unit"]
     allwell_result=[]
     r=2
+    while xlwells.range((r,1)).value!=None:
+        if xlwells.range((r,unit_idx)).value==unit:
+            if param=="Wellname":
+                allwell_result.append(wellname_type(xlwells.range((r,param_idx)).value))
+            else:
+                allwell_result.append(float(xlwells.range((r,param_idx)).value))
+        r+=1
+    return allwell_result
+
+def xl_get_allwell_results(xlwells,unit,param,vals):
+    param_idx=well_params[param]
+    unit_idx=well_params["Unit"]
+    allwell_result=[]
+    r=2
+
     while xlwells.range((r,1)).value!=None:
         if xlwells.range((r,unit_idx)).value==unit:
             if param=="Wellname":

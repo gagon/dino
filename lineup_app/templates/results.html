@@ -265,9 +265,10 @@
         </button>
       </div>
       <div class="col-lg-3">
-        <button type="button" class="btn btn-default btn-lg btn-block" id="#save2ref" onclick="save2ref();" style="background-color:#f2f2f2;">
+        <button type="button" class="btn btn-default btn-lg btn-block" id="#save2ref" onclick="save_2ref();" style="background-color:#f2f2f2;">
           <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save to Reference case
         </button>
+        <span id="save_2ref_done" style="color:green;"></span>
       </div>
     </div>
 
@@ -474,10 +475,17 @@
 
 <script type="text/javascript">
 
+  var socket = io.connect('http://' + document.domain + ':' + location.port);
+
   $( document ).ready(function() {
     $("#sort_table{{data.well_data[0][0].unit_id}}").tablesorter();
     $("#sort_table{{data.well_data[1][0].unit_id}}").tablesorter();
     $("#sort_table{{data.well_data[2][0].unit_id}}").tablesorter();
+
+    socket.on('save_complete', function(msg) {
+        $("#save_2ref_done").append(msg.data);
+    });
+
   });
 
 
@@ -498,6 +506,18 @@
     });
     alert("FWHPs saved to state.");
     return set_state;
+  };
+
+
+  function save_2ref() {
+
+
+      // console.log("clicked button");
+      // $("#gap_cal_update").empty();
+      // $("#gap_well_results").empty();
+      alert("Saving current results to reference results");
+      socket.emit('save_2ref');
+
   };
 
 
