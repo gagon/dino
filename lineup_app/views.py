@@ -240,11 +240,11 @@ def results():
     json_fullpath=os.path.join(dirname,r"temp\results.json")
     json.dump(data, open(json_fullpath, 'w'))
 
-    # json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
-    # data_ref = json.load(open(json_fullpath_ref))
+    json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
+    data_ref = json.load(open(json_fullpath_ref))
     #
-    # for ref in data_ref["totals"]:
-    #     print(ref)
+    for ref in data_ref["totals"]:
+        print(ref)
 
     # print(data_ref["totals"][0])
 
@@ -459,7 +459,8 @@ def gap_calc():
     print('received start command!')
     #------------------------------------------------------------------------------
     # post_opt_state=gob.run_optimization(session["state"]) # pass state to GAP to make calculations
-    post_opt_state=xlgob.xl_run_optimization(session["state"]) # pass state to GAP to make calculations
+    #skip calc when xl is used
+    # post_opt_state=xlgob.xl_run_optimization(session["state"]) # pass state to GAP to make calculations
     #------------------------------------------------------------------------------
     return "None"
 """========================================================================================="""
