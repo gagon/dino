@@ -20,6 +20,7 @@ def xlgap_conn():
     # construct excel file full path
     xl_fullpath=os.path.join(dirname,r'static\xlgap.xlsx')
     # load excel file
+    # xlgap_wb = xw.Workbook(xl_fullpath)
     xlgap_wb = xw.Book(xl_fullpath)
     # load sheet
     xlwells=xlgap_wb.sheets['Wells']
