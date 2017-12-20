@@ -279,8 +279,11 @@
         <h3>TOTALS FIELD PRODUCTION</h3>
         <h4 style="color:#339933;">Qgas (ksm3/d) - {{ data.field.qgas }}</h4>
         <h4 style="color:#339933;">Qoil (sm3/d) - {{ data.field.qoil }}</h4>
-        <h4>Qgas (ksm3/d) ref case - {{ data.field.qgas }}</h4>
-        <h4>Qoil (sm3/d) ref case - {{ data.field.qoil }}</h4>
+        {% if merge_done==1 %}
+          <h4>Qgas (ksm3/d) ref case - {{ data.field.qgas_ref }}</h4>
+          <h4>Qoil (sm3/d) ref case - {{ data.field.qoil_ref }}</h4>
+        {% endif %}
+
       </div>
     </div>
 
@@ -327,8 +330,10 @@
                         {% endif %}
                         <th>Qgas (ksm3/d)</th>
                         <th>Qoil (sm3/d)</th>
-                        <th style="background-color:#f2f2f2;">Qgas (ksm3/d)<br>ref case</th>
-                        <th style="background-color:#f2f2f2;">Qoil (sm3/d)<br>ref case</th>
+                        {% if merge_done==1 %}
+                          <th style="background-color:#f2f2f2;">Qgas (ksm3/d)<br>ref case</th>
+                          <th style="background-color:#f2f2f2;">Qoil (sm3/d)<br>ref case</th>
+                        {% endif %}
                       </tr>
                     </thead>
                     <tbody>
@@ -336,16 +341,20 @@
                         <td style="color:#339933;"><b>Total</b></td>
                         <td style="color:#339933;"><b>{{ tots.qgas }}</b></td>
                         <td style="color:#339933;"><b>{{ tots.qoil }}</b></td>
-                        <td style="background-color:#f2f2f2;"><b>{{ tots.qgas }}</b></td>
-                        <td style="background-color:#f2f2f2;"><b>{{ tots.qoil }}</b></td>
+                        {% if merge_done==1 %}
+                          <td style="background-color:#f2f2f2;"><b>{{ tots.qgas_ref }}</b></td>
+                          <td style="background-color:#f2f2f2;"><b>{{ tots.qoil_ref }}</b></td>
+                        {% endif %}
                       </tr>
                       {% for rms,d in tots.subtotals.items() %}
                         <tr>
                           <td><b>{{ rms }}</b></td>
                           <td>{{ d.qgas }}</td>
                           <td>{{ d.qoil }}</td>
-                          <td style="background-color:#f2f2f2;">{{ d.qgas }}</td>
-                          <td style="background-color:#f2f2f2;">{{ d.qoil }}</td>
+                          {% if merge_done==1 %}
+                            <td style="background-color:#f2f2f2;">{{ d.qgas_ref }}</td>
+                            <td style="background-color:#f2f2f2;">{{ d.qoil_ref }}</td>
+                          {% endif %}
                         </tr>
                       {% endfor %}
                     </tbody>
@@ -386,15 +395,17 @@
         <div class="row">
           <div class="col-lg-12">
 
-            {% if d[0].unit_id == 0 %}
+
+
+            {% if loop.index0==0 %}
               <h3>KPC</h3>
-            {% elif d[0].unit_id == 1 %}
+            {% elif loop.index0==1 %}
               <h3>Unit 3</h3>
-            {% elif d[0].unit_id == 2 %}
+            {% elif loop.index0==2 %}
               <h3>Unit 2</h3>
             {% endif %}
 
-            <table class="table table-hover table-condensed" id="sort_table{{d[0].unit_id}}" style="font-size: 10px;">
+            <table class="table table-hover table-condensed" id="sort_table{{loop.index0}}" style="font-size: 10px;">
               <thead class="thead-default">
                 <tr>
                   <th>Wellname</th>
@@ -412,14 +423,16 @@
                   <th>Qoil</th>
                   <th>Qgas</th>
 
-                  <th style="background-color:#f2f2f2;">Flow to ref</th>
-                  <th style="background-color:#f2f2f2;">Target FWHP ref</th>
-                  <th style="background-color:#f2f2f2;">FWHP ref</th>
-                  <th style="background-color:#f2f2f2;">dPChoke ref</th>
-                  <th style="background-color:#f2f2f2;">FL pressure ref</th>
-                  <th style="background-color:#f2f2f2;">Slot pressure ref</th>
-                  <th style="background-color:#f2f2f2;">Qoil ref</th>
-                  <th style="background-color:#f2f2f2;">Qgas ref</th>
+                  {% if merge_done==1 %}
+                    <th style="background-color:#f2f2f2;">Flow to ref</th>
+                    <th style="background-color:#f2f2f2;">Target FWHP ref</th>
+                    <th style="background-color:#f2f2f2;">FWHP ref</th>
+                    <th style="background-color:#f2f2f2;">dPChoke ref</th>
+                    <th style="background-color:#f2f2f2;">FL pressure ref</th>
+                    <th style="background-color:#f2f2f2;">Slot pressure ref</th>
+                    <th style="background-color:#f2f2f2;">Qoil ref</th>
+                    <th style="background-color:#f2f2f2;">Qgas ref</th>
+                  {% endif %}
 
                 </tr>
               </thead>
@@ -444,17 +457,18 @@
                     <td title="Qgas">{{ row.qoil|round(1, 'common') }}</td>
                     <td title="Qoil">{{ row.qgas|round(1, 'common') }}</td>
 
-
-                    <td title="Flow to ref" style="background-color:#f2f2f2;">
-                      {{ row.route.unit }}--{{ row.route.rms }}--{{ row.route.tl }}--slot {{ row.route.slot }}
-                    </td>
-                    <td title="Target FWHP ref" name="target_fwhp" style="background-color:#f2f2f2;">{{ row.target_fwhp }}</td>
-                    <td title="FWHP ref" name="fwhp" value="{{ row.fwhp_raw }}" style="background-color:#f2f2f2;">{{ row.fwhp|round(1, 'common') }}</td>
-                    <td title="dP Choke ref" name="dp" style="background-color:#f2f2f2;">{{ row.dp|round(1, 'common') }}</td>
-                    <td title="FL pressure ref" name="flp" style="background-color:#f2f2f2;">{{ (row.fwhp-row.dp)|round(1, 'common') }}</td>
-                    <td title="Slot pressure ref" name="slotpres" style="background-color:#f2f2f2;">{{ row.slotpres|round(1, 'common') }}</td>
-                    <td title="Qgas ref" style="background-color:#f2f2f2;">{{ row.qoil|round(1, 'common') }}</td>
-                    <td title="Qoil ref"  style="background-color:#f2f2f2;">{{ row.qgas|round(1, 'common') }}</td>
+                    {% if merge_done==1 %}
+                      <td title="Flow to ref" style="background-color:#f2f2f2;">
+                        {{ row.route_ref.unit }}--{{ row.route_ref.rms }}--{{ row.route_ref.tl }}--slot {{ row.route_ref.slot }}
+                      </td>
+                      <td title="Target FWHP ref" name="target_fwhp" style="background-color:#f2f2f2;">{{ row.target_fwhp_ref }}</td>
+                      <td title="FWHP ref" name="fwhp" value="{{ row.fwhp_raw }}" style="background-color:#f2f2f2;">{{ row.fwhp_ref|round(1, 'common') }}</td>
+                      <td title="dP Choke ref" name="dp" style="background-color:#f2f2f2;">{{ row.dp_ref|round(1, 'common') }}</td>
+                      <td title="FL pressure ref" name="flp" style="background-color:#f2f2f2;">{{ (row.fwhp_ref-row.dp_ref)|round(1, 'common') }}</td>
+                      <td title="Slot pressure ref" name="slotpres" style="background-color:#f2f2f2;">{{ row.slotpres_ref|round(1, 'common') }}</td>
+                      <td title="Qgas ref" style="background-color:#f2f2f2;">{{ row.qoil_ref|round(1, 'common') }}</td>
+                      <td title="Qoil ref"  style="background-color:#f2f2f2;">{{ row.qgas_ref|round(1, 'common') }}</td>
+                    {% endif %}
 
                   </tr>
                 {% endfor %}
@@ -478,9 +492,9 @@
   var socket = io.connect('http://' + document.domain + ':' + location.port);
 
   $( document ).ready(function() {
-    $("#sort_table{{data.well_data[0][0].unit_id}}").tablesorter();
-    $("#sort_table{{data.well_data[1][0].unit_id}}").tablesorter();
-    $("#sort_table{{data.well_data[2][0].unit_id}}").tablesorter();
+    $("#sort_table0").tablesorter();
+    $("#sort_table1").tablesorter();
+    $("#sort_table2").tablesorter();
 
     socket.on('save_complete', function(msg) {
         $("#save_2ref_done").append(msg.data);
