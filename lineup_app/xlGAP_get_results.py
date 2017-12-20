@@ -125,7 +125,7 @@ def xl_generate_unit_pc(unit,unit_id,well_details,state,xlwells,xlunits,xlgap_wb
         ######################################################################
 
 
-        pc[d]={
+        pc[w[0]]={
             "wellname":w[0],
             "gor":w[1],
             "fwhp":w[2],

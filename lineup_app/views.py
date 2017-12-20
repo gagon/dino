@@ -21,7 +21,7 @@ import xlrd
 import json
 from lineup_app import field_balance as fb
 from lineup_app import state_init
-
+from lineup_app import results as rs
 
 
 # secret key initialized for the server
@@ -240,11 +240,13 @@ def results():
     json_fullpath=os.path.join(dirname,r"temp\results.json")
     json.dump(data, open(json_fullpath, 'w'))
 
-    json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
-    data_ref = json.load(open(json_fullpath_ref))
-    #
-    for ref in data_ref["totals"]:
-        print(ref)
+
+
+    # json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
+    # data_ref = json.load(open(json_fullpath_ref))
+    # #
+    # for ref in data_ref["totals"]:
+    #     print(ref)
 
     # print(data_ref["totals"][0])
 
@@ -252,6 +254,8 @@ def results():
 
     # # put all data into dictionary to pass to html
     # ref_data={"totals":totals,"well_data":pc_data,"field":{"qgas":field_gas,"qoil":field_oil},"fb_data":fb_data}
+
+    data=rs.merge_ref(data)
 
     page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":"active"}
 
