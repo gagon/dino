@@ -36,15 +36,30 @@ def merge_ref(data):
 
             cols=list(data["well_data"][u][well].keys())
             # print(cols)
+            # print(cols)
+
             for c in cols:
                 if well in data_ref["well_data"][u]:
+                    # print(data_ref["well_data"][u][well][c])
                     data["well_data"][u][well][c+"_ref"]=data_ref["well_data"][u][well][c]
+                else:
+                    if c =="wellname":
+                        data["well_data"][u][well][c+"_ref"]=well
+                    elif c =="route":
+                        # data["well_data"][u][well]={c:""}
+                        data["well_data"][u][well][c+"_ref"]=""
+                    else:
+                        data["well_data"][u][well][c+"_ref"]=0
 
         for well,val in data_ref["well_data"][u].items():
             cols=list(data_ref["well_data"][u][well].keys())
+            # print(cols)
             if not well in data["well_data"][u]:
+                # print(well)
                 data["well_data"][u][well]={}
+
                 for c in cols:
+                    # print(c)
                     if c =="wellname":
                         data["well_data"][u][well][c]=well
                     elif c =="route":
@@ -54,8 +69,9 @@ def merge_ref(data):
                         data["well_data"][u][well][c]=0
 
                     data["well_data"][u][well][c+"_ref"]=data_ref["well_data"][u][well][c]
+                    # print(data["well_data"][u][well][c],data["well_data"][u][well][c+"_ref"])
 
-        # print(data["well_data"][0][well])
+                print(data["well_data"][u][well])
 
     return data,1
 
@@ -74,8 +90,9 @@ if __name__=="__main__":
 
     data,merge=merge_ref(data)
 
-    print(data["well_data"][2]["15"])
-    print(data["well_data"][0]["15"])
+    # print(data["well_data"][0]["15"].keys())
+    # print("---")
+    # print(data["well_data"][2]["15"].keys())
 
     # for d in data["well_data"]:
         # print(d)

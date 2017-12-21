@@ -405,7 +405,11 @@
               <h3>Unit 2</h3>
             {% endif %}
 
-            <table class="table table-hover table-condensed" id="sort_table{{loop.index0}}" style="font-size: 10px;">
+            {% if merge_done==1 %}
+              <table class="table table-hover table-condensed" id="sort_table{{loop.index0}}" style="font-size: 10px;">
+            {% else %}
+              <table class="table table-hover table-condensed" id="sort_table{{loop.index0}}" style="font-size: 12px;">
+            {% endif %}
               <thead class="thead-default">
                 <tr>
                   <th>Wellname</th>
@@ -414,7 +418,7 @@
                   <th>Comingled</th>
                   <th>MAP</th>
 
-                  <th>Flow to</th>
+                  <th style="border-left: 1px solid #666666;">Flow to</th>
                   <th>Target FWHP</th>
                   <th>FWHP</th>
                   <th>dPChoke</th>
@@ -424,7 +428,7 @@
                   <th>Qgas</th>
 
                   {% if merge_done==1 %}
-                    <th style="background-color:#f2f2f2;">Flow to ref</th>
+                    <th style="background-color:#f2f2f2; border-left: 1px solid #666666;">Flow to ref</th>
                     <th style="background-color:#f2f2f2;">Target FWHP ref</th>
                     <th style="background-color:#f2f2f2;">FWHP ref</th>
                     <th style="background-color:#f2f2f2;">dPChoke ref</th>
@@ -446,7 +450,7 @@
                     <td title="MAP" name="map">{{ row.map }}</td>
 
 
-                    <td title="Flow to">
+                    <td title="Flow to" style="border-left: 1px solid #666666;">
                       {{ row.route.unit }}--{{ row.route.rms }}--{{ row.route.tl }}--slot {{ row.route.slot }}
                     </td>
                     <td title="Target FWHP" name="target_fwhp">{{ row.target_fwhp }}</td>
@@ -458,7 +462,7 @@
                     <td title="Qoil">{{ row.qgas|round(1, 'common') }}</td>
 
                     {% if merge_done==1 %}
-                      <td title="Flow to ref" style="background-color:#f2f2f2;">
+                      <td title="Flow to ref" style="background-color:#f2f2f2; border-left: 1px solid #666666;">
                         {{ row.route_ref.unit }}--{{ row.route_ref.rms }}--{{ row.route_ref.tl }}--slot {{ row.route_ref.slot }}
                       </td>
                       <td title="Target FWHP ref" name="target_fwhp" style="background-color:#f2f2f2;">{{ row.target_fwhp_ref }}</td>
