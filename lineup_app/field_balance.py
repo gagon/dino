@@ -5,127 +5,72 @@ import os
 
 
 def calculate(pc_data,fb_data):
-    # print(pc_data[0][0])
 
-    units=[]
     units_tot=[]
+    units_pc=[]
+    # unit
     unit_idx={"kpc":0,"u3":1,"u2":2}
     for unit in pc_data:
         pcs_raw=[]
         unit_qoil=0.0
         unit_qgas=0.0
+
+        u=[]
         for key,well in unit.items():
-            pcs_raw.append([well["wellname"],well["gor"],well["qoil"],well["qgas"]])
-            unit_qoil=unit_qoil+well["qoil"]
-            unit_qgas=unit_qgas+well["qgas"]
-        units.append(pcs_raw)
+            unit_qoil=unit_qoil+float(well["qoil"])
+            unit_qgas=unit_qgas+float(well["qgas"])
+            u.append([well["wellname"],float(well["gor"]),float(well["qoil"]),float(well["qgas"])])
+
         units_tot.append([unit_qoil,unit_qgas])
 
-    # units_tot=[
-    #     [26207.0,21119.0],
-    #     [12409.0,21093.0],
-    #     [11417.0,19742.0]
-    # ]
+
+        units_mingor = sorted(u, key=lambda x: x[1])
+        units_mingor=[list(i) for i in zip(*units_mingor)]
+
+        units_mingor_qgas_cum=[]
+        qgas_cum=0.0
+        for qgas in units_mingor[3]:
+            qgas_cum+=qgas
+            units_mingor_qgas_cum.append(qgas_cum+qgas)
+
+        units_mingor_qoil_cum=[]
+        qoil_cum=0.0
+        for qoil in units_mingor[2]:
+            qoil_cum+=qoil
+            units_mingor_qoil_cum.append(qoil_cum+qoil)
 
 
-    # fb_data={
-    #     "unit_pcs":{
-    #       "kpc_pc":[[0,0,0],[1000,100,3000],[2000,500,9000],[5000,1000,11000],[6000,2000,12000],[7000,3000,13000],[12000,15000,15000]],
-    #       "u2_pc":[[0,0,0],[1000,100,3000],[2000,500,6000],[5000,1000,9000],[6000,2000,10000],[7000,3000,11000],[12000,15000,15000]],
-    #       "u3_pc":[[0,0,0],[1000,100,3000],[2000,500,8000],[5000,1000,12000],[6000,2000,13000],[7000,3000,14000],[12000,15000,15000]],
-    #     },
-    #     "wells":{
-    #       "kpc":{
-    #         "qoil":15000,
-    #         "qgas":10000,
-    #         "gor":2,
-    #         "qoil_pot":16000,
-    #         "qgas_pot":4,
-    #         "mp_rs":114.192848579,
-    #         "lp_rs":50.0,
-    #         "af_oil":0.97,
-    #         "af_gas":1,
-    #       },
-    #       "u2":{
-    #         "qoil":0,
-    #         "qgas":1,
-    #         "gor":2,
-    #         "qoil_pot":3,
-    #         "qgas_pot":4,
-    #         "mp_rs":92.284234698,
-    #         "lp_rs":50.0,
-    #         "af_oil":0.97,
-    #         "af_gas":1,
-    #       },
-    #       "u3":{
-    #         "qoil":0,
-    #         "qgas":1,
-    #         "gor":2,
-    #         "qoil_pot":3,
-    #         "qgas_pot":4,
-    #         "mp_rs":131.470751703,
-    #         "lp_rs":70.562525908,
-    #         "af_oil":0.97,
-    #         "af_gas":1,
-    #       },
-    #     },
-    #     "streams":{
-    #       "actuals":{
-    #         "cpc_oil":0,
-    #         "fuel_gas":2500.0,
-    #         "gas_inj":2,
-    #         "ogp_gas":3,
-    #         "ogp_oil":4,
-    #         "mtu_oil":5,
-    #         "kpc_gas_2_u2":6,
-    #         "kpc_gas_2_u3":7,
-    #         "u3_oil_2_kpc":8,
-    #         "u3_gas_2_kpc":9,
-    #         "u2_oil_2_kpc":10,
-    #         "u2_gas_2_kpc":11,
-    #         "u2_oil_2_u3":12,
-    #         "u2_gas_2_u3":13,
-    #         "kpc_free_gas":14,
-    #         "kpc_tot_gas":15,
-    #         "kpc_tot_oil":16,
-    #         "u2_free_gas":14,
-    #         "u2_tot_gas":15,
-    #         "u2_tot_oil":16,
-    #         "u3_free_gas":14,
-    #         "u3_tot_gas":15,
-    #         "u3_tot_oil":16,
-    #
-    #       },
-    #       "constraints":{
-    #         "cpc_oil_max":38000.0,
-    #         "fuel_gas_max":2500.0,
-    #         "gas_inj_max":26000.0,
-    #         "ogp_gas_max":28000.0,
-    #         "ogp_oil_max":2500.0,
-    #         "mtu_oil_max":0.0,
-    #         "kpc_gas_2_u2_max":9600.0,
-    #         "kpc_gas_2_u3_max":10100.0,
-    #         "kpc_free_gas_max":15000.0,
-    #         "kpc_tot_gas_max":14900.0,
-    #         "u2_free_gas_max":18000.0,
-    #         "u3_free_gas_max":19000.0,
-    #       },
-    #       "perc":{
-    #         "cpc_oil_perc":0,
-    #         "fuel_gas_perc":1,
-    #         "gas_inj_perc":2,
-    #         "ogp_gas_perc":3,
-    #         "ogp_oil_perc":4,
-    #         "mtu_oil_perc":5,
-    #         "kpc_gas_2_u2_perc":6,
-    #         "kpc_gas_2_u3_perc":7,
-    #         "kpc_free_gas_perc":8,
-    #         "kpc_tot_gas_perc":9,
-    #         "u2_free_gas_perc":10,
-    #         "u3_free_gas_perc":11,
-    #       }
-    #     }
-    # }
+        units_maxgor = sorted(u, key=lambda x: x[1], reverse=True)
+        units_maxgor=[list(i) for i in zip(*units_maxgor)]
+
+        units_maxgor_qgas_cum=[]
+        qgas_cum=0.0
+        for qgas in units_maxgor[3]:
+            qgas_cum+=qgas
+            units_maxgor_qgas_cum.append(qgas_cum+qgas)
+
+        units_maxgor_qoil_cum=[]
+        qoil_cum=0.0
+        for qoil in units_maxgor[2]:
+            qoil_cum+=qoil
+            units_maxgor_qoil_cum.append(qoil_cum+qoil)
+
+
+
+        u_pc=[[0.0,0.0,0.0]]
+        for i,w in enumerate(units_mingor_qgas_cum):
+            u_pc.append([units_mingor_qgas_cum[i],units_mingor_qoil_cum[i], \
+                np.interp(units_mingor_qgas_cum[i],units_maxgor_qgas_cum,units_maxgor_qoil_cum)])
+        # print(u_pc)
+        # print("---")
+        units_pc.append(u_pc)
+
+    for u,v in unit_idx.items():
+        fb_data["unit_pcs"][u+"_pc"]=units_pc[v]
+
+
+
+
 
     for u,val in fb_data["wells"].items():
         fb_data["wells"][u]["qoil"]=units_tot[unit_idx[u]][0]

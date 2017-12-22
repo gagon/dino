@@ -80,6 +80,7 @@ def request_loader(request):
 def logout():
     flask_login.logout_user()
     clearstate()
+    delete_refcase()
     return redirect(url_for('index'))
 
 # main fucntion where user is logged in if username and password are correct
@@ -130,8 +131,8 @@ def index():
 @login_required
 def live():
     # check is session "state" exists, if not send message and stop
-    if not "state" in session:
-        return "NO session state. Go back to setup and save state"
+    if not "well_state" in session["state"]:
+        return "NO session well state. Go back to setup and save state"
     page_active={"load_pcs":"","load_state":"","setup":"","live":"active","results":""}
     # else load live page
     return render_template('live.html',page_active=page_active)
@@ -145,8 +146,8 @@ def live():
 def results():
 
     # check is session "state" exists, if not send message and stop
-    if not "state" in session:
-        return "NO session state. Go back to setup and save state"
+    if not "well_state" in session["state"]:
+        return "NO session well state. Go back to setup and save state"
 
     # get well connections from "well_connection.xlsm" file
     well_details=xl_setup.read_conns()
@@ -162,78 +163,12 @@ def results():
     # a dictionary for mapping unit index and name
     unit_map={0:"KPC",1:"U3",2:"U2"}
 
-    # fb_data=fb.fb_init()
+    data=rs.calculate_totals(pc_data,well_maps,session)
+
     fb_data=fb.calculate(pc_data,session["state"]["fb_data"])
-
-    #
-    # # get current directory using os library
-    # dirname, filename = os.path.split(os.path.abspath(__file__))
-    # # construct excel file full path
-    # json_fullpath=os.path.join(dirname,"static\\field_balance_plot.json")
-    # fb_plot = json.load(open(json_fullpath))
+    data["fb_data"]=fb_data
 
 
-
-
-
-    totals=[] # array to save unit totals and subtotals
-
-    # loop through units
-    for unit,unit_wells in enumerate(pc_data):
-
-        unit_total_qgas=0.0 # initialise unit totals for Qgas
-        unit_total_qoil=0.0 # initialise unit totals for Qoil
-        rmss=[] # initialise RMS list
-
-        # print(pc_data)
-
-        # loop through wells in unit
-        for rank,val in unit_wells.items():
-
-            # merge pc_data with map from Deliverability
-            well=pc_data[unit][rank]["wellname"]
-            pc_data[unit][rank]["map"]=well_maps[well]["map"]
-            pc_data[unit][rank]["target_fwhp"]=session["state"]["well_state"][well]["fwhp"]
-            # pc_data[unit][rank]["target_fwhp_ref"]=ref_data[unit][well]["fwhp"]
-
-            # remove DD and Qliq limits if not set in GAP
-            if pc_data[unit][rank]["dd_lim"]>10000.0:
-                pc_data[unit][rank]["dd_lim"]=""
-            if pc_data[unit][rank]["qliq_lim"]>10000.0:
-                pc_data[unit][rank]["qliq_lim"]=""
-
-            # populate list of RMSs
-            if pc_data[unit][rank]["route"]["rms"] not in rmss:
-                rmss.append(pc_data[unit][rank]["route"]["rms"])
-
-            # aggregate unit totals
-            if pc_data[unit][rank]["qoil"]:
-                unit_total_qoil+=float(pc_data[unit][rank]["qoil"])
-            if pc_data[unit][rank]["qgas"]:
-                unit_total_qgas+=float(pc_data[unit][rank]["qgas"])
-
-        # aggregate subtotals for RMSs
-        subtotals={}
-        for rms in rmss: # loop through RMSs
-            totoil=0.0
-            totgas=0.0
-            for rank,val in pc_data[unit].items(): # loop through wells
-                if val["route"]["rms"] == rms: # if in this RMS, then add to RMS total
-                    if val["qoil"]:
-                        totoil+=float(val["qoil"])
-                    if val["qgas"]:
-                        totgas+=float(val["qgas"])
-            subtotals[rms]={"qoil":round(totoil,1),"qgas":round(totgas,1)}
-
-        # put subtotals and unit totals into totals dictionary
-        totals.append({"subtotals":subtotals,"qgas":round(unit_total_qgas,1),"qoil":round(unit_total_qoil,1)})
-
-    # calculate field totals from units
-    field_gas=round(totals[0]["qgas"]+totals[1]["qgas"]+totals[2]["qgas"],1)
-    field_oil=round(totals[0]["qoil"]+totals[1]["qoil"]+totals[2]["qoil"],1)
-
-    # put all data into dictionary to pass to html
-    data={"totals":totals,"well_data":pc_data,"field":{"qgas":field_gas,"qoil":field_oil},"fb_data":fb_data}
 
     # get current directory using os library
     dirname, filename = os.path.split(os.path.abspath(__file__))
@@ -264,8 +199,8 @@ def load():
 @login_required
 def load_state():
     # check is session "state" exists, if not send message and stop
-    if not "state" in session:
-        return "NO session state. Go back to setup and save state"
+    if not "well_state" in session["state"]:
+        return "NO session well state. Go back to setup and save state"
     page_active={"load_pcs":"","load_state":"active","setup":"","live":"","results":""}
     return render_template('load_state.html',page_active=page_active)
 """========================================================================================="""
@@ -470,27 +405,13 @@ def load_pcs():
 """ SAVE RESULTS TO REFEREENCE JSON FILE==================================================== """
 @socketio.on('save_2ref')
 def save_2ref():
-    print('received start command!')
-
-
-
     # get current directory using os library
     dirname, filename = os.path.split(os.path.abspath(__file__))
-
     json_fullpath=os.path.join(dirname,r"temp\results.json")
     data = json.load(open(json_fullpath))
 
-
     json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
     json.dump(data, open(json_fullpath_ref, 'w'))
-
-    # json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
-    # data_ref = json.load(open(json_fullpath_ref))
-    #
-    # for ref in data_ref["totals"]:
-    #     print(ref)
-
-
 
     #------------------------------------------------------------------------------
     # post_opt_state=gob.run_optimization(session["state"]) # pass state to GAP to make calculations
@@ -499,7 +420,14 @@ def save_2ref():
     return "None"
 """========================================================================================="""
 
+""" DELETE REFERENCE JSON FILE==================================================== """
 
+def delete_refcase():
+    dirname, filename = os.path.split(os.path.abspath(__file__))
+    json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
+    os.remove(json_fullpath_ref)
+    return "None"
+"""========================================================================================="""
 
 
 
