@@ -177,8 +177,8 @@ def results():
 
     # get well results from GAP
     #------------------------------------------------------------------------------
-    pc_data=ggr.get_all_unit_pc(well_details,session["state"]["well_state"],afs)
-    # pc_data=xlggr.xl_get_all_unit_pc(well_details,session["state"]["well_state"])
+    # pc_data=ggr.get_all_unit_pc(well_details,session["state"]["well_state"],afs)
+    pc_data=xlggr.xl_get_all_unit_pc(well_details,session["state"]["well_state"])
     #------------------------------------------------------------------------------
 
     # a dictionary for mapping unit index and name
@@ -241,27 +241,27 @@ def setup():
 
     if "well_state" in session["state"]:
         #------------------------------------------------------------------------------
-        st.set_unit_routes(well_details,session["state"]["well_state"]) # set well routes as per state
-        # xlst.xl_set_unit_routes(well_details,session["state"]["well_state"]) # set well routes as per state
+        # st.set_unit_routes(well_details,session["state"]["well_state"]) # set well routes as per state
+        xlst.xl_set_unit_routes(well_details,session["state"]["well_state"]) # set well routes as per state
         #------------------------------------------------------------------------------
 
     if "sep" in session["state"]["unit_data"]:
         #------------------------------------------------------------------------------
-        st.set_sep_pres(session["state"]["unit_data"]["sep"]) # set separator pressure as per state
-        # xlst.xl_set_sep_pres(session["state"]["unit_data"]["sep"]) # set separator pressure as per state
+        # st.set_sep_pres(session["state"]["unit_data"]["sep"]) # set separator pressure as per state
+        xlst.xl_set_sep_pres(session["state"]["unit_data"]["sep"]) # set separator pressure as per state
         #------------------------------------------------------------------------------
 
 
     data=session["state"]
 
     #------------------------------------------------------------------------------
-    data["well_data"]=st.get_all_well_data(well_details) # get well data from GAP such as GOR, limits and current routes
-    # data["well_data"]=xlst.xl_get_all_well_data(well_details) # get well data from GAP such as GOR, limits and current routes
+    # data["well_data"]=st.get_all_well_data(well_details) # get well data from GAP such as GOR, limits and current routes
+    data["well_data"]=xlst.xl_get_all_well_data(well_details) # get well data from GAP such as GOR, limits and current routes
     #------------------------------------------------------------------------------
 
     #------------------------------------------------------------------------------
-    data["unit_data"]["sep"]=st.get_sep_pres() # get separator pressure if state doesn't exist
-    # data["unit_data"]["sep"]=xlst.xl_get_sep_pres() # get separator pressure if state doesn't exist
+    # data["unit_data"]["sep"]=st.get_sep_pres() # get separator pressure if state doesn't exist
+    data["unit_data"]["sep"]=xlst.xl_get_sep_pres() # get separator pressure if state doesn't exist
     #------------------------------------------------------------------------------
 
 

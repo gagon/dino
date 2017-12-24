@@ -180,8 +180,10 @@
       "u2_unst_dens":0,
       "u3_st_unst_conv":0,
       "u2_st_unst_conv":0,
-      "u3_rs":0,
-      "u2_rs":0,
+      "u3_mp_rs":0,
+      "u2_mp_rs":0,
+      "kpc_mp_rs":0,
+      "u3_lp_rs":0,
       "u3_shrinkage":0,
       "u2_shrinkage":0
     }
@@ -195,15 +197,8 @@
       "kpc_qgas_max":0,
       "u3_qgas_max":0,
       "u2_qgas_max":0
-    },
-    "af":{
-      "kpc_qoil_af":1,
-      "u3_qoil_af":1,
-      "u2_qoil_af":1,
-      "kpc_qgas_af":1,
-      "u3_qgas_af":1,
-      "u2_qgas_af":1
     }
+
 
 
   }
