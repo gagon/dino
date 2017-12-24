@@ -48,7 +48,7 @@ def get_well_data(PE_server,unit,unit_id,well_details):
                         # break
 
 
-        data[d]={
+        data[w[0]]={
             "wellname":w[0],
             "gor":round(w[1],1),
             "dd_lim":round(w[2],1),
@@ -154,9 +154,9 @@ def set_sep_pres(sep):
 
     units=["KPC MP A","UN3 - TR1","UN2 - Slug01"]
 
-    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]",sep["kpc_sep"])
-    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[1] + "}].SolverPres[0]",sep["u3_sep"])
-    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[2] + "}].SolverPres[0]",sep["u2_sep"])
+    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]",sep["kpc_sep_pres"])
+    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[1] + "}].SolverPres[0]",sep["u3_train1_sep_pres"])
+    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[2] + "}].SolverPres[0]",sep["u2_sep_pres"])
 
     ut.showinterface(PE_server,1)
     PE_server=ut.PE.Stop()
@@ -172,9 +172,9 @@ def get_sep_pres():
     units=["KPC MP A","UN3 - TR1","UN2 - Slug01"]
 
     sep={}
-    sep["kpc_sep"]=ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]")
-    sep["u3_sep"]=ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[1] + "}].SolverPres[0]")
-    sep["u2_sep"]=ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[2] + "}].SolverPres[0]")
+    sep["kpc_sep_pres"]=ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]")
+    sep["u3_train1_sep_pres"]=ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[1] + "}].SolverPres[0]")
+    sep["u2_sep_pres"]=ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[2] + "}].SolverPres[0]")
 
     ut.showinterface(PE_server,1)
     PE_server=ut.PE.Stop()

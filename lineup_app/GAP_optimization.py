@@ -148,11 +148,14 @@ def optimization2(PE_server,opt_vals,opt_counter):
 
 def optimization1(PE_server,unit,unit_constraints,opt_vals):
     opt_counter=0
-    optimization2(PE_server,opt_vals,opt_counter)
+
+    optimization2(PE_server,opt_vals,opt_counter) # core base of GAP optimization
+
+
     unit_qgas=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverResults[0].GasRate"))
     opt_counter=1
 
-    if unit_qgas>unit_constraints["qgas"]:
+    if unit_qgas>unit_constraints["qgas_max"]:
 
         gor_sorted=[\
                 opt_vals["wellname"],\
@@ -168,7 +171,7 @@ def optimization1(PE_server,unit,unit_constraints,opt_vals):
         well_cnt=0
         # unit_qgas=float(50000)
 
-        while unit_qgas>unit_constraints["qgas"]:
+        while unit_qgas>unit_constraints["qgas_max"]:
             # print(well_cnt,unit_qgas,unit_constraints[unit]["qgas"],"-----")
 
             # skip already SI wells, loop till you meet open well
@@ -191,16 +194,16 @@ def optimization1(PE_server,unit,unit_constraints,opt_vals):
             optimization2(PE_server,opt_vals,opt_counter)
             unit_qgas=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverResults[0].GasRate"))
             print("SI well:%s, wells shut:%s, Unit Qgas:%.3f, Qgas constraint:%.3f" % \
-                    (gor_sorted[well_cnt][0],well_cnt+1,unit_qgas,unit_constraints["qgas"]))
+                    (gor_sorted[well_cnt][0],well_cnt+1,unit_qgas,unit_constraints["qgas_max"]))
             log_text="SI well:%s, wells shut:%s, Unit Qgas:%.3f, Qgas constraint:%.3f" % \
-                    (gor_sorted[well_cnt][0],well_cnt+1,unit_qgas,unit_constraints["qgas"])
+                    (gor_sorted[well_cnt][0],well_cnt+1,unit_qgas,unit_constraints["qgas_max"])
             emit("progress",{"data":log_text})
             sleep(1)
 
             well_cnt+=1
 
 
-        if unit_qgas<unit_constraints["qgas"]:
+        if unit_qgas<unit_constraints["qgas_max"]:
             well_cnt-=1
             swing_iters=0
             target_thp_prev=0
@@ -220,10 +223,10 @@ def optimization1(PE_server,unit,unit_constraints,opt_vals):
                 pc_qgas=pc_qoil*gor_sorted[well_cnt][1]/1000
 
 
-            while abs(unit_qgas-unit_constraints["qgas"])>0.1 and swing_iters<20:
+            while abs(unit_qgas-unit_constraints["qgas_max"])>0.1 and swing_iters<20:
 
 
-                qgas_diff=unit_qgas-unit_constraints["qgas"]
+                qgas_diff=unit_qgas-unit_constraints["qgas_max"]
 
                 well_qgas=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].WELL[{" + w + "}].SolverResults[0].GasRate"))
                 well_qoil=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].WELL[{" + w + "}].SolverResults[0].OilRate"))
@@ -267,7 +270,7 @@ def run_optimization(state):
     start=datetime.datetime.now()
 
     fixed_thp_wells={}
-    for w,v in state["wells"].items():
+    for w,v in state["well_state"].items():
         if v["fwhp"]:
             fixed_thp_wells[w]=float(v["fwhp"])
 
@@ -284,9 +287,9 @@ def run_optimization(state):
     # qliq_lim_orig=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxQliq")
 
 
-    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]",state["sep"]["kpc_sep"])
-    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[1] + "}].SolverPres[0]",state["sep"]["u3_sep"])
-    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[2] + "}].SolverPres[0]",state["sep"]["u2_sep"])
+    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]",state["unit_data"]["sep"]["kpc_sep_pres"])
+    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[1] + "}].SolverPres[0]",state["unit_data"]["sep"]["u3_train1_sep_pres"])
+    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[2] + "}].SolverPres[0]",state["unit_data"]["sep"]["u2_sep_pres"])
 
 
     post_opt_state={}
@@ -298,7 +301,10 @@ def run_optimization(state):
         emit("progress",{"data":"Solving: %s ================" % unit})
         sleep(1)
 
-        unit_constraints=state["constraints"][units_simple[idx]]
+        unit_constraints={
+            "qgas_max":state["unit_data"]["constraints"][units_simple[idx]+"_qgas_max"],
+            "qoil_max":state["unit_data"]["constraints"][units_simple[idx]+"_qoil_max"]
+        }
 
         ut.choose_unit(PE_server,unit)
 #        break
@@ -323,8 +329,8 @@ def run_optimization(state):
         in_opt=np.zeros(len(wellname))
 
         for d,w in enumerate(wellname):
-            fixed_thp[d]=state["wells"][w]["fwhp"]
-            in_opt[d]=state["wells"][w]["in_opt"]
+            fixed_thp[d]=state["well_state"][w]["fwhp"]
+            in_opt[d]=state["well_state"][w]["in_opt"]
 
         # for w,t in state["wells"].items():
         #     for d,d_ in enumerate(wellname):
@@ -356,7 +362,7 @@ def run_optimization(state):
 
         """ POTENTIAL SOLVE ====================================== """
         opt=optimization1(PE_server,unit,unit_constraints,opt_vals)
-        emit("progress",{"data":"Unit Qgas: %.3f, Constraint: %s" % (opt["unit_qgas"],unit_constraints["qgas"])})
+        emit("progress",{"data":"Unit Qgas: %.3f, Constraint: %s" % (opt["unit_qgas"],unit_constraints["qgas_max"])})
         sleep(1)
         # break
 

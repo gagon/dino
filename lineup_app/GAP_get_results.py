@@ -9,7 +9,7 @@ import numpy as np
 from lineup_app import utils as ut
 
 
-def generate_unit_pc(PE_server,unit,unit_id,well_details,state):
+def generate_unit_pc(PE_server,unit,unit_id,well_details,state,af):
 
     ut.choose_unit(PE_server,unit)
 
@@ -74,14 +74,14 @@ def generate_unit_pc(PE_server,unit,unit_id,well_details,state):
         ######################################################################
 
 
-        pc[d]={
+        pc[w[0]]={
             "wellname":w[0],
             "gor":w[1],
             "fwhp":w[2],
             "fwhp_raw":w[2],
             "dp":w[3],
-            "qoil":w[4],
-            "qgas":w[5],
+            "qoil":w[4]*af["af_oil"],
+            "qgas":w[5]*af["af_gas"],
             "dd":w[6],
             "dd_lim":round(w[7],1),
             "qliq":w[8],
@@ -101,7 +101,7 @@ def generate_unit_pc(PE_server,unit,unit_id,well_details,state):
 
 
 
-def get_all_unit_pc(well_details,state):
+def get_all_unit_pc(well_details,state,afs):
 
     PE_server=ut.PE.Initialize()
 
@@ -114,8 +114,9 @@ def get_all_unit_pc(well_details,state):
 
     pc_data=[]
     for idx,unit in enumerate(units):
+
         units_qgas.append(ut.get_unit_qgas(PE_server,unit))
-        pc=generate_unit_pc(PE_server,unit,idx,well_details,state)
+        pc=generate_unit_pc(PE_server,unit,idx,well_details,state,afs[units_simple[idx]])
         pc_data.append(pc)
 
     """ UNMASK ALL UNITS ====================================== """

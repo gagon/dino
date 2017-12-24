@@ -27,60 +27,69 @@ def calculate(pc_data,fb_data):
         units_mingor = sorted(u, key=lambda x: x[1])
         units_mingor=[list(i) for i in zip(*units_mingor)]
 
-        units_mingor_qgas_cum=[]
+        units_mingor_qgas_cum=[0]
         qgas_cum=0.0
         for qgas in units_mingor[3]:
             qgas_cum+=qgas
-            units_mingor_qgas_cum.append(qgas_cum+qgas)
+            units_mingor_qgas_cum.append(qgas_cum)
+        print(units_mingor_qgas_cum)
 
-        units_mingor_qoil_cum=[]
+        units_mingor_qoil_cum=[0]
         qoil_cum=0.0
         for qoil in units_mingor[2]:
             qoil_cum+=qoil
-            units_mingor_qoil_cum.append(qoil_cum+qoil)
+            units_mingor_qoil_cum.append(qoil_cum)
 
 
         units_maxgor = sorted(u, key=lambda x: x[1], reverse=True)
         units_maxgor=[list(i) for i in zip(*units_maxgor)]
 
-        units_maxgor_qgas_cum=[]
+        units_maxgor_qgas_cum=[0]
         qgas_cum=0.0
         for qgas in units_maxgor[3]:
             qgas_cum+=qgas
-            units_maxgor_qgas_cum.append(qgas_cum+qgas)
+            units_maxgor_qgas_cum.append(qgas_cum)
 
-        units_maxgor_qoil_cum=[]
+        units_maxgor_qoil_cum=[0]
         qoil_cum=0.0
         for qoil in units_maxgor[2]:
             qoil_cum+=qoil
-            units_maxgor_qoil_cum.append(qoil_cum+qoil)
-
-
+            units_maxgor_qoil_cum.append(qoil_cum)
 
         u_pc=[[0.0,0.0,0.0]]
         for i,w in enumerate(units_mingor_qgas_cum):
             u_pc.append([units_mingor_qgas_cum[i],units_mingor_qoil_cum[i], \
                 np.interp(units_mingor_qgas_cum[i],units_maxgor_qgas_cum,units_maxgor_qoil_cum)])
-        # print(u_pc)
-        # print("---")
+
         units_pc.append(u_pc)
 
     for u,v in unit_idx.items():
         fb_data["unit_pcs"][u+"_pc"]=units_pc[v]
 
 
+    fb_data["wells"]["kpc"]["mp_rs"]=fb_data["lab"]["kpc_mp_rs"]
+    fb_data["wells"]["u3"]["mp_rs"]=fb_data["lab"]["u3_mp_rs"]
+    fb_data["wells"]["u3"]["lp_rs"]=fb_data["lab"]["u3_lp_rs"]
+    fb_data["wells"]["u2"]["mp_rs"]=fb_data["lab"]["u2_mp_rs"]
 
+
+
+    """ FIELD BALANCE =================================================================================================== """
 
 
     for u,val in fb_data["wells"].items():
         fb_data["wells"][u]["qoil"]=units_tot[unit_idx[u]][0]
-        fb_data["wells"][u]["qoil_alloc"]=units_tot[unit_idx[u]][0]*fb_data["wells"][u]["af_oil"]
+        fb_data["wells"][u]["qoil_alloc"]=units_tot[unit_idx[u]][0]*1.0
         fb_data["wells"][u]["qgas"]=units_tot[unit_idx[u]][1]
-        fb_data["wells"][u]["qgas_alloc"]=units_tot[unit_idx[u]][1]*fb_data["wells"][u]["af_gas"]
+        fb_data["wells"][u]["qgas_alloc"]=units_tot[unit_idx[u]][1]*1.0
         if fb_data["wells"][u]["qoil"]>0:
             fb_data["wells"][u]["gor"]=fb_data["wells"][u]["qgas"]/fb_data["wells"][u]["qoil"]*1000.0
         else:
             fb_data["wells"][u]["gor"]=0
+
+
+    if fb_data["wells"]["kpc"]["qgas_alloc"]>fb_data["streams"]["constraints"]["fuel_gas_max"]:
+        fb_data["streams"]["actuals"]["fuel_gas"]=fb_data["streams"]["constraints"]["fuel_gas_max"]
 
 
     fb_data["streams"]["actuals"]["u2_oil_2_kpc"]=max(
