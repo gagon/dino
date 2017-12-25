@@ -63,324 +63,308 @@
 
 
 
-    <div class="" id="fb_input_table" style="display:none;">
-      <div class="row">
-        <div class="col-lg-4">
+  <div class="" id="fb_input_table" style="display:none;">
+    <div class="row">
+      <div class="col-lg-4">
 
-          <h4><b>Inputs</b></h4>
-          <table class="table table-bordered table-condensed">
-            <tr>
-              <td style="width:40%;">KPC Qoil</td>
-              <td style='width:40%;' id="kpc_qoil" contenteditable >22000</td>
-              <td style='width:20%;' id="kpc_qoil_uom">
-                <select class="form-control input-sm" name="kpc_qoil_uom_selected" style="padding:1px;width:200px;height:20px;">
-                  <option selected>Sm3/d</option>
-                  <option>St.tons/d</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td style="width:40%;">KPC Qgas</td>
-              <td style='width:40%;' id="kpc_qgas" contenteditable >22000</td>
-              <td style='width:20%;' id="kpc_qgas_uom">sm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">Unit-2 Qoil</td>
-              <td style='width:40%;' id="u2_qoil" contenteditable >22000</td>
-              <td style='width:20%;' id="u2_qoil_uom">sm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">Unit-2 Qgas</td>
-              <td style='width:40%;' id="u2_qgas" contenteditable >22000</td>
-              <td style='width:20%;' id="u2_qgas_uom">sm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">Unit-3 Qoil</td>
-              <td style='width:40%;' id="u3_qoil" contenteditable >22000</td>
-              <td style='width:20%;' id="u3_qoil_uom">sm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">Unit-3 Qgas</td>
-              <td style='width:40%;' id="u3_qgas" contenteditable >22000</td>
-              <td style='width:20%;' id="u3_qgas_uom">sm3/d</td>
-            </tr>
-          </table>
-          <div class="btn btn-primary" id="apply_fb_input_updates">Apply</div>
-        </div>
-
-        <div class="col-lg-4">
-          <h4><b>Constraints</b></h4>
-          <table class="table table-bordered table-condensed">
-            <tr>
-              <td style="width:40%;">CPC oil max</td>
-              <td style='width:40%;' id="cpc_oil_max" contenteditable >22000</td>
-              <td style='width:20%;' id="cpc_oil_uom">sm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">OGP gas</td>
-              <td style='width:40%;' id="ogp_gas_max" contenteditable >25000</td>
-              <td style='width:20%;' id="ogp_gas_uom">ksm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">Gas injection Target</td>
-              <td style='width:40%;' id="gas_inj_max" contenteditable >22000</td>
-              <td style='width:20%;' id="gas_inj_uom">ksm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">Fuel gas</td>
-              <td style='width:40%;' id="fuel_gas_max" contenteditable >2500</td>
-              <td style='width:20%;' id="fuel_gas_uom">ksm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">MTU oil</td>
-              <td style='width:40%;' id="mtu_oil_max" contenteditable >25000</td>
-              <td style='width:20%;' id="mtu_oil_uom">ksm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">OGP oil</td>
-              <td style='width:40%;' id="ogp_oil_max" contenteditable >25000</td>
-              <td style='width:20%;' id="ogp_oil_uom">ksm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">KPC Max gas in MP Sep</td>
-              <td style='width:40%;' id="kpc_free_gas_max" contenteditable >25000</td>
-              <td style='width:20%;' id="kpc_free_gas_uom">ksm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">KPC Max Tot gas in Drizo</td>
-              <td style='width:40%;' id="kpc_tot_gas_max" contenteditable >25000</td>
-              <td style='width:20%;' id="kpc_tot_gas_uom">ksm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">Unit-2 Max gas in MP Sep</td>
-              <td style='width:40%;' id="u2_free_gas_max" contenteditable >25000</td>
-              <td style='width:20%;' id="u2_free_gas_uom">ksm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">Unit-3 Max gas in MP Sep</td>
-              <td style='width:40%;' id="u3_free_gas_max" contenteditable >25000</td>
-              <td style='width:20%;' id="u3_free_gas_uom">ksm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">KPC Qgas Max to Unit-2</td>
-              <td style='width:40%;' id="kpc_gas_2_u2_max" contenteditable >25000</td>
-              <td style='width:20%;' id="kpc_gas_2_u2_uom">ksm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:40%;">KPC Qgas Max to Unit-3</td>
-              <td style='width:40%;' id="kpc_gas_2_u3_max" contenteditable >25000</td>
-              <td style='width:20%;' id="kpc_gas_2_u3_uom">ksm3/d</td>
-            </tr>
-          </table>
-
-
-        </div>
-
-
-        <div class="col-lg-4">
-          <h4><b>Lab data</b></h4>
-          <table class="table table-bordered table-condensed">
-            <tr>
-              <td style="width:50%;">Unstable oil Density Unit-3</td>
-              <td style='width:30%;' id="u3_unst_dens" contenteditable >22000</td>
-              <td style='width:20%;' id="u3_unst_dens_uom">sm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:50%;">Unstable oil Density Unit-2</td>
-              <td style='width:30%;' id="u2_unst_dens" contenteditable >22000</td>
-              <td style='width:20%;' id="u2_unst_dens_uom">sm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:50%;">St/unst oil Conversion Unit-3</td>
-              <td style='width:30%;' id="u3_st_unst_conv" contenteditable >22000</td>
-              <td style='width:20%;' id="u3_st_unst_conv_uom">sm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:50%;">St/unst oil Conversion Unit-2</td>
-              <td style='width:30%;' id="u2_st_unst_conv" contenteditable >22000</td>
-              <td style='width:20%;' id="u2_st_unst_conv_uom">sm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:50%;">Rs Unit-3</td>
-              <td style='width:30%;' id="u3_rs" contenteditable >22000</td>
-              <td style='width:20%;' id="u3_rs_uom">sm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:50%;">Rs Unit-2</td>
-              <td style='width:30%;' id="u2_rs" contenteditable >22000</td>
-              <td style='width:20%;' id="u2_rs_uom">sm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:50%;">Oil shrinkage Unit-3</td>
-              <td style='width:30%;' id="u3_shrinkage" contenteditable >22000</td>
-              <td style='width:20%;' id="u3_shrinkage_uom">sm3/d</td>
-            </tr>
-            <tr>
-              <td style="width:50%;">Oil shrinkage Unit-2</td>
-              <td style='width:30%;' id="u2_shrinkage" contenteditable >22000</td>
-              <td style='width:20%;' id="u2_shrinkage_uom">sm3/d</td>
-            </tr>
-          </table>
-
-
-        </div>
-
+        <h4><b>Inputs</b></h4>
+        <table class="table table-bordered table-condensed">
+          <tr>
+            <td style="width:40%;">KPC Qoil</td>
+            <td style='width:40%;' id="kpc_qoil" contenteditable >22000</td>
+            <td style='width:20%;' id="kpc_qoil_uom">
+              <select class="form-control input-sm" name="kpc_qoil_uom_selected" style="padding:1px;width:200px;height:20px;">
+                <option selected>Sm3/d</option>
+                <option>St.tons/d</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td style="width:40%;">KPC Qgas</td>
+            <td style='width:40%;' id="kpc_qgas" contenteditable >22000</td>
+            <td style='width:20%;' id="kpc_qgas_uom">sm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">Unit-2 Qoil</td>
+            <td style='width:40%;' id="u2_qoil" contenteditable >22000</td>
+            <td style='width:20%;' id="u2_qoil_uom">sm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">Unit-2 Qgas</td>
+            <td style='width:40%;' id="u2_qgas" contenteditable >22000</td>
+            <td style='width:20%;' id="u2_qgas_uom">sm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">Unit-3 Qoil</td>
+            <td style='width:40%;' id="u3_qoil" contenteditable >22000</td>
+            <td style='width:20%;' id="u3_qoil_uom">sm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">Unit-3 Qgas</td>
+            <td style='width:40%;' id="u3_qgas" contenteditable >22000</td>
+            <td style='width:20%;' id="u3_qgas_uom">sm3/d</td>
+          </tr>
+        </table>
+        <div class="btn btn-primary" id="apply_fb_input_updates">Apply</div>
       </div>
 
-    </div>
+      <div class="col-lg-4">
+        <h4><b>Constraints</b></h4>
+        <table class="table table-bordered table-condensed">
+          <tr>
+            <td style="width:40%;">CPC oil max</td>
+            <td style='width:40%;' id="cpc_oil_max" contenteditable >22000</td>
+            <td style='width:20%;' id="cpc_oil_uom">sm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">OGP gas</td>
+            <td style='width:40%;' id="ogp_gas_max" contenteditable >25000</td>
+            <td style='width:20%;' id="ogp_gas_uom">ksm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">Gas injection Target</td>
+            <td style='width:40%;' id="gas_inj_max" contenteditable >22000</td>
+            <td style='width:20%;' id="gas_inj_uom">ksm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">Fuel gas</td>
+            <td style='width:40%;' id="fuel_gas_max" contenteditable >2500</td>
+            <td style='width:20%;' id="fuel_gas_uom">ksm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">MTU oil</td>
+            <td style='width:40%;' id="mtu_oil_max" contenteditable >25000</td>
+            <td style='width:20%;' id="mtu_oil_uom">ksm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">OGP oil</td>
+            <td style='width:40%;' id="ogp_oil_max" contenteditable >25000</td>
+            <td style='width:20%;' id="ogp_oil_uom">ksm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">KPC Max gas in MP Sep</td>
+            <td style='width:40%;' id="kpc_free_gas_max" contenteditable >25000</td>
+            <td style='width:20%;' id="kpc_free_gas_uom">ksm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">KPC Max Tot gas in Drizo</td>
+            <td style='width:40%;' id="kpc_tot_gas_max" contenteditable >25000</td>
+            <td style='width:20%;' id="kpc_tot_gas_uom">ksm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">Unit-2 Max gas in MP Sep</td>
+            <td style='width:40%;' id="u2_free_gas_max" contenteditable >25000</td>
+            <td style='width:20%;' id="u2_free_gas_uom">ksm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">Unit-3 Max gas in MP Sep</td>
+            <td style='width:40%;' id="u3_free_gas_max" contenteditable >25000</td>
+            <td style='width:20%;' id="u3_free_gas_uom">ksm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">KPC Qgas Max to Unit-2</td>
+            <td style='width:40%;' id="kpc_gas_2_u2_max" contenteditable >25000</td>
+            <td style='width:20%;' id="kpc_gas_2_u2_uom">ksm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:40%;">KPC Qgas Max to Unit-3</td>
+            <td style='width:40%;' id="kpc_gas_2_u3_max" contenteditable >25000</td>
+            <td style='width:20%;' id="kpc_gas_2_u3_uom">ksm3/d</td>
+          </tr>
+        </table>
 
 
-    <hr style="background-color:#E0E0E0;height:1px;">
-    <h3>Unit Performance Curves</h3>
-    <div class="row">
+      </div>
 
 
       <div class="col-lg-4">
-       <div class="panel panel-default">
-         <div class="" id="kpc_pcs_plot" style="height:400px;">
-         </div>
+        <h4><b>Lab data</b></h4>
+        <table class="table table-bordered table-condensed">
+          <tr>
+            <td style="width:50%;">Unstable oil Density Unit-3</td>
+            <td style='width:30%;' id="u3_unst_dens" contenteditable >22000</td>
+            <td style='width:20%;' id="u3_unst_dens_uom">sm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:50%;">Unstable oil Density Unit-2</td>
+            <td style='width:30%;' id="u2_unst_dens" contenteditable >22000</td>
+            <td style='width:20%;' id="u2_unst_dens_uom">sm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:50%;">St/unst oil Conversion Unit-3</td>
+            <td style='width:30%;' id="u3_st_unst_conv" contenteditable >22000</td>
+            <td style='width:20%;' id="u3_st_unst_conv_uom">sm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:50%;">St/unst oil Conversion Unit-2</td>
+            <td style='width:30%;' id="u2_st_unst_conv" contenteditable >22000</td>
+            <td style='width:20%;' id="u2_st_unst_conv_uom">sm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:50%;">Rs Unit-3</td>
+            <td style='width:30%;' id="u3_rs" contenteditable >22000</td>
+            <td style='width:20%;' id="u3_rs_uom">sm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:50%;">Rs Unit-2</td>
+            <td style='width:30%;' id="u2_rs" contenteditable >22000</td>
+            <td style='width:20%;' id="u2_rs_uom">sm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:50%;">Oil shrinkage Unit-3</td>
+            <td style='width:30%;' id="u3_shrinkage" contenteditable >22000</td>
+            <td style='width:20%;' id="u3_shrinkage_uom">sm3/d</td>
+          </tr>
+          <tr>
+            <td style="width:50%;">Oil shrinkage Unit-2</td>
+            <td style='width:30%;' id="u2_shrinkage" contenteditable >22000</td>
+            <td style='width:20%;' id="u2_shrinkage_uom">sm3/d</td>
+          </tr>
+        </table>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <hr style="background-color:#E0E0E0;height:1px;">
+  <h3>Unit Performance Curves</h3>
+  <div class="row">
+
+
+    <div class="col-lg-4">
+     <div class="panel panel-default">
+       <div class="" id="kpc_pcs_plot" style="height:400px;">
        </div>
-      </div>
-      <div class="col-lg-4">
-       <div class="panel panel-default">
-         <div class="" id="u2_pcs_plot" style="height:400px;">
-         </div>
+     </div>
+    </div>
+    <div class="col-lg-4">
+     <div class="panel panel-default">
+       <div class="" id="u2_pcs_plot" style="height:400px;">
        </div>
-      </div>
-      <div class="col-lg-4">
-       <div class="panel panel-default">
-         <div class="" id="u3_pcs_plot" style="height:400px;">
-         </div>
+     </div>
+    </div>
+    <div class="col-lg-4">
+     <div class="panel panel-default">
+       <div class="" id="u3_pcs_plot" style="height:400px;">
        </div>
-      </div>
-
+     </div>
     </div>
 
-    <hr style="background-color:#E0E0E0;height:1px;">
+  </div>
 
-    <div class="row">
-      <div class="col-lg-3">
-        <button type="button" class="btn btn-default btn-lg btn-block" id="#save_state" onclick="save_state();" style="background-color:#e5ffec;">
-          <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save FWHPs to state
-        </button>
-      </div>
-      <div class="col-lg-3">
-        <button type="button" class="btn btn-default btn-lg btn-block" id="#save2ref" onclick="save_2ref();" style="background-color:#f2f2f2;">
-          <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save to Reference case
-        </button>
-        <span id="save_2ref_done" style="color:green;"></span>
-      </div>
+  <hr style="background-color:#E0E0E0;height:1px;">
+
+  <div class="row">
+    <div class="col-lg-3">
+      <button type="button" class="btn btn-default btn-lg btn-block" id="#save_state" onclick="save_state();" style="background-color:#e5ffec;">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save FWHPs to state
+      </button>
     </div>
-
-    <hr style="background-color:#E0E0E0;height:1px;">
-
-    <div class="row">
-      <div class="col-lg-12">
-        <h3>TOTALS FIELD PRODUCTION</h3>
-        <h4 style="color:#339933;">Qgas (ksm3/d) - {{ data.field.qgas }}</h4>
-        <h4 style="color:#339933;">Qoil (sm3/d) - {{ data.field.qoil }}</h4>
-        {% if merge_done==1 %}
-          <h4>Qgas (ksm3/d) ref case - {{ data.field.qgas_ref }}</h4>
-          <h4>Qoil (sm3/d) ref case - {{ data.field.qoil_ref }}</h4>
-        {% endif %}
-
-      </div>
+    <div class="col-lg-3">
+      <button type="button" class="btn btn-default btn-lg btn-block" id="#save2ref" onclick="save_2ref();" style="background-color:#f2f2f2;">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save to Reference case
+      </button>
+      <span id="save_2ref_done" style="color:green;"></span>
     </div>
+  </div>
 
-    <hr style="background-color:#E0E0E0;height:1px;">
+  <hr style="background-color:#E0E0E0;height:1px;">
 
-    <div class="row">
-      <div class="col-lg-12">
-        <h3>UNITS PRODUCTION</h3>
-      </div>
-    </div>
-
-    <div class="row">
-
-      <div class="col-lg-12">
-
-        <!-- <div class="row"> -->
-
-          {% for tots in data.totals %}
-
-
-            <div class="col-lg-4">
-              {% if loop.index0==0 %}
-                <h3>KPC</h3>
-              {% elif loop.index0==1 %}
-                <h3>Unit 3</h3>
-              {% elif loop.index0==2 %}
-                <h3>Unit 2</h3>
-              {% endif %}
-
-              <div class="row">
-
-
-                <div class="col-lg-12">
-                  <table class="table table-bordered" style="font-size: 12px;">
-                    <thead class="thead-default">
-                      <tr class="info">
-
-                        {% if loop.index0==0 %}
-                          <th>KPC</th>
-                        {% elif loop.index0==1 %}
-                          <th>Unit 3</th>
-                        {% elif loop.index0==2 %}
-                          <th>Unit 2</th>
-                        {% endif %}
-                        <th>Qgas (ksm3/d)</th>
-                        <th>Qoil (sm3/d)</th>
-                        {% if merge_done==1 %}
-                          <th style="background-color:#f2f2f2;">Qgas (ksm3/d)<br>ref case</th>
-                          <th style="background-color:#f2f2f2;">Qoil (sm3/d)<br>ref case</th>
-                        {% endif %}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td style="color:#339933;"><b>Total</b></td>
-                        <td style="color:#339933;"><b>{{ tots.qgas }}</b></td>
-                        <td style="color:#339933;"><b>{{ tots.qoil }}</b></td>
-                        {% if merge_done==1 %}
-                          <td style="background-color:#f2f2f2;"><b>{{ tots.qgas_ref }}</b></td>
-                          <td style="background-color:#f2f2f2;"><b>{{ tots.qoil_ref }}</b></td>
-                        {% endif %}
-                      </tr>
-                      {% for rms,d in tots.subtotals.items() %}
-                        <tr>
-                          <td><b>{{ rms }}</b></td>
-                          <td>{{ d.qgas }}</td>
-                          <td>{{ d.qoil }}</td>
-                          {% if merge_done==1 %}
-                            <td style="background-color:#f2f2f2;">{{ d.qgas_ref }}</td>
-                            <td style="background-color:#f2f2f2;">{{ d.qoil_ref }}</td>
-                          {% endif %}
-                        </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-
-
-
-
-              </div>
-
-
-
-
-            </div>
-
-
-
-          {% endfor %}
+  <div class="row">
+    <div class="col-lg-12">
+      <h3>TOTALS FIELD PRODUCTION</h3>
+      <h4 style="color:#339933;">Qgas (ksm3/d) - {{ data.field.qgas }}</h4>
+      <h4 style="color:#339933;">Qoil (sm3/d) - {{ data.field.qoil }}</h4>
+      {% if merge_done==1 %}
+        <h4>Qgas (ksm3/d) ref case - {{ data.field.qgas_ref }}</h4>
+        <h4>Qoil (sm3/d) ref case - {{ data.field.qoil_ref }}</h4>
+      {% endif %}
 
     </div>
   </div>
 
+  <hr style="background-color:#E0E0E0;height:1px;">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <h3>UNITS PRODUCTION</h3>
+    </div>
+  </div>
+
+  <div class="row">
 
 
-<!-- </div> -->
+    {% for tots in data.totals %}
+
+
+      <div class="col-lg-4">
+        {% if loop.index0==0 %}
+          <h3>KPC</h3>
+        {% elif loop.index0==1 %}
+          <h3>Unit 3</h3>
+        {% elif loop.index0==2 %}
+          <h3>Unit 2</h3>
+        {% endif %}
+
+        <div class="row">
+
+
+          <div class="col-lg-12">
+            <table class="table table-bordered" style="font-size: 12px;">
+              <thead class="thead-default">
+                <tr class="info">
+
+                  {% if loop.index0==0 %}
+                    <th>KPC</th>
+                  {% elif loop.index0==1 %}
+                    <th>Unit 3</th>
+                  {% elif loop.index0==2 %}
+                    <th>Unit 2</th>
+                  {% endif %}
+                  <th>Qgas (ksm3/d)</th>
+                  <th>Qoil (sm3/d)</th>
+                  {% if merge_done==1 %}
+                    <th style="background-color:#f2f2f2;">Qgas (ksm3/d)<br>ref case</th>
+                    <th style="background-color:#f2f2f2;">Qoil (sm3/d)<br>ref case</th>
+                  {% endif %}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color:#339933;"><b>Total</b></td>
+                  <td style="color:#339933;"><b>{{ tots.qgas }}</b></td>
+                  <td style="color:#339933;"><b>{{ tots.qoil }}</b></td>
+                  {% if merge_done==1 %}
+                    <td style="background-color:#f2f2f2;"><b>{{ tots.qgas_ref }}</b></td>
+                    <td style="background-color:#f2f2f2;"><b>{{ tots.qoil_ref }}</b></td>
+                  {% endif %}
+                </tr>
+                {% for rms,d in tots.subtotals.items() %}
+                  <tr>
+                    <td><b>{{ rms }}</b></td>
+                    <td>{{ d.qgas }}</td>
+                    <td>{{ d.qoil }}</td>
+                    {% if merge_done==1 %}
+                      <td style="background-color:#f2f2f2;">{{ d.qgas_ref }}</td>
+                      <td style="background-color:#f2f2f2;">{{ d.qoil_ref }}</td>
+                    {% endif %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+
+    {% endfor %}
+
+  </div>
 
 
   <hr style="background-color:#E0E0E0;height:1px;">

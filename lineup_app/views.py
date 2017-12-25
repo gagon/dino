@@ -157,6 +157,9 @@ def results():
     # get MAPs from "Deliverability,xlsx" file
     well_maps=xl_setup.read_maps()
 
+    # get session json
+
+
     # get AFs to apply on well level
     afs={
         "kpc":{
@@ -173,7 +176,6 @@ def results():
         }
     }
 
-    # session["state"]["fb_data"]["wells"]
 
     # get well results from GAP
     #------------------------------------------------------------------------------
@@ -189,12 +191,7 @@ def results():
     fb_data=fb.calculate(pc_data,session["state"]["fb_data"])
     data["fb_data"]=fb_data
 
-
-
-    # get current directory using os library
-    dirname, filename = os.path.split(os.path.abspath(__file__))
-    json_fullpath=os.path.join(dirname,r"temp\results.json")
-    json.dump(data, open(json_fullpath, 'w'))
+    save_session_json(data)
 
     data,merge_done=rs.merge_ref(data)
 
@@ -458,6 +455,25 @@ def delete_refcase():
 
 
 
+""" GET SESSION JSON FILE==================================================== """
+def save_session_json(data):
+    json_fullpath=os.path.join(uploader_dirname,r"temp\results.json")
+    json.dump(data, open(json_fullpath, 'w'))
+    return "None"
+"""========================================================================================="""
+
+
+def get_session_json():
+    # get current directory using os library
+    # dirname, filename = os.path.split(os.path.abspath(__file__))
+    json_fullpath=os.path.join(uploader_dirname,r"temp\results.json")
+
+    if os.path.isfile(json_fullpath):
+        data = json.load(open(json_fullpath))
+    else:
+        data={}
+
+    return data
 
 """ PARSER GATHERING REPORT ==================================================================== """
 def allowed_file(filename): # make sure file is one of allowed extentions (look on top)
