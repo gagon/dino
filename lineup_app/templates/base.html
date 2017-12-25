@@ -25,124 +25,56 @@
 
     <style type="text/css">
 
-      /*body {
-          background-color: #f2f3f2;
-      }*/
+      html,body{
+        height:100%;overflow-x: hidden;overflow-y: hidden;
+      }
 
       #mynetwork {
         width: 100%;
         height: 600px;
         background-color: #f2f3f2;
       }
-      /*.table-condensed>thead>tr>th, .table-condensed>tbody>tr>th, .table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td, .table-condensed>tbody>tr>td, .table-condensed>tfoot>tr>td{
-          padding: 3px;
-      }*/
 
-      /* .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-        background-color: #ffe6e6r;
-      } */
       .table tbody tr:hover td, .table tbody tr:hover th {
-        background-color: #ffe6e6;
-
+        background-color: #fafafa;
       }
-
-
 
       body {
-        overflow-x: hidden;
+        padding-top: 50px;
       }
 
-
-
-      #wrapper.toggled {
-        padding-left: 150px;
+      #main-sidebar a {
+         border-width:0px;
+         background-color: #fafafa;
       }
 
-      #sidebar-wrapper {
+      #main-sidebar-container {
         z-index: 1000;
-        position: fixed;
-        left: 150px;
-        width: 0;
-        height: 100%;
-        margin-left: -150px;
+        position: absolute;
+        padding-left:0;
+        padding-right:0;
+        height:100%;
+        background-color: #fafafa;
+      }
+
+      #main-sidebar a.active {
+         background: #e6e6e6;
+         color: #4d4d4d;
+      }
+      #main-sidebar a:hover {
+         background: #e6e6e6;
+         color: #4d4d4d;
+      }
+
+      #main-content-container{
+        position: absolute;
+        height:100%;
+        margin-left: 160px;
+        padding-left:0px;
+        padding-right:0px;
+        border-left: 1px solid #ccc;
         overflow-y: auto;
-        background: #fbf9f7;
       }
-
-      #wrapper.toggled #sidebar-wrapper {
-        width: 150px;
-      }
-
-      #page-content-wrapper {
-        width: 100%;
-        position: absolute;
-        padding: 5px;
-      }
-
-      #wrapper.toggled #page-content-wrapper {
-        position: absolute;
-        margin-right: -150px;
-      }
-
-
-      /* Sidebar Styles */
-
-      .sidebar-nav {
-        position: absolute;
-        top: 0;
-        width: 150px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-
-      .sidebar-nav li {
-        text-indent: 10px;
-        line-height: 40px;
-      }
-
-      .sidebar-nav li.active {
-        background: #e6e6e6;
-        /* color: #4d4d4d; */
-      }
-
-      .sidebar-nav li.active a {
-        /* background: #e6e6e6; */
-        color: #4d4d4d;
-      }
-
-      .sidebar-nav li a {
-        display: block;
-        text-decoration: none;
-        color: #595959;
-      }
-
-      .sidebar-nav li a:hover {
-        text-decoration: none;
-        color: #4d4d4d;
-        background: #e6e6e6;
-      }
-
-      .sidebar-nav li a:active, .sidebar-nav li a:focus {
-        text-decoration: none;
-      }
-
-      .sidebar-nav>.sidebar-brand {
-        height: 65px;
-        font-size: 18px;
-        line-height: 60px;
-        text-indent: 20px;
-      }
-
-      .sidebar-nav>.sidebar-brand a {
-        color: #666666;
-      }
-
-      .sidebar-nav>.sidebar-brand a:hover {
-        color: #666666;
-        background: none;
-      }
-
 
 
     </style>
@@ -152,91 +84,67 @@
   <body>
 
 
-
-    <div id="wrapper" class="toggled">
-
-            <!-- Sidebar -->
-            <div id="sidebar-wrapper">
-                <ul class="sidebar-nav">
-                    <li class="sidebar-brand">
-                        <a href="#">
-                            DINO
-                        </a>
-                    </li>
-                    <li class="{{page_active.load_pcs}}">
-                      <a href="/load">
-                        <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
-                        Load PCs
-                      </a>
-                    </li>
-                    <li class="{{page_active.load_state}}">
-                      <a href="/load_state">
-                        <span class="glyphicon glyphicon-random" aria-hidden="true"></span>
-                         Load state
-                      </a>
-                    </li>
-                    <li class="{{page_active.setup}}">
-                      <a href="/setup">
-                        <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-                        Setup
-                      </a>
-                    </li>
-                    <li class="{{page_active.live}}">
-                      <a href="/live">
-                        <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
-                        Calculate GAP
-                      </a>
-                    </li>
-                    <li class="{{page_active.results}}">
-                      <a href="/results">
-                        <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
-                        Results
-                      </a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /#sidebar-wrapper -->
-
-            <!-- Page Content -->
-
-
-                <nav class="navbar navbar-default" style="margin-bottom:0px;">
-                  <div class="container-fluid">
-                    <div class="navbar-header">
-                      <a href="/"><img alt="Brand" src="/static/kpo_logo.jpg"></a>
-                    </div>
-                    <div class="collapse navbar-collapse">
-                      <ul class="nav navbar-nav navbar-right">
-
-                        <li>
-                          <a href="/logout">
-                            <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
-                            Logout
-                          </a>
-                        </li>
-
-                      </ul>
-                    </div>
-                  </div>
-                </nav>
-
-
-
-                <!-- <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Toggle Menu</a> -->
-                {% block currentpage %}{% endblock %}
-
-
-            <!-- /#page-content-wrapper -->
-
+    <nav class="navbar navbar-default navbar-fixed-top" style="margin-bottom:150px;">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a href="/"><img alt="Brand" src="/static/kpo_logo.jpg"></a>
         </div>
-        <!-- /#wrapper -->
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-right">
 
-        <script>
-        $("#menu-toggle").click(function(e) {
-            e.preventDefault();
-            $("#wrapper").toggleClass("toggled");
-        });
-        </script>
+            <li>
+              <a href="/logout">
+                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+                Logout
+              </a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+
+    <div class="container-fluid">
+
+      <div class="row">
+
+        <div class="col-lg-1" id="main-sidebar-container">
+
+          <div class="list-group btn-block" id="main-sidebar">
+
+            <a href="/load" class="list-group-item list-group-item-action {{page_active.load_pcs}}">
+              <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
+              Load PCs
+            </a>
+            <a href="/load_state" class="list-group-item list-group-item-action {{page_active.load_state}}">
+              <span class="glyphicon glyphicon-random" aria-hidden="true"></span>
+               Load state
+            </a>
+            <a href="/setup" class="list-group-item list-group-item-action {{page_active.setup}}">
+              <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+              Setup
+            </a>
+            <a href="/live" class="list-group-item list-group-item-action {{page_active.live}}">
+              <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+              Calculate GAP
+            </a>
+            <a href="/results" class="list-group-item list-group-item-action {{page_active.results}}">
+              <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+              Results
+            </a>
+
+          </div>
+        </div>
+
+        <div class="col-lg-11" id="main-content-container">
+            {% block currentpage %}{% endblock %}
+        </div>
+
+      </div>
+
+    </div>
+
   <script src="/static/highcharts/grid-light.js"></script>
 
   </body>
