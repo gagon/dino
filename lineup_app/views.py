@@ -3,7 +3,7 @@ from flask import render_template, request,redirect, url_for, session, flash, js
 
 import pyodbc
 import datetime
-from flask_socketio import SocketIO, send, emit
+from flask_socketio import SocketIO, send, emit,disconnect
 from lineup_app import GAP_optimization as gob
 from lineup_app import xlGAP_optimization as xlgob
 from lineup_app import GAP_get_results as ggr
@@ -24,10 +24,17 @@ from lineup_app import state_init
 from lineup_app import results as rs
 
 
+
+# use mockup from EXCEL GAP file
+MOCKUP=False
+
+
+
 # secret key initialized for the server
 app.secret_key = 'any_random_string'
 # socket IO initialized, time out set to 500 sec
 socketio=SocketIO(app, ping_timeout=500)
+sid=None
 
 uploader_dirname, uploader_filename = os.path.split(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(uploader_dirname,'temp')
@@ -179,8 +186,10 @@ def results():
 
     # get well results from GAP
     #------------------------------------------------------------------------------
-    # pc_data=ggr.get_all_unit_pc(well_details,session["state"]["well_state"],afs)
-    pc_data=xlggr.xl_get_all_unit_pc(well_details,session["state"]["well_state"])
+    if MOCKUP:
+        pc_data=xlggr.xl_get_all_unit_pc(well_details,session["state"]["well_state"])
+    else:
+        pc_data=ggr.get_all_unit_pc(well_details,session["state"]["well_state"],afs)
     #------------------------------------------------------------------------------
 
     # a dictionary for mapping unit index and name
@@ -238,27 +247,36 @@ def setup():
 
     if "well_state" in session["state"]:
         #------------------------------------------------------------------------------
-        # st.set_unit_routes(well_details,session["state"]["well_state"]) # set well routes as per state
-        xlst.xl_set_unit_routes(well_details,session["state"]["well_state"]) # set well routes as per state
-        #------------------------------------------------------------------------------
+        if MOCKUP:
+            xlst.xl_set_unit_routes(well_details,session["state"]["well_state"]) # set well routes as per state
+        else:
+            st.set_unit_routes(well_details,session["state"]["well_state"]) # set well routes as per state
+        # ------------------------------------------------------------------------------
+
 
     if "sep" in session["state"]["unit_data"]:
         #------------------------------------------------------------------------------
-        # st.set_sep_pres(session["state"]["unit_data"]["sep"]) # set separator pressure as per state
-        xlst.xl_set_sep_pres(session["state"]["unit_data"]["sep"]) # set separator pressure as per state
+        if MOCKUP:
+            xlst.xl_set_sep_pres(session["state"]["unit_data"]["sep"]) # set separator pressure as per state
+        else:
+            st.set_sep_pres(session["state"]["unit_data"]["sep"]) # set separator pressure as per state
         #------------------------------------------------------------------------------
 
 
     data=session["state"]
 
     #------------------------------------------------------------------------------
-    # data["well_data"]=st.get_all_well_data(well_details) # get well data from GAP such as GOR, limits and current routes
-    data["well_data"]=xlst.xl_get_all_well_data(well_details) # get well data from GAP such as GOR, limits and current routes
+    if MOCKUP:
+        data["well_data"]=xlst.xl_get_all_well_data(well_details) # get well data from GAP such as GOR, limits and current routes
+    else:
+        data["well_data"]=st.get_all_well_data(well_details) # get well data from GAP such as GOR, limits and current routes
     #------------------------------------------------------------------------------
 
     #------------------------------------------------------------------------------
-    # data["unit_data"]["sep"]=st.get_sep_pres() # get separator pressure if state doesn't exist
-    data["unit_data"]["sep"]=xlst.xl_get_sep_pres() # get separator pressure if state doesn't exist
+    if MOCKUP:
+        data["unit_data"]["sep"]=xlst.xl_get_sep_pres() # get separator pressure if state doesn't exist
+    else:
+        data["unit_data"]["sep"]=st.get_sep_pres() # get separator pressure if state doesn't exist
     #------------------------------------------------------------------------------
 
 
@@ -311,7 +329,7 @@ def savestate():
 
 
 
-""" SAVE STATE FUNCTION ==================================================================== """
+""" SAVE FWHP TO STATE FUNCTION ==================================================================== """
 @app.route('/savestate_results', methods = ['POST'])
 def savestate_results():
     fwhp_results=request.json # remember fwhp data from results page passed from AJAX call
@@ -385,32 +403,36 @@ def savestate_loaded():
 
 
 
-""" HEARTBEAT OF SERVER ==================================================================== """
-# @socketio.on('heartbeat_ask')
-# def heartbeat_reply():
-#     print('heartbeat question: what time is it?')
-#     emit('heartbeat_reply',{"data":str(datetime.datetime.now())})
-#     return None
-#
-# @app.route('/heartbeat')
-# @login_required
-# def heartbeat():
-#     data={}
-#     return render_template('heartbeat.html',data=data)
-"""========================================================================================="""
-
-
 """ START GAP CALCULATION ==================================================================== """
 @socketio.on('start_gap_calc')
-def gap_calc():
-    print('received start command!')
+def gap_calc_start():
+    sid=request.sid
+    print("hello")
+    gap_calc_json_fullpath=os.path.join(uploader_dirname,r"temp\gap_calc.json")
+    print("hello2")
     #------------------------------------------------------------------------------
-    post_opt_state=gob.run_optimization(session["state"]) # pass state to GAP to make calculations
-    #skip calc when xl is used
-    # post_opt_state=xlgob.xl_run_optimization(session["state"]) # pass state to GAP to make calculations
+    if MOCKUP:
+        #skip calc when xl is used
+        print("skip xls calc")
+        # post_opt_state=xlgob.xl_run_optimization(session["state"]) # pass state to GAP to make calculations
+    else:
+
+        post_opt_state=gob.run_optimization(session["state"],gap_calc_json_fullpath) # pass state to GAP to make calculations
     #------------------------------------------------------------------------------
     return "None"
 """========================================================================================="""
+
+@socketio.on('disconnect_gap_calc')
+def disconnect_calc_start():
+    print("hi")
+    return "None"
+
+
+@app.route('/stop', methods = ['POST'])
+def stop():
+    print("stop received")
+    disconnect(sid)
+    return "Session['state'] cleared!"
 
 
 
@@ -428,16 +450,12 @@ def load_pcs():
 """ SAVE RESULTS TO REFEREENCE JSON FILE==================================================== """
 @socketio.on('save_2ref')
 def save_2ref():
-    # get current directory using os library
-    dirname, filename = os.path.split(os.path.abspath(__file__))
-    json_fullpath=os.path.join(dirname,r"temp\results.json")
+    json_fullpath=os.path.join(uploader_dirname,r"temp\results.json")
     data = json.load(open(json_fullpath))
 
     json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
     json.dump(data, open(json_fullpath_ref, 'w'))
 
-    #------------------------------------------------------------------------------
-    # post_opt_state=gob.run_optimization(session["state"]) # pass state to GAP to make calculations
     emit('save_complete',{"data":"Reference case saved"})
     #------------------------------------------------------------------------------
     return "None"
@@ -446,8 +464,7 @@ def save_2ref():
 """ REMOVE REFERENCE JSON FILE==================================================== """
 
 def delete_refcase():
-    dirname, filename = os.path.split(os.path.abspath(__file__))
-    json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
+    json_fullpath_ref=os.path.join(uploader_dirname,r"temp\results_ref_case.json")
     if os.path.isfile(json_fullpath_ref):
         os.remove(json_fullpath_ref)
     return "None"
@@ -455,7 +472,7 @@ def delete_refcase():
 
 
 
-""" GET SESSION JSON FILE==================================================== """
+""" SAVE SESSION JSON FILE==================================================== """
 def save_session_json(data):
     json_fullpath=os.path.join(uploader_dirname,r"temp\results.json")
     json.dump(data, open(json_fullpath, 'w'))

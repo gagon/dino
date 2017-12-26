@@ -20,13 +20,14 @@ import datetime
 from flask_socketio import SocketIO, send, emit
 import gevent
 from gevent import monkey, sleep
+import json
 
 
 
+# data = json.load(open(json_fullpath))
 
 
-
-def optimization2(PE_server,opt_vals,opt_counter):
+def optimization2(PE_server,opt_vals,opt_counter,gap_calc_json_fullpath):
     """
 
     """
@@ -132,9 +133,13 @@ def optimization2(PE_server,opt_vals,opt_counter):
         """ REPORT RESULTS ====================================== """
         print("conv=%.3f,iter=%s,perts=%.3f,lasterror=%.3f,massdif=%.3f,presdiff=%.3f" % \
                 (conv,iter_,perts,lasterror,maxmassbaldif,maxpresbaldif))
-        # emit("progress",{"data":"conv=%.3f,iter=%s,perts=%.3f,lasterror=%.3f,massdif=%.3f,presdiff=%.3f" % \
-        #         (conv,iter_,perts,lasterror,maxmassbaldif,maxpresbaldif)})
-        # sleep(0.1)
+        emit("progress",{"data":"conv=%.3f,iter=%s,perts=%.3f,lasterror=%.3f,massdif=%.3f,presdiff=%.3f" % \
+                (conv,iter_,perts,lasterror,maxmassbaldif,maxpresbaldif)})
+        sleep(0.1)
+
+
+        # if not SWITCH:
+        #     return -1
 
 
 
@@ -146,10 +151,10 @@ def optimization2(PE_server,opt_vals,opt_counter):
 
 
 
-def optimization1(PE_server,unit,unit_constraints,opt_vals):
+def optimization1(PE_server,unit,unit_constraints,opt_vals,gap_calc_json_fullpath):
     opt_counter=0
 
-    optimization2(PE_server,opt_vals,opt_counter) # core base of GAP optimization
+    optimization2(PE_server,opt_vals,opt_counter,gap_calc_json_fullpath) # core base of GAP optimization
 
 
     unit_qgas=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverResults[0].GasRate"))
@@ -191,7 +196,7 @@ def optimization1(PE_server,unit,unit_constraints,opt_vals):
             opt_vals["fixed_thp"][well_idx_to_si]=-1
 
 
-            optimization2(PE_server,opt_vals,opt_counter)
+            optimization2(PE_server,opt_vals,opt_counter,gap_calc_json_fullpath)
             unit_qgas=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverResults[0].GasRate"))
             print("SI well:%s, wells shut:%s, Unit Qgas:%.3f, Qgas constraint:%.3f" % \
                     (gor_sorted[well_cnt][0],well_cnt+1,unit_qgas,unit_constraints["qgas_max"]))
@@ -250,7 +255,7 @@ def optimization1(PE_server,unit,unit_constraints,opt_vals):
                 swing_well=opt_vals["wellname"].index(w)
                 opt_vals["fixed_thp"][swing_well]=target_thp
 
-                optimization2(PE_server,opt_vals,opt_counter)
+                optimization2(PE_server,opt_vals,opt_counter,gap_calc_json_fullpath)
                 unit_qgas=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverResults[0].GasRate"))
 
                 # print(w,target_thp,unit_qgas,"-=-=-=-=-")
@@ -262,8 +267,9 @@ def optimization1(PE_server,unit,unit_constraints,opt_vals):
     return {"unit_qgas":unit_qgas, "vals":opt_vals}
 
 
-def run_optimization(state):
+def run_optimization(state,gap_calc_json_fullpath):
 
+    print("hi")
     PE_server=ut.PE.Initialize()
     ut.showinterface(PE_server,0)
 
@@ -361,7 +367,7 @@ def run_optimization(state):
         ut.unmask_all_units(PE_server)
 
         """ POTENTIAL SOLVE ====================================== """
-        opt=optimization1(PE_server,unit,unit_constraints,opt_vals)
+        opt=optimization1(PE_server,unit,unit_constraints,opt_vals,gap_calc_json_fullpath)
         emit("progress",{"data":"Unit Qgas: %.3f, Constraint: %s" % (opt["unit_qgas"],unit_constraints["qgas_max"])})
         sleep(1)
         # break
