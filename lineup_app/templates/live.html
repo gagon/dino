@@ -7,10 +7,6 @@
     <div class="col-lg-12">
 
       <br>
-      <button type="button" class="btn btn-default" id="#start_gap_calc" onclick="start_gap_calc();" style="background-color:#e6f5ff;">
-        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>  Start
-      </button>
-      <hr>
       <div id="gap_cal_update"></div>
 
     </div>
@@ -19,24 +15,52 @@
 
 <script type="text/javascript" charset="utf-8">
 
+
   var socket = io.connect('http://' + document.domain + ':' + location.port);
 
   function start_gap_calc() {
-    console.log("clicked button");
     $("#gap_cal_update").empty();
     $("#gap_well_results").empty();
     socket.emit('start_gap_calc');
   };
 
   socket.on('progress', function(msg) {
-      console.log(msg.data);
       $("#gap_cal_update").append(msg.data+"<br>");
       socket.emit('ping');
   });
 
   socket.on('disconnect', function(data) {
-    alert("sockets disconnect!");
+    alert("socket disconnect!");
   });
+
+  function disconnect_gap_calc() {
+    // alert("stop")
+    // socket.emit('disconnect_gap_calc');
+    stop_calc();
+  };
+
+
+  function stop_calc() {
+
+    // var state=get_state(); // get state data from target fwhp, route and optimize columns
+
+    // Make AJAX call to save state data to session in the server, see "savestate" url call in views.py
+    // AJAX standard form for calling
+    $.ajax({
+        type: "POST",
+        url: "/stop", // url to call in the views.py
+        // The key needs to match your method's input parameter (case-sensitive).
+        data: "stop",
+        success: function(data){
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
+        }
+    });
+
+    return "";
+
+  };
 
 
 </script>

@@ -14,223 +14,52 @@
 
     <div class="col-lg-2">
       <h3>KPIs</h3>
-      <!-- <div class="panel panel-default"> -->
-        <table class="table table-bordered table-condensed" style="font-size:10px;" cellpadding="5">
+        <table class="table table-bordered table-condensed" style="font-size:10px;">
          <tbody>
            <tr>
-             <td><b><u>CPC oil</u></b></td><td id="cpc_oil_perc">{{ data.fb_data.streams.perc.cpc_oil_perc }}</td>
+             <td><b><u>CPC oil</u></b></td><td id="cpc_oil_perc" style="width:30%;">{{ data.fb_data.streams.perc.cpc_oil_perc }} %</td>
            </tr>
            <tr>
-             <td><b><u>OGP gas</u></b></td><td id="ogp_gas_perc">{{ data.fb_data.streams.perc.ogp_gas_perc }}</td>
+             <td><b><u>OGP gas</u></b></td><td id="ogp_gas_perc" style="width:20%;">{{ data.fb_data.streams.perc.ogp_gas_perc }} %</td>
            </tr>
            <tr>
-             <td><b><u>Gas injection</u></b></td><td id="gas_inj_perc">{{ data.fb_data.streams.perc.gas_inj_perc }}</td>
+             <td><b><u>Gas injection</u></b></td><td id="gas_inj_perc" style="width:20%;">{{ data.fb_data.streams.perc.gas_inj_perc }} %</td>
            </tr>
            <tr>
-             <td><b><u>OGP oil</u></b></td><td id="ogp_oil_perc">{{ data.fb_data.streams.perc.ogp_oil_perc }}</td>
+             <td><b><u>OGP oil</u></b></td><td id="ogp_oil_perc" style="width:20%;">{{ data.fb_data.streams.perc.ogp_oil_perc }} %</td>
            </tr>
            <tr>
-             <td><b><u>MTU oil</u></b></td><td id="mtu_oil_perc">{{ data.fb_data.streams.perc.mtu_oil_perc }}</td>
+             <td><b><u>MTU oil</u></b></td><td id="mtu_oil_perc" style="width:20%;">{{ data.fb_data.streams.perc.mtu_oil_perc }} %</td>
            </tr>
            <tr>
-             <td><b><u>Fuel gas</u></b></td><td id="fuel_gas_perc">{{ data.fb_data.streams.perc.fuel_gas_perc }}</td>
+             <td><b><u>Fuel gas</u></b></td><td id="fuel_gas_perc" style="width:20%;">{{ data.fb_data.streams.perc.fuel_gas_perc }} %</td>
            </tr>
            <tr>
-             <td>KPC Free gas in MP Sep</td><td id="kpc_free_gas_perc">{{ data.fb_data.streams.perc.kpc_free_gas_perc }}</td>
+             <td>KPC Free gas in MP Sep</td><td id="kpc_free_gas_perc" style="width:20%;">{{ data.fb_data.streams.perc.kpc_free_gas_perc }} %</td>
            </tr>
            <tr>
-             <td>KPC Total gas</td><td id="kpc_tot_gas_perc">{{ data.fb_data.streams.perc.kpc_tot_gas_perc }}</td>
+             <td>KPC Total gas</td><td id="kpc_tot_gas_perc" style="width:20%;">{{ data.fb_data.streams.perc.kpc_tot_gas_perc }} %</td>
            </tr>
            <tr>
-             <td>Unit-2 Free gas in MP Sep</td><td id="u2_free_gas_perc">{{ data.fb_data.streams.perc.u2_free_gas_perc }}</td>
+             <td>Unit-2 Free gas in MP Sep</td><td id="u2_free_gas_perc" style="width:20%;">{{ data.fb_data.streams.perc.u2_free_gas_perc }} %</td>
            </tr>
            <tr>
-             <td>Unit-3 Free gas in MP Sep</td><td id="u3_free_gas_perc">{{ data.fb_data.streams.perc.u3_free_gas_perc }}</td>
+             <td>Unit-3 Free gas in MP Sep</td><td id="u3_free_gas_perc" style="width:20%;">{{ data.fb_data.streams.perc.u3_free_gas_perc }} %</td>
            </tr>
            <tr>
-             <td>KPC gas to Unit-2</td><td id="kpc_gas_2_u2_perc">{{ data.fb_data.streams.perc.kpc_gas_2_u2_perc }}</td>
+             <td>KPC gas to Unit-2</td><td id="kpc_gas_2_u2_perc" style="width:20%;">{{ data.fb_data.streams.perc.kpc_gas_2_u2_perc }} %</td>
            </tr>
            <tr>
-             <td>KPC gas to Unit-3</td><td id="kpc_gas_2_u3_perc">{{ data.fb_data.streams.perc.kpc_gas_2_u3_perc }}</td>
+             <td>KPC gas to Unit-3</td><td id="kpc_gas_2_u3_perc" style="width:20%;">{{ data.fb_data.streams.perc.kpc_gas_2_u3_perc }} %</td>
            </tr>
          </tbody>
         </table>
 
-      <!-- </div> -->
-
     </div>
   </div>
-
-
-
-  <div class="" id="fb_input_table" style="display:none;">
-    <div class="row">
-      <div class="col-lg-4">
-
-        <h4><b>Inputs</b></h4>
-        <table class="table table-bordered table-condensed">
-          <tr>
-            <td style="width:40%;">KPC Qoil</td>
-            <td style='width:40%;' id="kpc_qoil" contenteditable >22000</td>
-            <td style='width:20%;' id="kpc_qoil_uom">
-              <select class="form-control input-sm" name="kpc_qoil_uom_selected" style="padding:1px;width:200px;height:20px;">
-                <option selected>Sm3/d</option>
-                <option>St.tons/d</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td style="width:40%;">KPC Qgas</td>
-            <td style='width:40%;' id="kpc_qgas" contenteditable >22000</td>
-            <td style='width:20%;' id="kpc_qgas_uom">sm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">Unit-2 Qoil</td>
-            <td style='width:40%;' id="u2_qoil" contenteditable >22000</td>
-            <td style='width:20%;' id="u2_qoil_uom">sm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">Unit-2 Qgas</td>
-            <td style='width:40%;' id="u2_qgas" contenteditable >22000</td>
-            <td style='width:20%;' id="u2_qgas_uom">sm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">Unit-3 Qoil</td>
-            <td style='width:40%;' id="u3_qoil" contenteditable >22000</td>
-            <td style='width:20%;' id="u3_qoil_uom">sm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">Unit-3 Qgas</td>
-            <td style='width:40%;' id="u3_qgas" contenteditable >22000</td>
-            <td style='width:20%;' id="u3_qgas_uom">sm3/d</td>
-          </tr>
-        </table>
-        <div class="btn btn-primary" id="apply_fb_input_updates">Apply</div>
-      </div>
-
-      <div class="col-lg-4">
-        <h4><b>Constraints</b></h4>
-        <table class="table table-bordered table-condensed">
-          <tr>
-            <td style="width:40%;">CPC oil max</td>
-            <td style='width:40%;' id="cpc_oil_max" contenteditable >22000</td>
-            <td style='width:20%;' id="cpc_oil_uom">sm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">OGP gas</td>
-            <td style='width:40%;' id="ogp_gas_max" contenteditable >25000</td>
-            <td style='width:20%;' id="ogp_gas_uom">ksm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">Gas injection Target</td>
-            <td style='width:40%;' id="gas_inj_max" contenteditable >22000</td>
-            <td style='width:20%;' id="gas_inj_uom">ksm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">Fuel gas</td>
-            <td style='width:40%;' id="fuel_gas_max" contenteditable >2500</td>
-            <td style='width:20%;' id="fuel_gas_uom">ksm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">MTU oil</td>
-            <td style='width:40%;' id="mtu_oil_max" contenteditable >25000</td>
-            <td style='width:20%;' id="mtu_oil_uom">ksm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">OGP oil</td>
-            <td style='width:40%;' id="ogp_oil_max" contenteditable >25000</td>
-            <td style='width:20%;' id="ogp_oil_uom">ksm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">KPC Max gas in MP Sep</td>
-            <td style='width:40%;' id="kpc_free_gas_max" contenteditable >25000</td>
-            <td style='width:20%;' id="kpc_free_gas_uom">ksm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">KPC Max Tot gas in Drizo</td>
-            <td style='width:40%;' id="kpc_tot_gas_max" contenteditable >25000</td>
-            <td style='width:20%;' id="kpc_tot_gas_uom">ksm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">Unit-2 Max gas in MP Sep</td>
-            <td style='width:40%;' id="u2_free_gas_max" contenteditable >25000</td>
-            <td style='width:20%;' id="u2_free_gas_uom">ksm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">Unit-3 Max gas in MP Sep</td>
-            <td style='width:40%;' id="u3_free_gas_max" contenteditable >25000</td>
-            <td style='width:20%;' id="u3_free_gas_uom">ksm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">KPC Qgas Max to Unit-2</td>
-            <td style='width:40%;' id="kpc_gas_2_u2_max" contenteditable >25000</td>
-            <td style='width:20%;' id="kpc_gas_2_u2_uom">ksm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:40%;">KPC Qgas Max to Unit-3</td>
-            <td style='width:40%;' id="kpc_gas_2_u3_max" contenteditable >25000</td>
-            <td style='width:20%;' id="kpc_gas_2_u3_uom">ksm3/d</td>
-          </tr>
-        </table>
-
-
-      </div>
-
-
-      <div class="col-lg-4">
-        <h4><b>Lab data</b></h4>
-        <table class="table table-bordered table-condensed">
-          <tr>
-            <td style="width:50%;">Unstable oil Density Unit-3</td>
-            <td style='width:30%;' id="u3_unst_dens" contenteditable >22000</td>
-            <td style='width:20%;' id="u3_unst_dens_uom">sm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:50%;">Unstable oil Density Unit-2</td>
-            <td style='width:30%;' id="u2_unst_dens" contenteditable >22000</td>
-            <td style='width:20%;' id="u2_unst_dens_uom">sm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:50%;">St/unst oil Conversion Unit-3</td>
-            <td style='width:30%;' id="u3_st_unst_conv" contenteditable >22000</td>
-            <td style='width:20%;' id="u3_st_unst_conv_uom">sm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:50%;">St/unst oil Conversion Unit-2</td>
-            <td style='width:30%;' id="u2_st_unst_conv" contenteditable >22000</td>
-            <td style='width:20%;' id="u2_st_unst_conv_uom">sm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:50%;">Rs Unit-3</td>
-            <td style='width:30%;' id="u3_rs" contenteditable >22000</td>
-            <td style='width:20%;' id="u3_rs_uom">sm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:50%;">Rs Unit-2</td>
-            <td style='width:30%;' id="u2_rs" contenteditable >22000</td>
-            <td style='width:20%;' id="u2_rs_uom">sm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:50%;">Oil shrinkage Unit-3</td>
-            <td style='width:30%;' id="u3_shrinkage" contenteditable >22000</td>
-            <td style='width:20%;' id="u3_shrinkage_uom">sm3/d</td>
-          </tr>
-          <tr>
-            <td style="width:50%;">Oil shrinkage Unit-2</td>
-            <td style='width:30%;' id="u2_shrinkage" contenteditable >22000</td>
-            <td style='width:20%;' id="u2_shrinkage_uom">sm3/d</td>
-          </tr>
-        </table>
-
-
-      </div>
-
-    </div>
-
-  </div>
-
 
   <hr style="background-color:#E0E0E0;height:1px;">
+
   <h3>Unit Performance Curves</h3>
   <div class="row">
 
@@ -254,22 +83,6 @@
      </div>
     </div>
 
-  </div>
-
-  <hr style="background-color:#E0E0E0;height:1px;">
-
-  <div class="row">
-    <div class="col-lg-3">
-      <button type="button" class="btn btn-default btn-lg btn-block" id="#save_state" onclick="save_state();" style="background-color:#e5ffec;">
-        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save FWHPs to state
-      </button>
-    </div>
-    <div class="col-lg-3">
-      <button type="button" class="btn btn-default btn-lg btn-block" id="#save2ref" onclick="save_2ref();" style="background-color:#f2f2f2;">
-        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save to Reference case
-      </button>
-      <span id="save_2ref_done" style="color:green;"></span>
-    </div>
   </div>
 
   <hr style="background-color:#E0E0E0;height:1px;">
@@ -402,7 +215,7 @@
                   <th>Comingled</th>
                   <th>MAP</th>
 
-                  <th style="border-left: 1px solid #666666;">Flow to</th>
+                  <th style="border-left: 1px solid #cccccc;">Flow to</th>
                   <th>Target FWHP</th>
                   <th>FWHP</th>
                   <th>dPChoke</th>
@@ -412,7 +225,7 @@
                   <th>Qgas</th>
 
                   {% if merge_done==1 %}
-                    <th style="background-color:#f2f2f2; border-left: 1px solid #666666;">Flow to ref</th>
+                    <th style="background-color:#f2f2f2; border-left: 1px solid #cccccc;">Flow to ref</th>
                     <th style="background-color:#f2f2f2;">Target FWHP ref</th>
                     <th style="background-color:#f2f2f2;">FWHP ref</th>
                     <th style="background-color:#f2f2f2;">dPChoke ref</th>
@@ -434,7 +247,7 @@
                     <td title="MAP" name="map">{{ row.map }}</td>
 
 
-                    <td title="Flow to" style="border-left: 1px solid #666666;">
+                    <td title="Flow to" style="border-left: 1px solid #cccccc;">
                       {{ row.route.unit }}--{{ row.route.rms }}--{{ row.route.tl }}--slot {{ row.route.slot }}
                     </td>
                     <td title="Target FWHP" name="target_fwhp">{{ row.target_fwhp }}</td>
@@ -446,7 +259,7 @@
                     <td title="Qoil">{{ row.qgas|round(1, 'common') }}</td>
 
                     {% if merge_done==1 %}
-                      <td title="Flow to ref" style="background-color:#f2f2f2; border-left: 1px solid #666666;">
+                      <td title="Flow to ref" style="background-color:#f2f2f2; border-left: 1px solid #cccccc;">
                         {{ row.route_ref.unit }}--{{ row.route_ref.rms }}--{{ row.route_ref.tl }}--slot {{ row.route_ref.slot }}
                       </td>
                       <td title="Target FWHP ref" name="target_fwhp" style="background-color:#f2f2f2;">{{ row.target_fwhp_ref }}</td>
@@ -469,6 +282,7 @@
       {% endfor %}
 
     </div>
+
   </div>
 
 </div>
@@ -485,7 +299,8 @@
     $("#sort_table2").tablesorter();
 
     socket.on('save_complete', function(msg) {
-        $("#save_2ref_done").append(msg.data);
+        alert(msg.data);
+        // $("#save_2ref_done").append(msg.data);
     });
 
   });
@@ -512,14 +327,8 @@
 
 
   function save_2ref() {
-
-
-      // console.log("clicked button");
-      // $("#gap_cal_update").empty();
-      // $("#gap_well_results").empty();
-      alert("Saving current results to reference results");
-      socket.emit('save_2ref');
-
+    alert("Saving current results to reference case");
+    socket.emit('save_2ref');
   };
 
 
@@ -571,92 +380,11 @@
 
 
   $( document ).ready(function() {
-
-    // loaded_data={{data|safe}}
     network = network_build(fb_data);
   });
-  //
-  // uoms={
-  //   "category":{
-  //     "qoil":"oil_rate",
-  //     "qgas":"gas_rate",
-  //     "gor":"gas_oil_ratio",
-  //     "qoil_pot":"oil_rate",
-  //     "qgas_pot":"gas_rate",
-  //     "mp_rs":"gas_oil_ratio",
-  //     "lp_rs":"gas_oil_ratio",
-  //     "af_oil":"fraction",
-  //     "af_gas":"fraction",
-  //     "cpc_oil":"oil_rate",
-  //     "fuel_gas":"gas_rate",
-  //     "gas_inj":"gas_rate",
-  //     "ogp_gas":"gas_rate",
-  //     "ogp_oil":"oil_rate",
-  //     "mtu_oil":"oil_rate",
-  //     "kpc_gas_2_u2":"gas_rate",
-  //     "kpc_gas_2_u3":"gas_rate",
-  //     "u3_oil_2_kpc":"oil_rate",
-  //     "u3_gas_2_kpc":"gas_rate",
-  //     "u2_oil_2_kpc":"oil_rate",
-  //     "u2_gas_2_kpc":"gas_rate",
-  //     "u2_oil_2_u3":"oil_rate",
-  //     "u2_gas_2_u3":"gas_rate",
-  //     "kpc_free_gas":"gas_rate",
-  //     "kpc_tot_gas":"gas_rate",
-  //     "kpc_tot_oil":"oil_rate",
-  //     "u2_free_gas":"gas_rate",
-  //     "u2_tot_gas":"gas_rate",
-  //     "u2_tot_oil":"oil_rate",
-  //     "u3_free_gas":"gas_rate",
-  //     "u3_tot_gas":"gas_rate",
-  //     "u3_tot_oil":"oil_rate",
-  //     "cpc_oil_max":"oil_rate",
-  //     "fuel_gas_max":"gas_rate",
-  //     "gas_inj_max":"gas_rate",
-  //     "ogp_gas_max":"gas_rate",
-  //     "ogp_oil_max":"oil_rate",
-  //     "mtu_oil_max":"oil_rate",
-  //     "kpc_gas_2_u2_max":"gas_rate",
-  //     "kpc_gas_2_u3_max":"gas_rate",
-  //     "kpc_free_gas_max":"gas_rate",
-  //     "kpc_tot_gas_max":"gas_rate",
-  //     "u2_free_gas_max":"gas_rate",
-  //     "u3_free_gas_max":"gas_rate",
-  //     "cpc_oil_perc":"percent",
-  //     "fuel_gas_perc":"percent",
-  //     "gas_inj_perc":"percent",
-  //     "ogp_gas_perc":"percent",
-  //     "ogp_oil_perc":"percent",
-  //     "mtu_oil_perc":"percent",
-  //     "kpc_gas_2_u2_perc":"percent",
-  //     "kpc_gas_2_u3_perc":"percent",
-  //     "kpc_free_gas_perc":"percent",
-  //     "kpc_tot_gas_perc":"percent",
-  //     "u2_free_gas_perc":"percent",
-  //     "u3_free_gas_perc":"percent",
-  //   },
-  //   "uom":{
-  //     "oil_rate":[
-  //       "Sm3/d",
-  //       "St.tons/d",
-  //       "Unst.tons/d",
-  //       "Sm3/hr",
-  //       "St.tons/hr",
-  //       "Unst.tons/hr"
-  //     ],
-  //     "gas_rate":[
-  //       "KSm3/d",
-  //       "MMSm3/d",
-  //       "KSm3/hr",
-  //       "MMSm3/hr",
-  //     ],
-  //     "fraction":["-"],
-  //     "percent":["%"],
-  //   }
-  // }
+
 
   fb_data={{ data.fb_data|safe }};
-
 
 
   function network_build(fb_data){
@@ -900,7 +628,7 @@
 
     fb_update();
     plot_pcs();
-    fb_table_update();
+    // fb_table_update();
 
 
     network.on("doubleClick", function (params) {
@@ -1514,12 +1242,7 @@
     return series;
   }
 
-  function fb_table_update(){
-    // update perc table values
-    for (var key in fb_data["streams"]["perc"]){
-      $('#'+key).text(fb_data["streams"]["perc"][key]);
-    }
-  }
+
 
   function show_hide_fb_input_table(table_show){
     if (table_show==0){
