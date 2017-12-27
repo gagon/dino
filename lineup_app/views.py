@@ -122,10 +122,13 @@ def custom_401(error):
 @app.route('/')
 @login_required
 def index():
-    loaded_state=state_init.init()
-    session["state"]={} # initialize state if no state
-    session["state"]=loaded_state # save loaded data to state
-    session.modified=True
+    session_json=get_session_json()
+    # print(session_json)
+    if not "state" in session_json:
+        session_json=state_init.init()
+        # session["state"]={} # initialize state if no state
+        # session["state"]=loaded_state # save loaded data to state
+        # session.modified=True
     # print(session["state"]["fb_data"]["streams"]["constraints"])
     page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":""}
     return render_template('index.html',page_active=page_active)
@@ -140,8 +143,10 @@ def index():
 @app.route('/live')
 @login_required
 def live():
+    session_json=get_session_json()
+    print(session_json.keys())
     # check is session "state" exists, if not send message and stop
-    if not "well_state" in session["state"]:
+    if not "well_state" in session_json["state"]:
         return "NO session well state. Go back to setup and save state"
     page_active={"load_pcs":"","load_state":"","setup":"","live":"active","results":""}
     # else load live page
@@ -406,7 +411,7 @@ def savestate_loaded():
 """ START GAP CALCULATION ==================================================================== """
 @socketio.on('start_gap_calc')
 def gap_calc_start():
-    sid=request.sid
+    # sid=request.sid
     print("hello")
     gap_calc_json_fullpath=os.path.join(uploader_dirname,r"temp\gap_calc.json")
     print("hello2")
@@ -450,7 +455,7 @@ def load_pcs():
 """ SAVE RESULTS TO REFEREENCE JSON FILE==================================================== """
 @socketio.on('save_2ref')
 def save_2ref():
-    json_fullpath=os.path.join(uploader_dirname,r"temp\results.json")
+    json_fullpath=os.path.join(uploader_dirname,r"temp\session.json")
     data = json.load(open(json_fullpath))
 
     json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
@@ -474,23 +479,22 @@ def delete_refcase():
 
 """ SAVE SESSION JSON FILE==================================================== """
 def save_session_json(data):
-    json_fullpath=os.path.join(uploader_dirname,r"temp\results.json")
+    json_fullpath=os.path.join(uploader_dirname,r"temp\session.json")
     json.dump(data, open(json_fullpath, 'w'))
     return "None"
 """========================================================================================="""
 
 
+""" READ SESSION JSON FILE==================================================== """
 def get_session_json():
-    # get current directory using os library
-    # dirname, filename = os.path.split(os.path.abspath(__file__))
-    json_fullpath=os.path.join(uploader_dirname,r"temp\results.json")
-
+    json_fullpath=os.path.join(uploader_dirname,r"temp\session.json")
     if os.path.isfile(json_fullpath):
         data = json.load(open(json_fullpath))
     else:
         data={}
-
     return data
+"""========================================================================================="""
+
 
 """ PARSER GATHERING REPORT ==================================================================== """
 def allowed_file(filename): # make sure file is one of allowed extentions (look on top)

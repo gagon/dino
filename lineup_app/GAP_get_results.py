@@ -115,7 +115,7 @@ def get_all_unit_pc(well_details,state,afs):
     pc_data=[]
     for idx,unit in enumerate(units):
 
-        units_qgas.append(ut.get_unit_qgas(PE_server,unit))
+        units_qgas.append(ut.get_unit_qgas(PE_server,unit)) # ???
         pc=generate_unit_pc(PE_server,unit,idx,well_details,state,afs[units_simple[idx]])
         pc_data.append(pc)
 
