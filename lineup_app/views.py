@@ -26,7 +26,7 @@ from lineup_app import results as rs
 
 
 # use mockup from EXCEL GAP file
-MOCKUP=False
+MOCKUP=True
 
 
 
@@ -244,46 +244,53 @@ def load_state():
 @login_required
 def setup():
 
+    session_json["well_data"]={}
+    session_json["unit_data"]={}
     # get well connections from "well_connections.xlsm" file
-    well_details=xl_setup.read_conns()
+    well_conns=xl_setup.read_conns()
+    for well,conns in well_conns.items(): # merge with well_data
+        session_json["well_data"][well]={}
+        session_json["well_data"][well]["connection"]=conns
+
+
+
     # get MAPs from "Deliverability.xlsx" file
     well_maps=xl_setup.read_maps()
+    for well,m in session_json["well_data"].items(): # merge with well_data
+        session_json["well_data"][well]["map"]=well_maps[well]["map"]
 
 
-    if "well_state" in session["state"]:
+    any_well=list(session_json["well_data"].keys())[0] # get first index well to check if selected_route was set
+    if "selected_route" in session_json["well_data"][any_well]:
         #------------------------------------------------------------------------------
         if MOCKUP:
-            xlst.xl_set_unit_routes(well_details,session["state"]["well_state"]) # set well routes as per state
+            xlst.xl_set_unit_routes(session_json) # set well routes as per state
         else:
-            st.set_unit_routes(well_details,session["state"]["well_state"]) # set well routes as per state
+            st.set_unit_routes(session_json) # set well routes as per state
         # ------------------------------------------------------------------------------
 
 
-    if "sep" in session["state"]["unit_data"]:
+    if "sep" in session_json["unit_data"]: # check sep pres
         #------------------------------------------------------------------------------
         if MOCKUP:
-            xlst.xl_set_sep_pres(session["state"]["unit_data"]["sep"]) # set separator pressure as per state
+            xlst.xl_set_sep_pres(session_json["unit_data"]["sep"]) # set separator pressure as per state
         else:
-            st.set_sep_pres(session["state"]["unit_data"]["sep"]) # set separator pressure as per state
+            st.set_sep_pres(session_json["unit_data"]["sep"]) # set separator pressure as per state
         #------------------------------------------------------------------------------
 
-
-    data=session["state"]
-
     #------------------------------------------------------------------------------
     if MOCKUP:
-        data["well_data"]=xlst.xl_get_all_well_data(well_details) # get well data from GAP such as GOR, limits and current routes
+        session_json["well_data"]=xlst.xl_get_all_well_data(session_json["well_data"]) # get well data from GAP such as GOR, limits and current routes
     else:
-        data["well_data"]=st.get_all_well_data(well_details) # get well data from GAP such as GOR, limits and current routes
+        session_json["well_data"]=st.get_all_well_data(session_json["well_data"]) # get well data from GAP such as GOR, limits and current routes
     #------------------------------------------------------------------------------
 
     #------------------------------------------------------------------------------
     if MOCKUP:
-        data["unit_data"]["sep"]=xlst.xl_get_sep_pres() # get separator pressure if state doesn't exist
+        session_json["unit_data"]["sep"]=xlst.xl_get_sep_pres() # get separator pressure if state doesn't exist
     else:
-        data["unit_data"]["sep"]=st.get_sep_pres() # get separator pressure if state doesn't exist
+        session_json["unit_data"]["sep"]=st.get_sep_pres() # get separator pressure if state doesn't exist
     #------------------------------------------------------------------------------
-
 
 
     for unit,unit_wells in enumerate(data["well_data"]): # loop through units

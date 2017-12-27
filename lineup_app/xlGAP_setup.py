@@ -29,77 +29,51 @@ def xlgap_conn():
     #row_cnt = conns.max_row
     return xlwells,xlunits,xlgap_wb
 
-# def xl_get_well_data(PE_server,unit,unit_id,well_details):
-def xl_get_well_data(unit,unit_id,well_details):
+
+
+
+
+def xl_get_well_data(unit,unit_id,well_data):
 
     xlwells,xlunits,xlgap_wb=xlgap_conn()
-
     wellname=[]
     gor=[]
-    dd_lim=[]
-    qliq_lim=[]
     xlroutes=[]
     r=2
     while xlwells.range((r,1)).value!=None:
-        print(r)
         if xlwells.range((r,3)).value==unit:
             wellname.append(wellname_type(xlwells.range((r,1)).value)) # to avoid decimal point coming from excel
             gor.append(xlwells.range((r,7)).value)
-            dd_lim.append(100)
-            qliq_lim.append(2500)
             xlroutes.append(str(xlwells.range((r,2)).value))
         r+=1
 
-
-    results=[wellname,\
-            gor,\
-            dd_lim,\
-            qliq_lim,\
-            xlroutes]
-    results=[list(i) for i in zip(*results)]
-    results=sorted(results, key=lambda item: item[1])
-    #
-    data={}
-    for d,w in enumerate(results):
+    for d,w in enumerate(wellname):
 
         this_route=-1
         route_cnt=0
-        for ri,r in enumerate(well_details[w[0]]["routes"]):
+        for ri,r in enumerate(well_data[w]["connection"]["routes"]):
             if r["os"] == xlroutes[d]:
                 this_route=ri
                 route_cnt+=1
 
+        well_data[w]["gor"]=round(gor[d],1)
+        well_data[w]["unit_id"]=unit_id
+        well_data[w]["curr_route"]=this_route
+        well_data[w]["route_cnt"]=route_cnt
 
 
-        data[d]={
-            "wellname":w[0],
-            "gor":round(w[1],1),
-            "dd_lim":round(w[2],1),
-            "qliq_lim":round(w[3],1),
-            "rank":d,
-            "unit_id":unit_id,
-            "curr_route":this_route,
-            "routes":well_details[w[0]]["routes"],
-            "connected":well_details[w[0]]["connected"],
-            "route_cnt":route_cnt
-        }
-
-    return data
+    return well_data
 
 
 
-def xl_get_all_well_data(well_details):
+def xl_get_all_well_data(well_data):
 
     """ SEQUENCE OF UNITS ====================================== """
     units=["KPC","U3","U2"]
-    units_simple=["kpc","u3","u2"]
+    # units_simple=["kpc","u3","u2"]
 
-
-    well_data=[]
     for idx,unit in enumerate(units):
-
-        data=xl_get_well_data(unit,idx,well_details)
-        well_data.append(data)
+        well_data=xl_get_well_data(unit,idx,well_data)
 
     return well_data
 

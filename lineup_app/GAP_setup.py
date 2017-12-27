@@ -21,12 +21,12 @@ def get_well_data(PE_server,unit,unit_id,well_details):
     pipe_status=ut.get_all(PE_server,"GAP.MOD[{PROD}].PIPE[$].MASKFLAG")
     pipes=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].PIPE[$].Label",pipe_status,"string")
 
-    results=[wellname,\
-            gor.tolist(),\
-            dd_lim.tolist(),
-            qliq_lim.tolist()]
-    results=[list(i) for i in zip(*results)]
-    results=sorted(results, key=lambda item: item[1])
+    # results=[wellname,\
+    #         gor.tolist(),\
+    #         dd_lim.tolist(),
+    #         qliq_lim.tolist()]
+    # results=[list(i) for i in zip(*results)]
+    # results=sorted(results, key=lambda item: item[1])
 
     data={}
     for d,w in enumerate(results):
