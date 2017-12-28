@@ -291,8 +291,8 @@
   var fb_section=1;
   var wells_section=1;
 
-  var state_init;
-  state_init={{ data|safe }};
+  var session_json;
+  session_json={{ data|safe }};
 
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -328,7 +328,7 @@
   ////////////////////////////////////////////////////////////////////////////////
   function save_state() {
 
-    var state=get_state(); // get state data from target fwhp, route and optimize columns
+    session_json=get_state(session_json); // get state data from target fwhp, route and optimize columns
 
     // Make AJAX call to save state data to session in the server, see "savestate" url call in views.py
     // AJAX standard form for calling
@@ -336,7 +336,7 @@
         type: "POST",
         url: "/savestate", // url to call in the views.py
         // The key needs to match your method's input parameter (case-sensitive).
-        data: JSON.stringify(state),
+        data: JSON.stringify(session_json),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(data){
@@ -346,7 +346,6 @@
         }
     });
     alert("State saved. Reload page to update table"); // send message after saving to state
-    return state;
 
   };
   ////////////////////////////////////////////////////////////////////////////////
@@ -354,34 +353,31 @@
 
   ////////////////////////////////////////////////////////////////////////////////
   // read tables in setup page and gather state data
-  function get_state(){
+  function get_state(data){
 
-    var state={}; // init state
+    data["well_data"]=get_well_state(data["well_data"]);
+    data["unit_data"]=get_unit_data(data["unit_data"]);
+    data["fb_data"]=get_fb_data(data["fb_data"]);
 
-    state["well_state"]=get_well_state();
-    state["unit_data"]=get_unit_data();
-    state["fb_data"]=get_fb_data();
-    // console.log(state);
-
-    return state;
+    return data;
   }
   ////////////////////////////////////////////////////////////////////////////////
 
 
-  function get_well_state(){
+  function get_well_state(well_data){
 
-    var well_state={}; // init wells in state
+    // var well_state={}; // init wells in state
 
     for (i=0; i<3; ++i) { // loop from 0 to 2 (table number corresponding to each unit table)
       table="#sort_table" + i.toString()+" tbody"; // table ID
       $(table).children('tr').each(function () { // loop through rows in table
 
         var wellname=$(this).find("[name=wellname]").text() // get wellname
-        well_state[wellname]={}; // init dict in state dict for this well
+        // well_state[wellname]={}; // init dict in state dict for this well
         if ($(this).find("[name=selected_route]").val()){ // get route from row
-          well_state[wellname]["selected_route"]=$(this).find("[name=selected_route]").val();
+          well_data[wellname]["selected_route"]=$(this).find("[name=selected_route]").val();
         }else{
-          well_state[wellname]["selected_route"]="";
+          well_data[wellname]["selected_route"]="";
         };
 
         var map=parseFloat($(this).find("[name=map]").text()) // get MAP from row
@@ -390,64 +386,58 @@
           var fwhp_val=parseFloat($(this).find("[name=fwhp]").val());
           // QC fwhp value. Make sure fwhp is not less than MAP. If it is, then set it to MAP
           if (fwhp_val>map){
-            well_state[wellname]["fwhp"]=fwhp_val;
+            well_data[wellname]["fwhp"]=fwhp_val;
           }else if (fwhp_val==-1){
-            well_state[wellname]["fwhp"]=-1;
+            well_data[wellname]["fwhp"]=-1;
           }else{
-            well_state[wellname]["fwhp"]=map;
+            well_data[wellname]["fwhp"]=map;
           }
         }else{
-          well_state[wellname]["fwhp"]=map;
+          well_data[wellname]["fwhp"]=map;
         };
 
         if ($(this).find("[name=in_opt]").is(":checked")){ // get in_opt from row
-          well_state[wellname]["in_opt"]=1
+          well_data[wellname]["in_opt"]=1
         }else{
-          well_state[wellname]["in_opt"]=0
+          well_data[wellname]["in_opt"]=0
         }
 
       })
     }
-    return well_state;
+    // console.log(well_data);
+    return well_data;
   }
 
 
-  function get_unit_data(){
-    var unit_data={};
+  function get_unit_data(unit_data){
 
-    var items=state_init["unit_data"];
+    var items=unit_data;  // to be able to overwrite unit_data dict
     for (var item in items){
-      unit_data[item]={};
       for (var i in items[item]){
         unit_data[item][i]=parseFloat($("#"+i).text());
       }
     }
-
     return unit_data;
   }
 
 
-  function get_fb_data(){
-    var fb_data={};
-    fb_data=state_init["fb_data"]
+  function get_fb_data(fb_data){
 
-    var items=state_init["fb_data"]["streams"]["constraints"];
+    var items=fb_data["streams"]["constraints"];  // to be able to overwrite unit_data dict
     for (var item in items){
       fb_data["streams"]["constraints"][item]=parseFloat($("#"+item).text());
     }
 
-    var items=state_init["fb_data"]["wells"];
+    var items=fb_data["wells"];  // to be able to overwrite unit_data dict
     for (var u in items){
-      console.log(u);
       fb_data["wells"][u]["af_oil"]=parseFloat($("#"+u+"_af_oil").text());
       fb_data["wells"][u]["af_gas"]=parseFloat($("#"+u+"_af_gas").text());
     }
 
-    items=state_init["fb_data"]["lab"];
+    items=fb_data["lab"];  // to be able to overwrite unit_data dict
     for (var item in items){
       fb_data["lab"][item]=parseFloat($("#"+item).text());
     }
-
     return fb_data;
   }
 

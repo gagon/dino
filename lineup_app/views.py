@@ -296,7 +296,7 @@ def setup():
     for well,val in session_json["well_data"].items():
         session_json["well_data_byunit"][val["unit_id"]][well]=val
 
-    print(session_json["well_data_byunit"][0].keys())
+    # print(session_json["well_data_byunit"][0].keys())
 
 
     page_active={"load_pcs":"","load_state":"","setup":"active","live":"","results":""}
@@ -318,14 +318,8 @@ def clearstate():
 """ SAVE STATE FUNCTION ==================================================================== """
 @app.route('/savestate', methods = ['POST'])
 def savestate():
-    session.pop('state', None) # clears state in session
-    session["state"]=request.json # set state to the data passed from AJAX call in setup page javascript
-    print(session["state"]["well_state"])
-    session.modified=True
-
-    # session_jsonfile=os.path.join(uploader_dirname,r"temp\session.json")
-    # json.dump(request.json, open(session_jsonfile, 'w'))
-
+    session_jsonfile=os.path.join(uploader_dirname,r"temp\session.json")
+    json.dump(request.json, open(session_jsonfile, 'w'))
     return "None"
 """========================================================================================="""
 
