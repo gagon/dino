@@ -185,7 +185,7 @@
 
   <div id="wells_section">
 
-    {% for unit in data.well_data %} <!-- loop through units in well_data -->
+    {% for unit in data.well_data_byunit %} <!-- loop through units in well_data -->
 
       <div class="row">
         <div class="col-lg-12">
@@ -226,19 +226,19 @@
               </tr>
             </thead>
             <tbody>
-              {% for key, row in unit.items() %} <!-- loop through wells in units -->
+              {% for well, row in unit.items() %} <!-- loop through wells in units -->
                 <tr>
 
-                  <td name="wellname">{{ row.wellname }}</td>
+                  <td name="wellname">{{ row.connection.wellname }}</td>
                   <td>{{ row.gor }}</td>
-                  <td>{{ row.connected }}</td>
-                  <td>{{ row.routes[0].comingled }}</td>
+                  <td>{{ row.connection.connected }}</td>
+                  <td>{{ row.connection.routes[0].comingled }}</td>
 
 
-                  {% if row.routes|length >1 %} <!-- if there are mutiple routes for the well -->
+                  {% if row.connection.routes|length >1 %} <!-- if there are mutiple routes for the well -->
                     <td style="padding: 0px;vertical-align: middle;">
                       <select class="form-control input-sm" name="selected_route" style="padding:1px;width:200px;height:20px;">
-                        {% for r in row.routes %} <!-- loop through routes for well -->
+                        {% for r in row.connection.routes %} <!-- loop through routes for well -->
                           {% if loop.index0==row.curr_route %} <!-- check if the route is selected -->
                             <option selected>{{ r.unit }}--{{ r.rms }}--{{ r.tl }}--slot {{ r.slot }}</option>
                           {% else %} <!-- if route is not selected -->
@@ -251,7 +251,7 @@
                       {% endif %}
                     </td>
                   {% else %} <!-- if only 1 route for the well then just show the path-->
-                    <td>{{ row.routes[0].unit }}--{{ row.routes[0].rms }}--{{ row.routes[0].tl }}--slot {{ row.routes[0].slot }}</td>
+                    <td>{{ row.connection.routes[0].unit }}--{{ row.connection.routes[0].rms }}--{{ row.connection.routes[0].tl }}--slot {{ row.connection.routes[0].slot }}</td>
                   {% endif %}
                   <td name="map">{{ row.map }}</td>
                   <td>
