@@ -56,8 +56,8 @@ db_driver="Oracle in OraClient11g"
 #db_driver="Oracle in OraClient11g_32_bit"
 
 
-# using session_json instead of flask session due to cookie size limitation
-session_json={}
+# # using session_json instead of flask session due to cookie size limitation
+# session_json={}
 
 
 """ LOGIN ROUTINES (using flask-login library) ================================================================ """
@@ -122,10 +122,11 @@ def custom_401(error):
 @app.route('/')
 @login_required
 def index():
-    session_json=get_session_json()
+    # session_json=get_session_json()
+    # print(session_json["well_data"])
     # print(session_json)
-    if not "state" in session_json:
-        session_json=state_init.init()
+    # if not "state" in session_json:
+    #     session_json=state_init.init()
         # session["state"]={} # initialize state if no state
         # session["state"]=loaded_state # save loaded data to state
         # session.modified=True
@@ -244,15 +245,14 @@ def load_state():
 @login_required
 def setup():
 
-    session_json["well_data"]={}
-    session_json["unit_data"]={}
+    session_json=get_session_json()
+
     # get well connections from "well_connections.xlsm" file
     well_conns=xl_setup.read_conns()
     for well,conns in well_conns.items(): # merge with well_data
-        session_json["well_data"][well]={}
-        session_json["well_data"][well]["connection"]=conns
-
-
+        if not well in session_json["well_data"]: # create a well record in well_data if not in list yet
+            session_json["well_data"][well]={}
+        session_json["well_data"][well]["connection"]=conns # assign list of connections
 
     # get MAPs from "Deliverability.xlsx" file
     well_maps=xl_setup.read_maps()
@@ -270,7 +270,7 @@ def setup():
         # ------------------------------------------------------------------------------
 
 
-    if "sep" in session_json["unit_data"]: # check sep pres
+    if "kpc_sep_pres" in session_json["unit_data"]["sep"]: # check sep pres
         #------------------------------------------------------------------------------
         if MOCKUP:
             xlst.xl_set_sep_pres(session_json["unit_data"]["sep"]) # set separator pressure as per state
@@ -292,26 +292,16 @@ def setup():
         session_json["unit_data"]["sep"]=st.get_sep_pres() # get separator pressure if state doesn't exist
     #------------------------------------------------------------------------------
 
+    session_json["well_data_byunit"]=[{},{},{}]
+    for well,val in session_json["well_data"].items():
+        session_json["well_data_byunit"][val["unit_id"]][well]=val
 
-    for unit,unit_wells in enumerate(data["well_data"]): # loop through units
-        for rank,val in unit_wells.items(): # loop through wells in unit
-            well=data["well_data"][unit][rank]["wellname"] # remember wellname
-
-            data["well_data"][unit][rank]["map"]=well_maps[well]["map"] # merge well data with well MAPs to pass it to page
-
-
-            if "well_state" in session["state"]:
-                data["well_data"][unit][rank]["fwhp"]=session["state"]["well_state"][well]["fwhp"]
-                data["well_data"][unit][rank]["in_opt"]=session["state"]["well_state"][well]["in_opt"]
-            else:
-                # initialize well data fwhp and in_opt to default
-                data["well_data"][unit][rank]["fwhp"]=""
-                data["well_data"][unit][rank]["in_opt"]=1
+    print(session_json["well_data_byunit"][0].keys())
 
 
     page_active={"load_pcs":"","load_state":"","setup":"active","live":"","results":""}
     # render page, pass data dictionary to the page
-    return render_template('setup.html',data=data,page_active=page_active)
+    return render_template('setup.html',data=session_json,page_active=page_active)
 """========================================================================================="""
 
 
