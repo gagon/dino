@@ -26,7 +26,7 @@ from lineup_app import results as rs
 
 
 # use mockup from EXCEL GAP file
-MOCKUP=True
+MOCKUP=False
 
 
 
@@ -89,7 +89,7 @@ def request_loader(request):
 @app.route('/logout')
 def logout():
     flask_login.logout_user()
-    clearstate()
+    clear_well_data_session_json()
     delete_refcase()
     return redirect(url_for('index'))
 
@@ -145,10 +145,9 @@ def index():
 @login_required
 def live():
     session_json=get_session_json()
-    print(session_json.keys())
-    # check is session "state" exists, if not send message and stop
-    if not "well_state" in session_json["state"]:
+    if not "well_data" in session_json: # check if state was exists. well_data ~ state
         return "NO session well state. Go back to setup and save state"
+
     page_active={"load_pcs":"","load_state":"","setup":"","live":"active","results":""}
     # else load live page
     return render_template('live.html',page_active=page_active)
@@ -161,54 +160,30 @@ def live():
 @login_required
 def results():
 
-    # check is session "state" exists, if not send message and stop
-    if not "well_state" in session["state"]:
+
+    session_json=get_session_json()
+    if not "well_data" in session_json: # check if state was exists. well_data ~ state
         return "NO session well state. Go back to setup and save state"
-
-    # get well connections from "well_connection.xlsm" file
-    well_details=xl_setup.read_conns()
-    # get MAPs from "Deliverability,xlsx" file
-    well_maps=xl_setup.read_maps()
-
-    # get session json
-
-
-    # get AFs to apply on well level
-    afs={
-        "kpc":{
-            "af_gas":session["state"]["fb_data"]["wells"]["kpc"]["af_gas"],
-            "af_oil":session["state"]["fb_data"]["wells"]["kpc"]["af_oil"]
-        },
-        "u3":{
-            "af_gas":session["state"]["fb_data"]["wells"]["u3"]["af_gas"],
-            "af_oil":session["state"]["fb_data"]["wells"]["u3"]["af_oil"]
-        },
-        "u2":{
-            "af_gas":session["state"]["fb_data"]["wells"]["u2"]["af_gas"],
-            "af_oil":session["state"]["fb_data"]["wells"]["u2"]["af_oil"]
-        }
-    }
-
-
     # get well results from GAP
     #------------------------------------------------------------------------------
     if MOCKUP:
-        pc_data=xlggr.xl_get_all_unit_pc(well_details,session["state"]["well_state"])
+        session_json["well_data"]=xlggr.xl_get_all_well_data(session_json["well_data"])
     else:
-        pc_data=ggr.get_all_unit_pc(well_details,session["state"]["well_state"],afs)
+        session_json["well_data"]=ggr.get_all_unit_pc(session_json["well_data"])
     #------------------------------------------------------------------------------
 
-    # a dictionary for mapping unit index and name
-    unit_map={0:"KPC",1:"U3",2:"U2"}
+    session_json["well_data_byunit"]=[{},{},{}]
+    for well,val in session_json["well_data"].items():
+        session_json["well_data_byunit"][val["unit_id"]][well]=val
 
-    data=rs.calculate_totals(pc_data,well_maps,session)
 
-    fb_data=fb.calculate(pc_data,session["state"]["fb_data"])
-    data["fb_data"]=fb_data
+    session_json["totals"]=rs.calculate_totals(session_json["well_data_byunit"])
 
-    save_session_json(data)
+    session_json["fb_data"]=fb.calculate(session_json)
 
-    data,merge_done=rs.merge_ref(data)
+    save_session_json(session_json)
+
+    data,merge_done=rs.merge_ref(session_json)
 
     page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":"active"}
 
@@ -245,32 +220,36 @@ def load_state():
 @login_required
 def setup():
 
-    session_json=get_session_json()
+    session_json=get_session_json() # read from json file all necessary app data
+
+    if not "well_data" in session_json: # create a well_data if does not exist, this normally happens very first time user logs in.
+        session_json["well_data"]={}
 
     # get well connections from "well_connections.xlsm" file
     well_conns=xl_setup.read_conns()
+
     for well,conns in well_conns.items(): # merge with well_data
         if not well in session_json["well_data"]: # create a well record in well_data if not in list yet
             session_json["well_data"][well]={}
         session_json["well_data"][well]["connection"]=conns # assign list of connections
-
+    # print(session_json["well_data"]["20D"])
     # get MAPs from "Deliverability.xlsx" file
     well_maps=xl_setup.read_maps()
     for well,m in session_json["well_data"].items(): # merge with well_data
         session_json["well_data"][well]["map"]=well_maps[well]["map"]
 
-
-    any_well=list(session_json["well_data"].keys())[0] # get first index well to check if selected_route was set
-    if "selected_route" in session_json["well_data"][any_well]:
+    # any_well=list(session_json["well_data"].keys())[0] # get first index well to check if selected_route was set
+    # if "selected_route" in session_json["well_data"][any_well]:
+    if session_json["state"]==1:
         #------------------------------------------------------------------------------
         if MOCKUP:
-            xlst.xl_set_unit_routes(session_json) # set well routes as per state
+            xlst.xl_set_unit_routes(session_json["well_data"]) # set well routes as per state
         else:
-            st.set_unit_routes(session_json) # set well routes as per state
+            st.set_unit_routes(session_json["well_data"]) # set well routes as per state
         # ------------------------------------------------------------------------------
 
 
-    if "kpc_sep_pres" in session_json["unit_data"]["sep"]: # check sep pres
+    # if "kpc_sep_pres" in session_json["unit_data"]["sep"]: # check sep pres
         #------------------------------------------------------------------------------
         if MOCKUP:
             xlst.xl_set_sep_pres(session_json["unit_data"]["sep"]) # set separator pressure as per state
@@ -292,11 +271,15 @@ def setup():
         session_json["unit_data"]["sep"]=st.get_sep_pres() # get separator pressure if state doesn't exist
     #------------------------------------------------------------------------------
 
+    # group wells by unit for html page
     session_json["well_data_byunit"]=[{},{},{}]
     for well,val in session_json["well_data"].items():
-        session_json["well_data_byunit"][val["unit_id"]][well]=val
+        if "masked" in val: #required to know which well is masked/unmasked in GAP to include/exclude well in the list
+            if val["masked"]==0:
+                session_json["well_data_byunit"][val["unit_id"]][well]=val
 
-    # print(session_json["well_data_byunit"][0].keys())
+    #save gathered data to json file
+    save_session_json(session_json)
 
 
     page_active={"load_pcs":"","load_state":"","setup":"active","live":"","results":""}
@@ -329,10 +312,12 @@ def savestate():
 @app.route('/savestate_results', methods = ['POST'])
 def savestate_results():
     fwhp_results=request.json # remember fwhp data from results page passed from AJAX call
+    session_json=get_session_json()
     for well,s in fwhp_results["wells"].items(): # loop through fwhp data from results page
-        session["state"]["wells"][well]["fwhp"]=s["fwhp"] # overwrite existing session state fwhps with data from results page
+        session_json["well_data"][well]["target_fwhp"]=s["fwhp"] # overwrite existing session state fwhps with data from results page
+        save_session_json(session_json)
         # Note: no need to check if session state exists because precondition to go to results page is to have state initialized
-    session.modified=True
+    # session.modified=True
     return "None"
 """========================================================================================="""
 
@@ -449,7 +434,7 @@ def save_2ref():
     json_fullpath=os.path.join(uploader_dirname,r"temp\session.json")
     data = json.load(open(json_fullpath))
 
-    json_fullpath_ref=os.path.join(dirname,r"temp\results_ref_case.json")
+    json_fullpath_ref=os.path.join(dirname,r"temp\session_ref_case.json")
     json.dump(data, open(json_fullpath_ref, 'w'))
 
     emit('save_complete',{"data":"Reference case saved"})
@@ -457,10 +442,11 @@ def save_2ref():
     return "None"
 """========================================================================================="""
 
-""" REMOVE REFERENCE JSON FILE==================================================== """
 
+
+""" REMOVE REFERENCE JSON FILE==================================================== """
 def delete_refcase():
-    json_fullpath_ref=os.path.join(uploader_dirname,r"temp\results_ref_case.json")
+    json_fullpath_ref=os.path.join(uploader_dirname,r"temp\session_ref_case.json")
     if os.path.isfile(json_fullpath_ref):
         os.remove(json_fullpath_ref)
     return "None"
@@ -474,6 +460,17 @@ def save_session_json(data):
     json.dump(data, open(json_fullpath, 'w'))
     return "None"
 """========================================================================================="""
+
+
+""" CLEAR WELL DATA FROM SESSION JSON FILE==================================================== """
+def clear_well_data_session_json(): # when user logged out well_data to clear for cleaning after user.
+    session_json=get_session_json()
+    session_json.pop('well_data', None)
+    session_json["state"]=0
+    save_session_json(session_json)
+    return "None"
+"""========================================================================================="""
+
 
 
 """ READ SESSION JSON FILE==================================================== """

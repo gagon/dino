@@ -73,9 +73,10 @@ def read_conns():
             "tl":tl,
             "os":os_str,
             "default":str(conns.cell(row=r, column=8).value),
-            "comingled":comingled,
+            # "comingled":comingled,
             "fl_pipe_os":fl_pipe_os
         })
+        well_conns["comingled"]=comingled
 
         r+=1
 

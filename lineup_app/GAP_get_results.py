@@ -126,3 +126,100 @@ def get_all_unit_pc(well_details,state,afs):
 
     PE_server=ut.PE.Stop()
     return pc_data
+
+
+
+
+def get_well_data(PE_server,unit,unit_id,well_data):
+
+    ut.choose_unit(PE_server,unit)
+    status=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].MASKFLAG")
+    wellname=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].Label",status,"string")
+    # gor=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].IPR[0].GOR",status,"float")
+    qoil=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].OilRate",status,"float")
+    qgas=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].GasRate",status,"float")
+    fwhp=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].FWHP",status,"float")
+    dp=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].PControlResult",status,"float")
+    # dd_lim=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxDrawdown",status,"float")
+    # qliq_lim=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxQliq",status,"float")
+    # pipe_status=ut.get_all(PE_server,"GAP.MOD[{PROD}].PIPE[$].MASKFLAG")
+    # pipes=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].PIPE[$].Label",pipe_status,"string")
+
+
+    # wells_from_conn=list(well_data.keys())
+
+    for d,w in enumerate(wellname):
+
+        # this_route=-1
+        # route_cnt=0
+        # for ri,r in enumerate(well_data[w]["connection"]["routes"]):
+        #     if r["os"]:
+        #         route_os=r["os"].split(",")
+        #         if len(route_os)>1:
+        #             if route_os[0] in pipes and route_os[1] in pipes:
+        #                 this_route=ri
+        #                 route_cnt+=1
+        #                 # break
+        #         else:
+        #             if route_os[0] in pipes:
+        #                 this_route=ri
+        #                 route_cnt+=1
+        #                 # break
+
+        ###################### FLOWLINE PRESSURE #############################
+        if state[w[0]]["selected_route"]:
+            for i,r in enumerate(well_details[w[0]]["routes"]):
+                wd_route=str(r["unit"])+"--"+str(r["rms"])+"--"+str(r["tl"])+"--slot "+str(r["slot"])
+                if wd_route==state[w[0]]["selected_route"]:
+                    fl_pipe_os=r["fl_pipe_os"]
+        else:
+            fl_pipe_os=well_details[w[0]]["routes"][0]["fl_pipe_os"] # take first row for well, no other option
+
+        if fl_pipe_os:
+            slotpres=ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].PIPE[{"+fl_pipe_os+"}].SolverResults[0].PresOut")
+            slotpres=float(slotpres)
+        else:
+            slotpres=0
+        ######################################################################
+
+++++++++++++++++++++++++++++++++
+
+        well_data[w]["qoil"]=qoil[d]
+        well_data[w]["unit_id"]=unit_id
+        well_data[w]["curr_route"]=this_route
+        well_data[w]["route_cnt"]=route_cnt
+        well_data[w]["masked"]=0 # set masked 0 to well unmasked(active) in GAP
+
+
+    return well_data
+
+
+
+def get_all_well_data(well_data):
+
+    PE_server=ut.PE.Initialize()
+    ut.showinterface(PE_server,0)
+
+    """ SEQUENCE OF UNITS ====================================== """
+    units=["KPC MP A","UN3 - TR1","UN2 - Slug01"]
+    units_simple=["kpc","u3","u2"]
+
+
+    # well_data=[]
+    for idx,unit in enumerate(units):
+
+        well_data=get_well_data(PE_server,unit,idx,well_data)
+        # well_data.append(data)
+
+    # set masked 1 to well masked in GAP
+    for well,val in well_data.items():
+        if not "masked" in val:
+            well_data[well]["masked"]=1
+
+    """ UNMASK ALL UNITS ====================================== """
+    ut.unmask_all_units(PE_server)
+
+    ut.showinterface(PE_server,1)
+
+    PE_server=ut.PE.Stop()
+    return well_data

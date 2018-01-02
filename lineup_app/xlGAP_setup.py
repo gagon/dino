@@ -79,7 +79,7 @@ def xl_get_all_well_data(well_data):
 
 
 
-def xl_set_unit_routes(session_json):
+def xl_set_unit_routes(well_data):
 
     xlwells,xlunits,xlgap_wb=xlgap_conn()
 
@@ -90,10 +90,10 @@ def xl_set_unit_routes(session_json):
         wellnames[wn]=r
         r+=1
 
-    for well,val in session_json["well_data"].items():
+    for well,val in well_data.items():
         # map selected_route to OS string
         route_open=""
-        for i,r in enumerate(session_json["well_data"][well]["connection"]["routes"]):
+        for i,r in enumerate(well_data[well]["connection"]["routes"]):
             route=str(r["unit"])+"--"+str(r["rms"])+"--"+str(r["tl"])+"--slot "+str(r["slot"])
             if route==val["selected_route"]:
                 route_open=r["os"]
