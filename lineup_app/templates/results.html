@@ -90,11 +90,11 @@
   <div class="row">
     <div class="col-lg-12">
       <h3>TOTALS FIELD PRODUCTION</h3>
-      <h4 style="color:#339933;">Qgas (ksm3/d) - {{ data.field.qgas }}</h4>
-      <h4 style="color:#339933;">Qoil (sm3/d) - {{ data.field.qoil }}</h4>
+      <h4 style="color:#339933;">Qgas (ksm3/d) - {{ data.totals.field.qgas|round(1, 'common') }}</h4>
+      <h4 style="color:#339933;">Qoil (sm3/d) - {{ data.totals.field.qoil|round(1, 'common') }}</h4>
       {% if merge_done==1 %}
-        <h4>Qgas (ksm3/d) ref case - {{ data.field.qgas_ref }}</h4>
-        <h4>Qoil (sm3/d) ref case - {{ data.field.qoil_ref }}</h4>
+        <h4>Qgas (ksm3/d) ref case - {{ data.totals.field.qgas_ref|round(1, 'common') }}</h4>
+        <h4>Qoil (sm3/d) ref case - {{ data.totals.field.qoil_ref|round(1, 'common') }}</h4>
       {% endif %}
 
     </div>
@@ -111,7 +111,7 @@
   <div class="row">
 
 
-    {% for tots in data.totals %}
+    {% for tots in data.totals.unit %}
 
 
       <div class="col-lg-4">
@@ -149,21 +149,21 @@
               <tbody>
                 <tr>
                   <td style="color:#339933;"><b>Total</b></td>
-                  <td style="color:#339933;"><b>{{ tots.qgas }}</b></td>
-                  <td style="color:#339933;"><b>{{ tots.qoil }}</b></td>
+                  <td style="color:#339933;"><b>{{ tots.qgas|round(1, 'common') }}</b></td>
+                  <td style="color:#339933;"><b>{{ tots.qoil|round(1, 'common') }}</b></td>
                   {% if merge_done==1 %}
-                    <td style="background-color:#f2f2f2;"><b>{{ tots.qgas_ref }}</b></td>
-                    <td style="background-color:#f2f2f2;"><b>{{ tots.qoil_ref }}</b></td>
+                    <td style="background-color:#f2f2f2;"><b>{{ tots.qgas_ref|round(1, 'common') }}</b></td>
+                    <td style="background-color:#f2f2f2;"><b>{{ tots.qoil_ref|round(1, 'common') }}</b></td>
                   {% endif %}
                 </tr>
                 {% for rms,d in tots.subtotals.items() %}
                   <tr>
                     <td><b>{{ rms }}</b></td>
-                    <td>{{ d.qgas }}</td>
-                    <td>{{ d.qoil }}</td>
+                    <td>{{ d.qgas|round(1, 'common') }}</td>
+                    <td>{{ d.qoil|round(1, 'common') }}</td>
                     {% if merge_done==1 %}
-                      <td style="background-color:#f2f2f2;">{{ d.qgas_ref }}</td>
-                      <td style="background-color:#f2f2f2;">{{ d.qoil_ref }}</td>
+                      <td style="background-color:#f2f2f2;">{{ d.qgas_ref|round(1, 'common') }}</td>
+                      <td style="background-color:#f2f2f2;">{{ d.qoil_ref|round(1, 'common') }}</td>
                     {% endif %}
                   </tr>
                 {% endfor %}
@@ -187,7 +187,7 @@
 
       <span><h3>WELLS PRODUCTION</h3></span>
 
-      {% for d in data.well_data %}
+      {% for d in data.well_data_byunit %}
 
         <div class="row">
           <div class="col-lg-12">
@@ -240,15 +240,15 @@
               <tbody>
                 {% for key, row in d.items() %}
                   <tr>
-                    <td name="wellname">{{ row.wellname }}</td>
+                    <td name="wellname">{{ row.connection.wellname }}</td>
                     <td title="GOR">{{ row.gor|round(1, 'common') }}</td>
-                    <td title="Connected">{{ row.connected }}</td>
-                    <td title="Comingled">{{ row.route.comingled }}</td>
+                    <td title="Connected">{{ row.connection.connected }}</td>
+                    <td title="Comingled">{{ row.connection.comingled }}</td>
                     <td title="MAP" name="map">{{ row.map }}</td>
 
 
                     <td title="Flow to" style="border-left: 1px solid #cccccc;">
-                      {{ row.route.unit }}--{{ row.route.rms }}--{{ row.route.tl }}--slot {{ row.route.slot }}
+                      {{ row.selected_route }}
                     </td>
                     <td title="Target FWHP" name="target_fwhp">{{ row.target_fwhp }}</td>
                     <td title="FWHP" name="fwhp" value="{{ row.fwhp_raw }}">{{ row.fwhp|round(1, 'common') }}</td>
@@ -260,7 +260,8 @@
 
                     {% if merge_done==1 %}
                       <td title="Flow to ref" style="background-color:#f2f2f2; border-left: 1px solid #cccccc;">
-                        {{ row.route_ref.unit }}--{{ row.route_ref.rms }}--{{ row.route_ref.tl }}--slot {{ row.route_ref.slot }}
+
+                        {{ row.selected_route_ref }}
                       </td>
                       <td title="Target FWHP ref" name="target_fwhp" style="background-color:#f2f2f2;">{{ row.target_fwhp_ref }}</td>
                       <td title="FWHP ref" name="fwhp" value="{{ row.fwhp_raw }}" style="background-color:#f2f2f2;">{{ row.fwhp_ref|round(1, 'common') }}</td>

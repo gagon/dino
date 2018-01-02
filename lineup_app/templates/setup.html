@@ -232,7 +232,7 @@
                   <td name="wellname">{{ row.connection.wellname }}</td>
                   <td>{{ row.gor }}</td>
                   <td>{{ row.connection.connected }}</td>
-                  <td>{{ row.connection.routes[0].comingled }}</td>
+                  <td>{{ row.connection.comingled }}</td>
 
 
                   {% if row.connection.routes|length >1 %} <!-- if there are mutiple routes for the well -->
@@ -251,12 +251,12 @@
                       {% endif %}
                     </td>
                   {% else %} <!-- if only 1 route for the well then just show the path-->
-                    <td>{{ row.connection.routes[0].unit }}--{{ row.connection.routes[0].rms }}--{{ row.connection.routes[0].tl }}--slot {{ row.connection.routes[0].slot }}</td>
+                    <td name="selected_route">{{ row.connection.routes[0].unit }}--{{ row.connection.routes[0].rms }}--{{ row.connection.routes[0].tl }}--slot {{ row.connection.routes[0].slot }}</td>
                   {% endif %}
                   <td name="map">{{ row.map }}</td>
                   <td>
                     <input class="form-control input-small" type="text"
-                      style="padding:1px;width:60px;height:18px;font-size:12px;" name="fwhp" value="{{ row.fwhp }}">
+                      style="padding:1px;width:60px;height:18px;font-size:12px;" name="target_fwhp" value="{{ row.target_fwhp }}">
                   </td>
                   <td>
                     {% if row.in_opt==1 %}
@@ -329,6 +329,9 @@
   function save_state() {
 
     session_json=get_state(session_json); // get state data from target fwhp, route and optimize columns
+    session_json["state"]=1;
+    console.log(session_json["well_data"]);
+
 
     // Make AJAX call to save state data to session in the server, see "savestate" url call in views.py
     // AJAX standard form for calling
@@ -376,24 +379,26 @@
         // well_state[wellname]={}; // init dict in state dict for this well
         if ($(this).find("[name=selected_route]").val()){ // get route from row
           well_data[wellname]["selected_route"]=$(this).find("[name=selected_route]").val();
+        }else if ($(this).find("[name=selected_route]").text()){
+          well_data[wellname]["selected_route"]=$(this).find("[name=selected_route]").text();
         }else{
           well_data[wellname]["selected_route"]="";
         };
 
         var map=parseFloat($(this).find("[name=map]").text()) // get MAP from row
 
-        if ($(this).find("[name=fwhp]").val()){ // get target FWHP from row
-          var fwhp_val=parseFloat($(this).find("[name=fwhp]").val());
+        if ($(this).find("[name=target_fwhp]").val()){ // get target FWHP from row
+          var fwhp_val=parseFloat($(this).find("[name=target_fwhp]").val());
           // QC fwhp value. Make sure fwhp is not less than MAP. If it is, then set it to MAP
           if (fwhp_val>map){
-            well_data[wellname]["fwhp"]=fwhp_val;
+            well_data[wellname]["target_fwhp"]=fwhp_val;
           }else if (fwhp_val==-1){
-            well_data[wellname]["fwhp"]=-1;
+            well_data[wellname]["target_fwhp"]=-1;
           }else{
-            well_data[wellname]["fwhp"]=map;
+            well_data[wellname]["target_fwhp"]=map;
           }
         }else{
-          well_data[wellname]["fwhp"]=map;
+          well_data[wellname]["target_fwhp"]=map;
         };
 
         if ($(this).find("[name=in_opt]").is(":checked")){ // get in_opt from row
