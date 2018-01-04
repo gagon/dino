@@ -131,13 +131,14 @@ def merge_ref(data):
             if not well in data["well_data_byunit"][u]: # if does not exist in current results add row for current results columns as blank.
                 data["well_data_byunit"][u][well]={}
                 for c in cols:
-                    if c =="wellname":
-                        data["well_data_byunit"][u][well][c]=well
-                    elif c =="route":
-                        data["well_data_byunit"][u][well][c]=""
-                    else:
-                        data["well_data_byunit"][u][well][c]=0
+                    # if c =="wellname":
+                    #     data["well_data_byunit"][u][well][c]=well
+                    # elif c =="route":
+                    #     data["well_data_byunit"][u][well][c]=""
+                    # else:
+                    data["well_data_byunit"][u][well][c]=0
                     data["well_data_byunit"][u][well][c+"_ref"]=data_ref["well_data_byunit"][u][well][c] # add data from ref case to ref case colunms
+                # data["well_data_byunit"][u][well]["connection"]["wellname"]=well
 
                 # print(data["well_data_byunit"][u][well])
 

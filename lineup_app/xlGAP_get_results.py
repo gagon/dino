@@ -181,8 +181,10 @@ def wellname_type(wn):
 
 
 
-def xl_get_well_data(unit,unit_id,well_data):
+def xl_get_well_data(unit,unit_id,session_json):
 
+    well_data=session_json["well_data"]
+    
     xlwells,xlunits,xlgap_wb=xlgap_conn()
     wellname=[]
     gor=[]

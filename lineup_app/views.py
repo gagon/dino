@@ -162,27 +162,35 @@ def results():
 
 
     session_json=get_session_json()
-    if not "well_data" in session_json: # check if state was exists. well_data ~ state
+    if not "state" in session_json: # check if state was exists. well_data ~ state
         return "NO session well state. Go back to setup and save state"
     # get well results from GAP
     #------------------------------------------------------------------------------
+
+    # get results from GAP or mockup excel
     if MOCKUP:
-        session_json["well_data"]=xlggr.xl_get_all_well_data(session_json["well_data"])
+        session_json["well_data"]=xlggr.xl_get_all_well_data(session_json)
     else:
-        session_json["well_data"]=ggr.get_all_unit_pc(session_json["well_data"])
+        session_json["well_data"]=ggr.get_all_well_data(session_json)
     #------------------------------------------------------------------------------
 
+    # group well results by unit
     session_json["well_data_byunit"]=[{},{},{}]
     for well,val in session_json["well_data"].items():
-        session_json["well_data_byunit"][val["unit_id"]][well]=val
+        if "masked" in val: #required to know which well is masked/unmasked in GAP to include/exclude well in the list
+            if val["masked"]==0:
+                session_json["well_data_byunit"][val["unit_id"]][well]=val
 
-
+    # calculate totals by field/unit/rms
     session_json["totals"]=rs.calculate_totals(session_json["well_data_byunit"])
 
+    # field balance calculation
     session_json["fb_data"]=fb.calculate(session_json)
 
+    # save results to json
     save_session_json(session_json)
 
+    # merge data to present if ref case exists
     data,merge_done=rs.merge_ref(session_json)
 
     page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":"active"}
@@ -227,47 +235,32 @@ def setup():
 
     # get well connections from "well_connections.xlsm" file
     well_conns=xl_setup.read_conns()
-
     for well,conns in well_conns.items(): # merge with well_data
-        if not well in session_json["well_data"]: # create a well record in well_data if not in list yet
+        if not well in session_json["well_data"]: # create a well record in well_data if well not in list yet
             session_json["well_data"][well]={}
         session_json["well_data"][well]["connection"]=conns # assign list of connections
-    # print(session_json["well_data"]["20D"])
+
     # get MAPs from "Deliverability.xlsx" file
     well_maps=xl_setup.read_maps()
     for well,m in session_json["well_data"].items(): # merge with well_data
         session_json["well_data"][well]["map"]=well_maps[well]["map"]
 
-    # any_well=list(session_json["well_data"].keys())[0] # get first index well to check if selected_route was set
-    # if "selected_route" in session_json["well_data"][any_well]:
-    if session_json["state"]==1:
+
+    if session_json["state"]==1: # check if state has been saved by the user
         #------------------------------------------------------------------------------
         if MOCKUP:
             xlst.xl_set_unit_routes(session_json["well_data"]) # set well routes as per state
-        else:
-            st.set_unit_routes(session_json["well_data"]) # set well routes as per state
-        # ------------------------------------------------------------------------------
-
-
-    # if "kpc_sep_pres" in session_json["unit_data"]["sep"]: # check sep pres
-        #------------------------------------------------------------------------------
-        if MOCKUP:
             xlst.xl_set_sep_pres(session_json["unit_data"]["sep"]) # set separator pressure as per state
         else:
+            st.set_unit_routes(session_json["well_data"]) # set well routes as per state
             st.set_sep_pres(session_json["unit_data"]["sep"]) # set separator pressure as per state
-        #------------------------------------------------------------------------------
 
     #------------------------------------------------------------------------------
     if MOCKUP:
-        session_json["well_data"]=xlst.xl_get_all_well_data(session_json["well_data"]) # get well data from GAP such as GOR, limits and current routes
-    else:
-        session_json["well_data"]=st.get_all_well_data(session_json["well_data"]) # get well data from GAP such as GOR, limits and current routes
-    #------------------------------------------------------------------------------
-
-    #------------------------------------------------------------------------------
-    if MOCKUP:
+        session_json["well_data"]=xlst.xl_get_all_well_data(session_json["well_data"]) # get well data from GAP such as GOR and current routes
         session_json["unit_data"]["sep"]=xlst.xl_get_sep_pres() # get separator pressure if state doesn't exist
     else:
+        session_json["well_data"]=st.get_all_well_data(session_json["well_data"]) # get well data from GAP such as GOR, limits and current routes
         session_json["unit_data"]["sep"]=st.get_sep_pres() # get separator pressure if state doesn't exist
     #------------------------------------------------------------------------------
 
@@ -434,7 +427,7 @@ def save_2ref():
     json_fullpath=os.path.join(uploader_dirname,r"temp\session.json")
     data = json.load(open(json_fullpath))
 
-    json_fullpath_ref=os.path.join(dirname,r"temp\session_ref_case.json")
+    json_fullpath_ref=os.path.join(uploader_dirname,r"temp\session_ref_case.json")
     json.dump(data, open(json_fullpath_ref, 'w'))
 
     emit('save_complete',{"data":"Reference case saved"})
