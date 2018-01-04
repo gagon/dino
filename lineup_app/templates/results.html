@@ -238,14 +238,14 @@
                 </tr>
               </thead>
               <tbody>
-                {% for key, row in d.items() %}
+                {% for well_key, row in d.items() %}
                   <tr>
-                    <td name="wellname">{{ row.connection.wellname }}</td>
+
+                    <td name="wellname">{{ well_key }}</td>
                     <td title="GOR">{{ row.gor|round(1, 'common') }}</td>
                     <td title="Connected">{{ row.connection.connected }}</td>
                     <td title="Comingled">{{ row.connection.comingled }}</td>
                     <td title="MAP" name="map">{{ row.map }}</td>
-
 
                     <td title="Flow to" style="border-left: 1px solid #cccccc;">
                       {{ row.selected_route }}
@@ -255,8 +255,8 @@
                     <td title="dP Choke" name="dp">{{ row.dp|round(1, 'common') }}</td>
                     <td title="FL pressure" name="flp">{{ (row.fwhp-row.dp)|round(1, 'common') }}</td>
                     <td title="Slot pressure" name="slotpres">{{ row.slotpres|round(1, 'common') }}</td>
-                    <td title="Qgas">{{ row.qoil|round(1, 'common') }}</td>
-                    <td title="Qoil">{{ row.qgas|round(1, 'common') }}</td>
+                    <td title="Qoil">{{ row.qoil|round(1, 'common') }}</td>
+                    <td title="Qgas">{{ row.qgas|round(1, 'common') }}</td>
 
                     {% if merge_done==1 %}
                       <td title="Flow to ref" style="background-color:#f2f2f2; border-left: 1px solid #cccccc;">
@@ -268,8 +268,8 @@
                       <td title="dP Choke ref" name="dp" style="background-color:#f2f2f2;">{{ row.dp_ref|round(1, 'common') }}</td>
                       <td title="FL pressure ref" name="flp" style="background-color:#f2f2f2;">{{ (row.fwhp_ref-row.dp_ref)|round(1, 'common') }}</td>
                       <td title="Slot pressure ref" name="slotpres" style="background-color:#f2f2f2;">{{ row.slotpres_ref|round(1, 'common') }}</td>
-                      <td title="Qgas ref" style="background-color:#f2f2f2;">{{ row.qoil_ref|round(1, 'common') }}</td>
-                      <td title="Qoil ref"  style="background-color:#f2f2f2;">{{ row.qgas_ref|round(1, 'common') }}</td>
+                      <td title="Qoil ref" style="background-color:#f2f2f2;">{{ row.qoil_ref|round(1, 'common') }}</td>
+                      <td title="Qgas ref"  style="background-color:#f2f2f2;">{{ row.qgas_ref|round(1, 'common') }}</td>
                     {% endif %}
 
                   </tr>

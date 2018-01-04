@@ -51,12 +51,12 @@
         </tr>
         <tr>
           <td style='width:40%;background-color:#f2f2f2;'>Unit Inlet Pressure, bar</td>
-          <td class="text-center" style='width:20%;'><span id="kpc_sep_pres" contenteditable>{{ data.unit_data.sep.kpc_sep_pres }}</span></td>
-          <td class="text-center" style='width:5%;'><span id="u3_train1_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train1_sep_pres }}</span></td>
-          <td class="text-center" style='width:5%;'><span id="u3_train2_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train2_sep_pres }}</span></td>
-          <td class="text-center" style='width:5%;'><span id="u3_train3_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train3_sep_pres }}</span></td>
-          <td class="text-center" style='width:5%;'><span id="u3_train4_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train4_sep_pres }}</span></td>
-          <td class="text-center" style='width:20%;'><span id="u2_sep_pres" contenteditable>{{ data.unit_data.sep.u2_sep_pres }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="kpc_sep_pres" contenteditable>{{ data.unit_data.sep.kpc_sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:5%;'><span id="u3_train1_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train1_sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:5%;'><span id="u3_train2_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train2_sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:5%;'><span id="u3_train3_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train3_sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:5%;'><span id="u3_train4_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train4_sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="u2_sep_pres" contenteditable>{{ data.unit_data.sep.u2_sep_pres|round(1, 'common')  }}</span></td>
         </tr>
       </table>
     </div>
@@ -192,11 +192,11 @@
 
           <!-- TABLE HEADERS ============================================ -->
           {% if loop.index0==0 %}
-            <th>KPC</th>
+            <h4 style="margin-bottom:0px">KPC</h4>
           {% elif loop.index0==1 %}
-            <th>Unit 3</th>
+            <h4 style="margin-bottom:0px">Unit 3</h4>
           {% elif loop.index0==2 %}
-            <th>Unit 2</th>
+            <h4 style="margin-bottom:0px">Unit 2</h4>
           {% endif %}
           <!-- ========================================================== -->
 
@@ -216,21 +216,21 @@
                   <hr style="margin-bottom:5px;margin-top:5px;">
                   Target FWHP
                 </th>
-                <th>
+                <th title="If this box is fixed then well target FWHP will be fixed and excluded from optimization algorithm.">
                   <a href="javascript:void(0);" id="#invert_select{{ loop.index0 }}" onclick="invert_select({{ loop.index0 }});">
                     Invert select
                   </a>
                   <hr style="margin-bottom:5px;margin-top:5px;">
-                  Optimize?
+                  Fix well?
                 </th>
               </tr>
             </thead>
             <tbody>
-              {% for well, row in unit.items() %} <!-- loop through wells in units -->
+              {% for well_key, row in unit.items() %} <!-- loop through wells in units -->
                 <tr>
 
-                  <td name="wellname">{{ row.connection.wellname }}</td>
-                  <td>{{ row.gor }}</td>
+                  <td name="wellname">{{ well_key }}</td>
+                  <td>{{ row.gor|round(1, 'common')  }}</td>
                   <td>{{ row.connection.connected }}</td>
                   <td>{{ row.connection.comingled }}</td>
 
@@ -259,10 +259,10 @@
                       style="padding:1px;width:60px;height:18px;font-size:12px;" name="target_fwhp" value="{{ row.target_fwhp }}">
                   </td>
                   <td>
-                    {% if row.in_opt==1 %}
-                      <input type="checkbox" name="in_opt" value="" checked='checked'>
+                    {% if row.fixed==1 %}
+                      <input type="checkbox" name="fixed" value="" checked='checked'>
                     {% else %}
-                      <input type="checkbox" name="in_opt" value="">
+                      <input type="checkbox" name="fixed" value="">
                     {% endif %}
                   </td>
 
@@ -401,10 +401,10 @@
           well_data[wellname]["target_fwhp"]=map;
         };
 
-        if ($(this).find("[name=in_opt]").is(":checked")){ // get in_opt from row
-          well_data[wellname]["in_opt"]=1
+        if ($(this).find("[name=fixed]").is(":checked")){ // get fixed state from row
+          well_data[wellname]["fixed"]=1
         }else{
-          well_data[wellname]["in_opt"]=0
+          well_data[wellname]["fixed"]=0
         }
 
       })
@@ -463,16 +463,16 @@
 
 
   ////////////////////////////////////////////////////////////////////////////////
-  // change in_opt set on the page. Each unit table is set individually
+  // change fixed set on the page. Each unit table is set individually
   function invert_select(tbl){
     table="#sort_table" + tbl.toString()+" tbody";
 
     $(table).children('tr').each(function () { // loop through rows
 
-      if ($(this).find("[name=in_opt]").is(":checked")){
-        $(this).find("[name=in_opt]").prop('checked', false); // if checked, then uncheck
+      if ($(this).find("[name=fixed]").is(":checked")){
+        $(this).find("[name=fixed]").prop('checked', false); // if checked, then uncheck
       } else {
-        $(this).find("[name=in_opt]").prop('checked', true); // if unchecked, then check
+        $(this).find("[name=fixed]").prop('checked', true); // if unchecked, then check
       }
 
     })
