@@ -1,0 +1,522 @@
+{% extends 'base.html' %}
+{% block currentpage %}
+
+
+<div class="container-fluid">
+
+  <h3><b><a href="#" id="show_hide_field_section">Field</a></b></h3>
+
+  <div class="row" id="field_section">
+
+    <div class="col-lg-4">
+      <h4>Units</h4>
+      <table class="table table-bordered table-condensed" style="font-size:12px;">
+
+        <tr>
+          <td style="width:40%;border-top: 1px solid transparent;border-left: 1px solid transparent;" ></td>
+          <td class="text-center" style='width:20%;background-color:#f2f2f2;'><b>KPC</b></td>
+          <td class="text-center" style='width:32%;background-color:#f2f2f2;'colspan="4"><b>Unit-3</b></td>
+          <td class="text-center" style='width:20%;background-color:#f2f2f2;'><b>Unit-2</b></td>
+        </tr>
+        <tr>
+          <td style='width:40%;background-color:#f2f2f2;'>Qoil max, sm3/d</td>
+          <td class="text-center" style='width:20%;'><span id="kpc_qoil_max" contenteditable>{{ data.unit_data.constraints.kpc_qoil_max }}</span></td>
+          <td class="text-center" style='width:20%;' colspan="4"><span id="u3_qoil_max" contenteditable>{{ data.unit_data.constraints.u3_qoil_max }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="u2_qoil_max" contenteditable>{{ data.unit_data.constraints.u2_qoil_max }}</span></td>
+        </tr>
+
+        <tr>
+          <td style='width:40%;background-color:#f2f2f2;'>Qgas max, ksm3/d</td>
+          <td class="text-center" style='width:20%;'><span id="kpc_qgas_max" contenteditable>{{ data.unit_data.constraints.kpc_qgas_max }}</span></td>
+          <td class="text-center" style='width:20%;' colspan="4"><span id="u3_qgas_max" contenteditable>{{ data.unit_data.constraints.u3_qgas_max }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="u2_qgas_max" contenteditable>{{ data.unit_data.constraints.u2_qgas_max }}</span></td>
+        </tr>
+        <tr>
+          <td style='width:40%;background-color:#f2f2f2;'>Qwater max, sm3/d</td>
+          <td class="text-center" style='width:20%;'><span id="kpc_qwat_max" contenteditable></span></td>
+          <td class="text-center" style='width:20%;' colspan="4"><span id="u3_qwat_max" contenteditable></span></td>
+          <td class="text-center" style='width:20%;'><span id="u2_qwat_max" contenteditable></span></td>
+        </tr>
+        <tr>
+          <td style='width:40%;background-color:#f2f2f2;'>Qoil AF</td>
+          <td class="text-center" style='width:20%;'><span id="kpc_af_oil" contenteditable>{{ data.fb_data.wells.kpc.af_oil }}</span></td>
+          <td class="text-center" style='width:20%;' colspan="4"><span id="u3_af_oil" contenteditable>{{ data.fb_data.wells.u3.af_oil }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="u2_af_oil" contenteditable>{{ data.fb_data.wells.u2.af_oil }}</span></td>
+        </tr>
+        <tr>
+          <td style='width:40%;background-color:#f2f2f2;'>Qgas AF</td>
+          <td class="text-center" style='width:20%;'><span id="kpc_af_gas" contenteditable >{{ data.fb_data.wells.kpc.af_gas }}</span></td>
+          <td class="text-center" style='width:20%;' colspan="4"><span id="u3_af_gas" contenteditable>{{ data.fb_data.wells.u3.af_gas }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="u2_af_gas" contenteditable>{{ data.fb_data.wells.u2.af_gas }}</span></td>
+        </tr>
+        <tr>
+          <td style='width:40%;background-color:#f2f2f2;'>Unit Inlet Pressure, bar</td>
+          <td class="text-center" style='width:20%;'><span id="kpc_sep_pres" contenteditable>{{ data.unit_data.sep.kpc_sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:5%;'><span id="u3_train1_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train1_sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:5%;'><span id="u3_train2_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train2_sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:5%;'><span id="u3_train3_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train3_sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:5%;'><span id="u3_train4_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train4_sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="u2_sep_pres" contenteditable>{{ data.unit_data.sep.u2_sep_pres|round(1, 'common')  }}</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="col-lg-4">
+        <h4>Export</h4>
+        <table class="table table-bordered table-condensed" style="font-size:12px;">
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">CPC oil max</td>
+            <td style='width:20%;'><span id="cpc_oil_max" contenteditable>{{ data.fb_data.streams.constraints.cpc_oil_max }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">OGP gas max</td>
+            <td style='width:20%;'><span id="ogp_gas_max" contenteditable>{{ data.fb_data.streams.constraints.ogp_gas_max }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">Gas injection Target</td>
+            <td style='width:20%;'><span id="gas_inj_max" contenteditable>{{ data.fb_data.streams.constraints.gas_inj_max }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">Fuel gas max</td>
+            <td style='width:20%;'><span id="fuel_gas_max" contenteditable>{{ data.fb_data.streams.constraints.fuel_gas_max }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">MTU oil max</td>
+            <td style='width:20%;'><span id="mtu_oil_max" contenteditable>{{ data.fb_data.streams.constraints.mtu_oil_max }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">OGP oil max</td>
+            <td style='width:20%;'><span id="ogp_oil_max" contenteditable>{{ data.fb_data.streams.constraints.ogp_oil_max }}</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="col-lg-4">
+        <h4>Process</h4>
+        <table class="table table-bordered table-condensed" style="font-size:12px;">
+
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">KPC Max gas in MP Sep</td>
+            <td style='width:20%;'><span id="kpc_free_gas_max" style='width:20%;' contenteditable>{{ data.fb_data.streams.constraints.kpc_free_gas_max }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">KPC Max Tot gas in Drizo</td>
+            <td style='width:20%;'><span id="kpc_tot_gas_max" contenteditable>{{ data.fb_data.streams.constraints.kpc_tot_gas_max }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">Unit-2 Max gas in MP Sep</td>
+            <td style='width:20%;'><span id="u2_free_gas_max" contenteditable>{{ data.fb_data.streams.constraints.u2_free_gas_max }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">Unit-3 Max gas in MP Sep</td>
+            <td style='width:20%;'><span id="u3_free_gas_max" contenteditable>{{ data.fb_data.streams.constraints.u3_free_gas_max }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">KPC Qgas Max to Unit-2</td>
+            <td style='width:20%;'><span id="kpc_gas_2_u2_max" contenteditable>{{ data.fb_data.streams.constraints.kpc_gas_2_u2_max }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">KPC Qgas Max to Unit-3</td>
+            <td style='width:20%;'><span id="kpc_gas_2_u3_max" contenteditable>{{ data.fb_data.streams.constraints.kpc_gas_2_u3_max }}</span></td>
+          </tr>
+
+
+        </table>
+      </div>
+
+
+      <div class="col-lg-4">
+        <h4>Lab data</h4>
+        <table class="table table-bordered table-condensed" style="font-size:12px;">
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">Unstable oil Density Unit-3</td>
+            <td style='width:20%;'><span id="u3_unst_dens" contenteditable>{{ data.fb_data.lab.u3_unst_dens }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">Unstable oil Density Unit-2</td>
+            <td style='width:20%;' id="u2_unst_dens" contenteditable><span id="u2_unst_dens" contenteditable >{{ data.fb_data.lab.u2_unst_dens }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">St/unst oil Conversion Unit-3</td>
+            <td style='width:20%;'><span id="u3_st_unst_conv" contenteditable>{{ data.fb_data.lab.u3_st_unst_conv }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">St/unst oil Conversion Unit-2</td>
+            <td style='width:20%;'><span id="u2_st_unst_conv" contenteditable>{{ data.fb_data.lab.u2_st_unst_conv }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">MP Rs Unit-3</td>
+            <td style='width:20%;'><span id="u3_mp_rs" contenteditable>{{ data.fb_data.lab.u3_mp_rs }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">LP Rs Unit-3</td>
+            <td style='width:20%;'><span id="u3_lp_rs" contenteditable>{{ data.fb_data.lab.u3_lp_rs }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">MP Rs Unit-2</td>
+            <td style='width:20%;'><span id="u2_mp_rs" contenteditable>{{ data.fb_data.lab.u2_mp_rs }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">MP Rs KPC</td>
+            <td style='width:20%;'><span id="kpc_mp_rs" contenteditable>{{ data.fb_data.lab.kpc_mp_rs }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">Oil shrinkage Unit-3</td>
+            <td style='width:20%;'><span id="u3_shrinkage" contenteditable>{{ data.fb_data.lab.u3_shrinkage }}</span></td>
+          </tr>
+          <tr>
+            <td style="width:80%;background-color:#f2f2f2;">Oil shrinkage Unit-2</td>
+            <td style='width:20%;'><span id="u2_shrinkage" contenteditable>{{ data.fb_data.lab.u2_shrinkage }}</span></td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <hr style="background-color:#E0E0E0;height:1px;">
+
+
+  <h3><b><a href="#" id="show_hide_wells_section">Wells</a></b></h3>
+
+  <div id="wells_section">
+
+    {% for unit in data.well_data_byunit %} <!-- loop through units in well_data -->
+
+      <div class="row">
+        <div class="col-lg-12">
+
+          <!-- TABLE HEADERS ============================================ -->
+          {% if loop.index0==0 %}
+            <h4 style="margin-bottom:0px">KPC</h4>
+          {% elif loop.index0==1 %}
+            <h4 style="margin-bottom:0px">Unit 3</h4>
+          {% elif loop.index0==2 %}
+            <h4 style="margin-bottom:0px">Unit 2</h4>
+          {% endif %}
+          <!-- ========================================================== -->
+
+          <table class="table table-hover  table-condensed" id="sort_table{{loop.index0}}" style="font-size: 12px;">
+            <thead class="thead-default">
+              <tr>
+                <th>Wellname</th>
+                <th>GOR</th>
+                <th>Connected</th>
+                <th>Comingled</th>
+                <th>Flow to</th>
+                <th>MAP</th>
+                <th>
+                  <a href="javascript:void(0);" id="#reset_to_map{{ loop.index0 }}" onclick="reset_to_map({{ loop.index0 }});">
+                    Reset all to MAP
+                  </a>
+                  <hr style="margin-bottom:5px;margin-top:5px;">
+                  Target FWHP
+                </th>
+                <th title="If this box is fixed then well target FWHP will be fixed and excluded from optimization algorithm.">
+                  <a href="javascript:void(0);" id="#invert_select{{ loop.index0 }}" onclick="invert_select({{ loop.index0 }});">
+                    Invert select
+                  </a>
+                  <hr style="margin-bottom:5px;margin-top:5px;">
+                  Fix well?
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for well_key, row in unit.items() %} <!-- loop through wells in units -->
+                <tr>
+
+                  <td name="wellname">{{ well_key }}</td>
+                  <td>{{ row.gor|round(1, 'common')  }}</td>
+                  <td>{{ row.connection.connected }}</td>
+                  <td>{{ row.connection.comingled }}</td>
+
+
+                  {% if row.connection.routes|length >1 %} <!-- if there are mutiple routes for the well -->
+                    <td style="padding: 0px;vertical-align: middle;">
+                      <select class="form-control input-sm" name="selected_route" style="padding:1px;width:200px;height:20px;">
+                        {% for r in row.connection.routes %} <!-- loop through routes for well -->
+                          {% if loop.index0==row.curr_route %} <!-- check if the route is selected -->
+                            <option selected>{{ r.unit }}--{{ r.rms }}--{{ r.tl }}--slot {{ r.slot }}</option>
+                          {% else %} <!-- if route is not selected -->
+                            <option>{{ r.unit }}--{{ r.rms }}--{{ r.tl }}--slot {{ r.slot }}</option>
+                          {% endif %}
+                        {% endfor %}
+                      </select>
+                      {% if row.route_cnt>1 %} <!-- QC if more than 1 routes is currently selected -->
+                        <span style="color:red;">Warning! >1 route open! {{row.route_cnt}}</span>
+                      {% endif %}
+                    </td>
+                  {% else %} <!-- if only 1 route for the well then just show the path-->
+                    <td name="selected_route">{{ row.connection.routes[0].unit }}--{{ row.connection.routes[0].rms }}--{{ row.connection.routes[0].tl }}--slot {{ row.connection.routes[0].slot }}</td>
+                  {% endif %}
+                  <td name="map">{{ row.map }}</td>
+                  <td>
+                    <input class="form-control input-small" type="text"
+                      style="padding:1px;width:60px;height:18px;font-size:12px;" name="target_fwhp" value="{{ row.target_fwhp }}">
+                  </td>
+                  <td>
+                    {% if row.fixed==1 %}
+                      <input type="checkbox" name="fixed" value="" checked='checked'>
+                    {% else %}
+                      <input type="checkbox" name="fixed" value="">
+                    {% endif %}
+                  </td>
+
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+        </div> <!-- col end -->
+      </div> <!-- row end -->
+
+    {% endfor %}
+  </div>
+  <hr style="background-color:#E0E0E0;height:1px;">
+
+</div> <!-- container end -->
+
+
+
+
+
+<script type="text/javascript">
+
+  var units_section=1;
+  var field_section=1;
+  var fb_section=1;
+  var wells_section=1;
+
+  var session_json;
+  session_json={{ data|safe }};
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Enable sorting of table using table sorter library. Check "tablesorter.js" library for more details.
+  $( document ).ready(function() {
+    $("#sort_table0").tablesorter();
+    $("#sort_table1").tablesorter();
+    $("#sort_table2").tablesorter();
+
+    // $('#show_hide_units_section').click(function(e) {
+    //   units_section=show_hide_section("units_section",units_section);
+    // })
+
+    $('#show_hide_field_section').click(function(e) {
+      field_section=show_hide_section("field_section",field_section);
+    })
+
+    $('#show_hide_fb_section').click(function(e) {
+      fb_section=show_hide_section("fb_section",fb_section);
+    })
+
+    $('#show_hide_wells_section').click(function(e) {
+      wells_section=show_hide_section("wells_section",wells_section);
+    })
+
+  });
+
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  function save_state() {
+
+    session_json=get_state(session_json); // get state data from target fwhp, route and optimize columns
+    session_json["state"]=1;
+    console.log(session_json["well_data"]);
+
+
+    // Make AJAX call to save state data to session in the server, see "savestate" url call in views.py
+    // AJAX standard form for calling
+    $.ajax({
+        type: "POST",
+        url: "/savestate", // url to call in the views.py
+        // The key needs to match your method's input parameter (case-sensitive).
+        data: JSON.stringify(session_json),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
+        }
+    });
+    alert("State saved. Reload page to update table"); // send message after saving to state
+
+  };
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // read tables in setup page and gather state data
+  function get_state(data){
+
+    data["well_data"]=get_well_state(data["well_data"]);
+    data["unit_data"]=get_unit_data(data["unit_data"]);
+    data["fb_data"]=get_fb_data(data["fb_data"]);
+
+    return data;
+  }
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+  function get_well_state(well_data){
+
+    // var well_state={}; // init wells in state
+
+    for (i=0; i<3; ++i) { // loop from 0 to 2 (table number corresponding to each unit table)
+      table="#sort_table" + i.toString()+" tbody"; // table ID
+      $(table).children('tr').each(function () { // loop through rows in table
+
+        var wellname=$(this).find("[name=wellname]").text() // get wellname
+        // well_state[wellname]={}; // init dict in state dict for this well
+        if ($(this).find("[name=selected_route]").val()){ // get route from row
+          well_data[wellname]["selected_route"]=$(this).find("[name=selected_route]").val();
+        }else if ($(this).find("[name=selected_route]").text()){
+          well_data[wellname]["selected_route"]=$(this).find("[name=selected_route]").text();
+        }else{
+          well_data[wellname]["selected_route"]="";
+        };
+
+        var map=parseFloat($(this).find("[name=map]").text()) // get MAP from row
+
+        if ($(this).find("[name=target_fwhp]").val()){ // get target FWHP from row
+          var fwhp_val=parseFloat($(this).find("[name=target_fwhp]").val());
+          // QC fwhp value. Make sure fwhp is not less than MAP. If it is, then set it to MAP
+          if (fwhp_val>map){
+            well_data[wellname]["target_fwhp"]=fwhp_val;
+          }else if (fwhp_val==-1){
+            well_data[wellname]["target_fwhp"]=-1;
+          }else{
+            well_data[wellname]["target_fwhp"]=map;
+          }
+        }else{
+          well_data[wellname]["target_fwhp"]=map;
+        };
+
+        if ($(this).find("[name=fixed]").is(":checked")){ // get fixed state from row
+          well_data[wellname]["fixed"]=1
+        }else{
+          well_data[wellname]["fixed"]=0
+        }
+
+      })
+    }
+    // console.log(well_data);
+    return well_data;
+  }
+
+
+  function get_unit_data(unit_data){
+
+    var items=unit_data;  // to be able to overwrite unit_data dict
+    for (var item in items){
+      for (var i in items[item]){
+        unit_data[item][i]=parseFloat($("#"+i).text());
+      }
+    }
+    return unit_data;
+  }
+
+
+  function get_fb_data(fb_data){
+
+    var items=fb_data["streams"]["constraints"];  // to be able to overwrite unit_data dict
+    for (var item in items){
+      fb_data["streams"]["constraints"][item]=parseFloat($("#"+item).text());
+    }
+
+    var items=fb_data["wells"];  // to be able to overwrite unit_data dict
+    for (var u in items){
+      fb_data["wells"][u]["af_oil"]=parseFloat($("#"+u+"_af_oil").text());
+      fb_data["wells"][u]["af_gas"]=parseFloat($("#"+u+"_af_gas").text());
+    }
+
+    items=fb_data["lab"];  // to be able to overwrite unit_data dict
+    for (var item in items){
+      fb_data["lab"][item]=parseFloat($("#"+item).text());
+    }
+    return fb_data;
+  }
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Resets all target fwhps in a selected unit table to MAPs. Each unit table is reset individually
+  function reset_to_map(tbl){
+    table="#sort_table" + tbl.toString()+" tbody";
+
+    $(table).children('tr').each(function () { // loop through rows
+
+      var map=$(this).find("[name=map]").text() // get map from row
+      $(this).find("[name=fwhp]").val(map) // set fwhp as remembered map
+
+    })
+  }
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // change fixed set on the page. Each unit table is set individually
+  function invert_select(tbl){
+    table="#sort_table" + tbl.toString()+" tbody";
+
+    $(table).children('tr').each(function () { // loop through rows
+
+      if ($(this).find("[name=fixed]").is(":checked")){
+        $(this).find("[name=fixed]").prop('checked', false); // if checked, then uncheck
+      } else {
+        $(this).find("[name=fixed]").prop('checked', true); // if unchecked, then check
+      }
+
+    })
+  }
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // clear state
+  function clear_state() {
+    $.ajax({
+        type: "POST",
+        url: "/clearstate", // url called in views.py
+        // The key needs to match your method's input parameter (case-sensitive).
+        data: "",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
+        }
+    });
+    alert("State cleared!");
+  };
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+
+  function show_hide_section (section,section_show) {
+    // alert(section_show);
+    if (section_show==0){
+      $('#'+section).css("display","");
+      section_show=1;
+    }else{
+      $('#'+section).css("display","none");
+      section_show=0;
+    }
+    return section_show;
+  }
+
+
+</script>
+
+
+
+{% endblock %}

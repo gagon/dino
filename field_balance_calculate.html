@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block field_balance %}
+
+<div class="container">
+
+  <script type="text/javascript">
+
+    var dshift={{data.dshift}};
+    var rshift={{data.rshift}};
+
+    var kpcqoil={{data.kpcqoil}};
+    var kpcqgas={{data.kpcqgas}};
+    var kpcgor={{data.kpcgor}};
+    var u2qoil={{data.u2qoil}};
+    var u2qgas={{data.u2qgas}};
+    var u2gor={{data.u2gor}};
+    var u3qoil={{data.u3qoil}};
+    var u3qgas={{data.u3qgas}};
+    var u3gor={{data.u3gor}};
+
+    var cpcoil={{data.cpcoil}};
+    var ogpgas={{data.ogpgas}};
+    var inj={{data.inj}};
+    var ogpoil={{data.ogpoil}};
+    var fuelgas={{data.fuelgas}};
+    var kpctotgas={{data.kpctotgas}};
+    var kpc2u2={{data.kpc2u2}};
+    var kpc2u3={{data.kpc2u3}};
+    var u3oil2kpc={{data.u3oil2kpc}};
+    var u3solgas2kpc={{data.u3solgas2kpc}};
+    var u2oil2kpc={{data.u2oil2kpc}};
+    var u2solgas2kpc={{data.u2solgas2kpc}};
+    var u2oil2u3={{data.u2oil2u3}};
+    var u2solgas2u3={{data.u2solgas2u3}};
+    var u3oil2mtu={{data.u3oil2mtu}};
+    var u3solgas2mtu={{data.u3solgas2mtu}};
+    var gasunit='{{data.gasunit}}';
+    var oilunit='{{data.oilunit}}';
+    var oilunit_unstb='{{data.oilunit_unstb}}';
+  </script>
+
+  <div id="container-field-balance" style="width:100%;height:800px;"></div>
+  <script type="text/javascript" src="/static/field_balance.js"></script>
+
+
+
+
+</div>
+
+{% endblock %}
