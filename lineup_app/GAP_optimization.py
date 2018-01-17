@@ -21,7 +21,7 @@ from flask_socketio import SocketIO, send, emit
 import gevent
 from gevent import monkey, sleep
 import json
-
+from lineup_app import GAP_setup as st
 
 
 # data = json.load(open(json_fullpath))
@@ -151,7 +151,7 @@ def optimization2(PE_server,opt_vals,opt_counter,gap_calc_json_fullpath):
 
 
 
-def optimization1(PE_server,unit,unit_constraints,opt_vals,gap_calc_json_fullpath):
+def optimization1(PE_server,unit,session_json):
     opt_counter=0
 
     optimization2(PE_server,opt_vals,opt_counter,gap_calc_json_fullpath) # core base of GAP optimization
@@ -267,127 +267,302 @@ def optimization1(PE_server,unit,unit_constraints,opt_vals,gap_calc_json_fullpat
     return {"unit_qgas":unit_qgas, "vals":opt_vals}
 
 
-def run_optimization(state,gap_calc_json_fullpath):
+def run_optimization(session_json,PE_server):
 
-    print("hi")
-    PE_server=ut.PE.Initialize()
-    ut.showinterface(PE_server,0)
+    # units=["KPC MP A","UN3 - TR1","UN2 - Slug01"]
+    # units_simple=["kpc","u3","u2"]
+    #
+    #
+    # PE_server=ut.PE.Initialize()
+    # ut.showinterface(PE_server,0)
+    #
+    # start=datetime.datetime.now()
 
-    start=datetime.datetime.now()
+    emit("progress",{"data":"Applying Target FWHPs.."})
 
-    fixed_thp_wells={}
-    for w,v in state["well_state"].items():
-        if v["fwhp"]:
-            fixed_thp_wells[w]=float(v["fwhp"])
+    status=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].MASKFLAG")
+    wellname=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].Label",status,"string")
+    qgas_max_orig=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxQgas") # qgas_max is the main tool for GAP rule based optimizer
 
+    qgas_max=[] # qgas_max values per well to set
+    for well in wellname:
+        if "target_fwhp" in session_json["well_data"][well]:
+            if session_json["well_data"][well]["target_fwhp"]>0.0:
+                qgas_max.append(session_json["well_data"][well]["qgas_max"])
+            else:
+                ut.shut_well(PE_server,well)
+                qgas_max.append("")
+        else:
+            ut.shut_well(PE_server,well)
+            qgas_max.append("")
 
+    qgas_max2gap=ut.updatepar(qgas_max_orig,qgas_max,status)
+    qgas_max2gap=ut.list2gapstr(qgas_max2gap)
+    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxQgas",qgas_max2gap)
 
-    """ SEQUENCE OF UNITS ====================================== """
-    units=["KPC MP A","UN3 - TR1","UN2 - Slug01"]
-    units_simple=["kpc","u3","u2"]
+    emit("progress",{"data":"Solving Network.."})
+    sleep(0.1)
 
-
-    """ GET WELLNAMES AND LIMITS FROM GAP ====================================== """
-    # wellname_orig=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].Label")
-    # dd_lim_orig=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxDrawdown")
-    # qliq_lim_orig=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxQliq")
-
-
-    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]",state["unit_data"]["sep"]["kpc_sep_pres"])
-    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[1] + "}].SolverPres[0]",state["unit_data"]["sep"]["u3_train1_sep_pres"])
-    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[2] + "}].SolverPres[0]",state["unit_data"]["sep"]["u2_sep_pres"])
-
-
-    post_opt_state={}
-
-    """ ITERATE THROUGH UNITS AND SOLVE POTENTIAL ====================================== """
-    for idx,unit in enumerate(units):
-
-        print("Solving: %s" % unit)
-        emit("progress",{"data":"Solving: %s ================" % unit})
-        sleep(1)
-
-        unit_constraints={
-            "qgas_max":state["unit_data"]["constraints"][units_simple[idx]+"_qgas_max"],
-            "qoil_max":state["unit_data"]["constraints"][units_simple[idx]+"_qoil_max"]
-        }
-
-        ut.choose_unit(PE_server,unit)
-#        break
-
-        """ GET WELLNAMES, LIMITS AND STATUS FROM GAP ====================================== """
-        status=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].MASKFLAG")
-        wellname=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].Label",status,"string")
-        dd_lim=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxDrawdown",status,"float")
-        qliq_lim=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxQliq",status,"float")
+    ut.solve_network_rb(PE_server)
+    # ut.set_chokes_calculated(PE_server)
 
 
+    kpc_qgas_max=session_json["unit_data"]["constraints"]["kpc_qgas_max"]
+    u3_qgas_max=session_json["unit_data"]["constraints"]["u3_qgas_max"]
+    u2_qgas_max=session_json["unit_data"]["constraints"]["u2_qgas_max"]
 
-        # qoil=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].OilRate",status,"float")
-        # qgas=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].GasRate",status,"float")
+    kpc_qoil_max=session_json["unit_data"]["constraints"]["kpc_qoil_max"]
+    u3_qoil_max=session_json["unit_data"]["constraints"]["u3_qoil_max"]
+    u2_qoil_max=session_json["unit_data"]["constraints"]["u2_qoil_max"]
 
-        dp=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].PControlResult",status,"float")
-        gor=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].IPR[0].GOR",status,"float")
-
-
-        # define fixed thp, match order in table and order in GAP
-        fixed_thp=np.zeros(len(wellname))
-        in_opt=np.zeros(len(wellname))
-
-        for d,w in enumerate(wellname):
-            fixed_thp[d]=state["well_state"][w]["fwhp"]
-            in_opt[d]=state["well_state"][w]["in_opt"]
-
-        # for w,t in state["wells"].items():
-        #     for d,d_ in enumerate(wellname):
-        #         if w==d_:
-        #             fixed_thp[d]=t["fwhp"]
-        #             in_opt[d]=t["in_opt"]
-
-        # fixed_thp=np.zeros(len(wellname))
-        # in_opt=np.zeros(len(wellname))
-        # for w,t in fixed_thp_wells.items():
-        #     for d,d_ in enumerate(wellname):
-        #         if w==d_:
-        #             fixed_thp[d]=t
+    kpc_qwat_max=session_json["unit_data"]["constraints"]["kpc_qwat_max"]
+    u3_qwat_max=session_json["unit_data"]["constraints"]["u3_qwat_max"]
+    u2_qwat_max=session_json["unit_data"]["constraints"]["u2_qwat_max"]
 
 
-        opt_vals={
-        "status":status,
-        "wellname":wellname,
-        "dd_lim":dd_lim,
-        "qliq_lim":qliq_lim,
-        "fixed_thp":fixed_thp,
-        "dp":dp,
-        "gor":gor,
-        "in_opt":in_opt
-        }
+    repeat=1
+    tol=0.5
+    while repeat==1:
 
-        # this was added to avoid inconsistency in solving only 1 sep versus all seps. slightly different results even with exactly same dPs.
-        ut.unmask_all_units(PE_server)
+        qgas=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].GasRate",status,"float")
+        qoil=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].OilRate",status,"float")
+        qwat=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].WatRate",status,"float")
 
-        """ POTENTIAL SOLVE ====================================== """
-        opt=optimization1(PE_server,unit,unit_constraints,opt_vals,gap_calc_json_fullpath)
-        emit("progress",{"data":"Unit Qgas: %.3f, Constraint: %s" % (opt["unit_qgas"],unit_constraints["qgas_max"])})
-        sleep(1)
-        # break
+        data_kpc=[]
+        data_u3=[]
+        data_u2=[]
+        kpc_qgas=0.0
+        u3_qgas=0.0
+        u2_qgas=0.0
+        kpc_qoil=0.0
+        u3_qoil=0.0
+        u2_qoil=0.0
 
-        for i,w in enumerate(opt["vals"]["wellname"]):
-            post_opt_state[w]={"fwhp":opt["vals"]["fixed_thp"][i]}
+        for i,well in enumerate(wellname):
 
-    """ UNMASK ALL UNITS ====================================== """
-    # ut.unmask_all_units(PE_server)
+            if qgas[i]>0:
+                # print(qgas[i],well)
+                if session_json["well_data"][well]["unit_id"]==0:
+                    data_kpc.append([well,session_json["well_data"][well]["gor"],qgas[i],qoil[i],qwat[i]])
+                    kpc_qgas+=qgas[i]
+                    kpc_qoil+=qoil[i]
+                elif session_json["well_data"][well]["unit_id"]==1:
+                    data_u3.append([well,session_json["well_data"][well]["gor"],qgas[i],qoil[i],qwat[i]])
+                    u3_qgas+=qgas[i]
+                    u3_qoil+=qoil[i]
+                elif session_json["well_data"][well]["unit_id"]==2:
+                    data_u2.append([well,session_json["well_data"][well]["gor"],qgas[i],qoil[i],qwat[i]])
+                    u2_qgas+=qgas[i]
+                    u2_qoil+=qoil[i]
 
-    """ GAP SOLVE NETWORK ====================================== """
-    ut.solve_network(PE_server)
+        data_kpc=sorted(data_kpc,key=lambda x:x[1],reverse=True)
+        data_u2=sorted(data_u2,key=lambda x:x[1],reverse=True)
+        data_u3=sorted(data_u3,key=lambda x:x[1],reverse=True)
+
+        wells_to_shut=[]
+
+        setup=[
+            [kpc_qgas_max,kpc_qgas,kpc_qoil_max,kpc_qoil,data_kpc,"KPC"],
+            [u3_qgas_max,u3_qgas,u3_qoil_max,u3_qoil,data_u3,"Unit-3"],
+            [u2_qgas_max,u2_qgas,u2_qoil_max,u2_qoil,data_u2,"Unit-2"]
+        ]
+
+
+        oil_constraint=[0,0,0]
+        optimized=0
+        for u in range(3):
+
+            unit_qgas_max=setup[u][0]
+            unit_qgas=setup[u][1]
+            unit_qoil_max=setup[u][2]
+            unit_qoil=setup[u][3]
+            data_unit=setup[u][4]
+            unit=setup[u][5]
+
+            if unit_qgas>unit_qgas_max or unit_qoil>unit_qoil_max:
+                optimized=1
+                i=0
+                while unit_qgas-data_unit[i][2]>unit_qgas_max or unit_qoil-data_unit[i][3]>unit_qoil_max:
+                    if session_json["well_data"][data_unit[i][0]]["fixed"]==0:
+                        unit_qgas-=data_unit[i][2]
+                        unit_qoil-=data_unit[i][3]
+                        wells_to_shut.append(data_unit[i][0])
+                        ut.shut_well(PE_server,data_unit[i][0])
+                        # session_json["well_data"][data_unit[i][0]]["target_fwhp"]=-1
+                        emit("progress",{"data":"%s: SI well %s - GOR=%s" % (unit,data_unit[i][0],session_json["well_data"][data_unit[i][0]]["gor"])})
+                    else:
+                        emit("progress",{"data":"%s: Skipped fixed well %s - GOR=%s ^^" % (unit,data_unit[i][0],session_json["well_data"][data_unit[i][0]]["gor"])})
+                    i+=1
+
+                while session_json["well_data"][data_unit[i][0]]["fixed"]==1: # find well that is not fixed
+                    i+=1
+                swing_well=data_unit[i][0]
+
+
+                delta_qgas_max=unit_qgas_max-unit_qgas
+
+                # see if qoil_max is closer, if yes, then convert to qgas_max using swing well gor and apply as well constraint
+                oil_constraint[u]=0
+
+                delta_qoil_max=unit_qoil_max-unit_qoil
+
+
+                delta_qgas_max_from_qoil=delta_qoil_max*session_json["well_data"][swing_well]["gor"]/1000.0
+                if delta_qgas_max_from_qoil<delta_qgas_max:
+                    delta_qgas_max=delta_qgas_max_from_qoil
+                    oil_constraint[u]=1
+                print(delta_qoil_max,unit_qoil_max,unit_qoil,delta_qgas_max_from_qoil,delta_qgas_max,oil_constraint[u])
+
+                qgas_max=session_json["well_data"][swing_well]["qgas_max"]
+                qgas_max2gap=qgas_max+delta_qgas_max
+                print(swing_well,qgas_max,qgas_max2gap)
+                if qgas_max2gap>10.0:
+                    ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[{"+swing_well+"}].MaxQgas",qgas_max2gap)
+                    session_json["well_data"][swing_well]["qgas_max"]=qgas_max2gap
+                    emit("progress",{"data":"%s: Swing well %s**" % (unit,swing_well)})
+                    # sleep(1)
+                else:
+                    wells_to_shut.append(swing_well)
+                    ut.shut_well(PE_server,swing_well)
+                    emit("progress",{"data":"%s: Unstable swing well %s shut" % (unit,swing_well)})
+                    # sleep(1)
+
+
+
+        if optimized==1:
+            emit("progress",{"data":"Solving Network.."})
+            sleep(0.01)
+            ut.solve_network_rb(PE_server)
+
+        # get sep results
+        kpc_qgas=ut.get_unit_qgas(PE_server,units[0])
+        u3_qgas=ut.get_unit_qgas(PE_server,units[1])
+        u2_qgas=ut.get_unit_qgas(PE_server,units[2])
+        kpc_qoil=ut.get_unit_qoil(PE_server,units[0])
+        u3_qoil=ut.get_unit_qoil(PE_server,units[1])
+        u2_qoil=ut.get_unit_qoil(PE_server,units[2])
+        kpc_qwat=ut.get_unit_qwat(PE_server,units[0])
+        u3_qwat=ut.get_unit_qwat(PE_server,units[1])
+        u2_qwat=ut.get_unit_qwat(PE_server,units[2])
+
+        # calculate covergence
+        conv=0.0
+        # kpc convergence
+        if oil_constraint[0]==1:
+            if kpc_qoil>kpc_qoil_max*1.0001:
+                conv+=abs(kpc_qoil_max-kpc_qoil)
+        else:
+            if kpc_qgas>kpc_qgas_max*1.0001:
+                conv+=abs(kpc_qgas_max-kpc_qgas)
+        # u3 convergence
+        if oil_constraint[1]==1:
+            if u3_qoil>u3_qoil_max*1.0001:
+                conv+=abs(u3_qoil_max-u3_qoil)
+        else:
+            if u3_qgas>u3_qgas_max*1.0001:
+                conv+=abs(u3_qgas_max-u3_qgas)
+        # u2 convergence
+        if oil_constraint[2]==1:
+            if u2_qoil>u2_qoil_max*1.0001:
+                conv+=abs(u2_qoil_max-u2_qoil)
+        else:
+            if u2_qgas>u2_qgas_max*1.0001:
+                conv+=abs(u2_qgas_max-u2_qgas)
+
+        emit("progress",{"data":"==============================="})
+        emit("progress",{"data":"Qgas=%.1f, Qgas max=%.1f" % (kpc_qgas,kpc_qgas_max)})
+        emit("progress",{"data":"Qoil=%.1f, Qoil max=%.1f" % (kpc_qoil,kpc_qoil_max)})
+        emit("progress",{"data":"Qwater=%.1f, Qwater max=%.1f" % (kpc_qwat,kpc_qwat_max)})
+        emit("progress",{"data":"KPC =========================="})
+        emit("progress",{"data":"Qgas=%.1f, Qgas max=%.1f" % (u3_qgas,u3_qgas_max)})
+        emit("progress",{"data":"Qoil=%.1f, Qoil max=%.1f" % (u3_qoil,u3_qoil_max)})
+        emit("progress",{"data":"Qwater=%.1f, Qwater max=%.1f" % (u3_qwat,u3_qwat_max)})
+        emit("progress",{"data":"Unit-3 =========================="})
+        emit("progress",{"data":"Qgas=%.1f, Qgas max=%.1f" % (u2_qgas,u2_qgas_max)})
+        emit("progress",{"data":"Qoil=%.1f, Qoil max=%.1f" % (u2_qoil,u2_qoil_max)})
+        emit("progress",{"data":"Qwater=%.1f, Qwater max=%.1f" % (u2_qwat,u2_qwat_max)})
+        emit("progress",{"data":"Unit-2 =========================="})
+        sleep(0.01)
+
+        if conv>tol:
+            repeat=1
+            emit("progress",{"data":"Repeat iteration to converge.. +++++++++++++++++++++++++++++++++++++++++++++++"})
+            sleep(0.1)
+        else:
+            repeat=0
+
+
+    ut.set_chokes_calculated(PE_server)
+
+
     ut.showinterface(PE_server,1)
 
 
     dt=datetime.datetime.now()-start
-    emit("progress",{"data":"Calculations complete. Go to Results. <br> Time spent: %s" % dt})
+    # emit("progress",{"data":"Calculations complete. Go to Results. <br> Time spent: %s" % dt,"finish":1})
+    # sleep(1)
+
+    # PE_server=ut.PE.Stop()
+    return None
+
+
+def route_optimization(session_json):
+
+    combinations=generate_comb(session_json)
+    session_json_copy=session_json
+
+    PE_server=ut.PE.Initialize()
+    ut.showinterface(PE_server,0)
+    start=datetime.datetime.now()
+
+    for cnt,comb in enumerate(combinations):
+        print(comb)
+        session_json_copy=session_json
+        emit("progress",{"data":"-----> Performing routing combination: %s out of %s" % (cnt,len(combinations))})
+        sleep(0.1)
+
+        for well,val in session_json_copy["well_data"].items(): # additional step to pre calculate required qgas_max equivalent to target FWHP
+            if "target_fwhp" in val:
+                if val["target_fwhp"]>0:
+                    pc_fwhp=session_json_copy["well_data"][well]["pc"]["thps"]
+                    pc_qgas=session_json_copy["well_data"][well]["pc"]["qgas"]
+                    session_json_copy["well_data"][well]["qgas_max"]=np.interp(val["target_fwhp"],pc_fwhp,pc_qgas)
+
+        for c in comb:
+            session_json_copy["well_data"][c["well"]]["selected_route"]=c["route_name"]
+        st.set_unit_routes(session_json_copy["well_data"]) # set well routes as per state
+
+
+
+
+
+
+
+
+        run_optimization(session_json_copy,PE_server)
+
+
+    ut.showinterface(PE_server,1)
+    # PE_server=ut.PE.Initialize()
+    PE_server=ut.PE.Stop()
+    dt=datetime.datetime.now()-start
+    emit("progress",{"data":"Calculations complete. Go to Results. <br> Time spent: %s" % dt,"finish":1})
     sleep(1)
 
-    # print(post_opt_state)
+    return "None"
 
-    PE_server=ut.PE.Stop()
-    return post_opt_state
+
+
+
+def generate_comb(session_json):
+    r=[[]]
+    for w,x in session_json["well_data"].items():
+        if "ro" in x:
+            if x["ro"]==1:
+                t = []
+                for y in x["connection"]["routes"]:
+                    print(y)
+                    for i in r:
+                        t.append(i+[{"well":w,"route_name":y["route_name"]}])
+                r = t
+    return r

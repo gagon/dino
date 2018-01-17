@@ -74,7 +74,8 @@ def read_conns():
             "os":os_str,
             "default":str(conns.cell(row=r, column=8).value),
             # "comingled":comingled,
-            "fl_pipe_os":fl_pipe_os
+            "fl_pipe_os":fl_pipe_os,
+            "route_name":str(conns.cell(row=r, column=3).value)+"--"+str(conns.cell(row=r, column=4).value)+"--"+tl+"--slot "+str(conns.cell(row=r, column=5).value)
         })
         well_conns["comingled"]=comingled
 
@@ -112,35 +113,35 @@ def read_pcs():
                 well_data["map"]=0.0
 
             if pc_sh.cell(row=r, column=8).value!=None:
-                well_data["wc"]=pc_sh.cell(row=r, column=8).value/100.0
+                well_data["wct"]=pc_sh.cell(row=r, column=8).value/100.0
             else:
-                well_data["wc"]=0.0
+                well_data["wct"]=0.0
 
-            if well_data["gor"]>0.0 and well_data["wc"]>0.0:
-                well_data["wgr"]=well_data["wc"]/(well_data["gor"]*(1.0-well_data["wc"]))
+            if well_data["gor"]>0.0 and well_data["wct"]>0.0:
+                well_data["wgr"]=well_data["wct"]/(well_data["gor"]*(1.0-well_data["wct"]))
             else:
                 well_data["wgr"]=0.0
 
 
             well_data["qoil_coeffs"]=[
-            pc_sh.cell(row=r, column=16).value,\
-            pc_sh.cell(row=r, column=17).value,\
-            pc_sh.cell(row=r, column=18).value,\
-            pc_sh.cell(row=r, column=19).value
+                pc_sh.cell(row=r, column=16).value,\
+                pc_sh.cell(row=r, column=17).value,\
+                pc_sh.cell(row=r, column=18).value,\
+                pc_sh.cell(row=r, column=19).value
             ]
 
             well_data["fbhp_coeffs"]=[
-            pc_sh.cell(row=r, column=20).value,\
-            pc_sh.cell(row=r, column=21).value,\
-            pc_sh.cell(row=r, column=22).value,\
-            pc_sh.cell(row=r, column=23).value
+                pc_sh.cell(row=r, column=20).value,\
+                pc_sh.cell(row=r, column=21).value,\
+                pc_sh.cell(row=r, column=22).value,\
+                pc_sh.cell(row=r, column=23).value
             ]
 
             well_pcs[well_data["wellname"]]=well_data
         r+=1
 
     for well,data in well_pcs.items():
-        pc=generate_pc(data["qoil_coeffs"],data["wc"],data["fbhp_coeffs"],data["gor"])
+        pc=generate_pc(data["qoil_coeffs"],data["wct"],data["fbhp_coeffs"],data["gor"])
         well_pcs[well]["pc"]=pc
 
 
@@ -159,7 +160,7 @@ def generate_pc(qoil_coeffs,wc,fbhp_coeffs,gor):
     fbhps=fbhp_coeffs[0]*thps**3.0+fbhp_coeffs[1]*thps**2.0+fbhp_coeffs[2]*thps+fbhp_coeffs[3]
     temps=qliqs*0.01842105263+13.15789473684
 
-    return {"thps":thps,"qliqs":qliqs,"fbhps":fbhps,"qgas":qgas,"temps":temps}
+    return {"thps":thps.tolist(),"qliqs":qliqs.tolist(),"fbhps":fbhps.tolist(),"qgas":qgas.tolist(),"temps":temps.tolist()}
 
 
 

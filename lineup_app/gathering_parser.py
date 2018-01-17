@@ -80,27 +80,12 @@ def parse_gathering_report():
 
                     cells=""
                     for c in range(3,12):
-                        cells+=str(sheet.cell_value(r, c))
+                        cells+=str(sheet.cell_value(r, c))+","
 
                     rmss[key]["rawstr"]=cells.replace(' ','')
-
-                    split1=rmss[key]["rawstr"].split("Line")
-                    split2=[]
-
-                    for s in split1:
-                        ns=s.split('6"Test')
-
-                        if len(ns)>1:
-                            for n in ns:
-                                split2.append(n)
-                        else:
-                            split2.append(s)
-
-                    if split2[0]:
-                        rmss[key]["split_str"]=split2
-                    else:
-                        rmss[key]["split_str"]=split2[1:]
-
+                    rmss[key]["split_str"]=re.split('Line|Test',rmss[key]["rawstr"])
+                    if not rmss[key]["split_str"][0]:
+                        rmss[key]["split_str"]=rmss[key]["split_str"][1:]
                     rmss[key]["well_cnt"]=sheet.cell_value(r, 2)
 
                     print(key,rmss[key]["split_str"])
@@ -116,6 +101,7 @@ def parse_gathering_report():
                     if well in line:
                         iters = re.finditer(well, line)
                         starts = [x.start() for x in iters]
+                        # print(iters,starts)
 
                         flag=0
                         for start in starts:
@@ -149,23 +135,31 @@ def parse_gathering_report():
 
         for well,val in well_routes.items():
 
-            if val["routes"]==1:
-                tl=""
-            elif val["routes"]==2:
+            # print(val["rms_rawstr"],val)
+            if val["rms_rawstr"]=="ToUnit2":
                 if val["TL"]==1:
-                    tl="TL1"
+                    tl="GORline1"
                 elif val["TL"]==2:
-                    tl="TEST"
-            elif val["routes"]==3:
-                if val["TL"]==1:
-                    tl="TL1"
-                elif val["TL"]==2:
-                    tl="TL2"
-                elif val["TL"]==3:
-                    tl="TEST"
+                    tl="GORline2"
+            else:
+                if val["routes"]==1:
+                    tl=""
+                elif val["routes"]==2:
+                    if val["TL"]==1:
+                        tl="TL1"
+                    elif val["TL"]==2:
+                        tl="TEST"
+                elif val["routes"]==3:
+                    if val["TL"]==1:
+                        tl="TL1"
+                    elif val["TL"]==2:
+                        tl="TL2"
+                    elif val["TL"]==3:
+                        tl="TEST"
 
 
             route_result=[val["well_label"],val["unit"],val["rms"],tl]
+            print(route_result)
 
             result_text.append(route_result)
 

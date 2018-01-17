@@ -11,6 +11,7 @@ def calculate_totals(pc_data):
 
         unit_total_qgas=0.0 # initialise unit totals for Qgas
         unit_total_qoil=0.0 # initialise unit totals for Qoil
+        unit_total_qwat=0.0 # initialise unit totals for Qoil
         rmss=[] # initialise RMS list
 
         # print(pc_data)
@@ -40,14 +41,17 @@ def calculate_totals(pc_data):
             # aggregate unit totals
             if val["qoil"]:
                 unit_total_qoil+=float(val["qoil"])
-            if pc_data[unit][well]["qgas"]:
+            if val["qgas"]:
                 unit_total_qgas+=float(val["qgas"])
+            if val["qwat"]:
+                unit_total_qwat+=float(val["qwat"])
 
         # aggregate subtotals for RMSs
         subtotals={}
         for rms in rmss: # loop through RMSs
             totoil=0.0
             totgas=0.0
+            totwat=0.0
             for well,val in pc_data[unit].items(): # loop through wells
 
                 curr_route_idx=val["curr_route"]
@@ -58,17 +62,20 @@ def calculate_totals(pc_data):
                         totoil+=float(val["qoil"])
                     if val["qgas"]:
                         totgas+=float(val["qgas"])
-            subtotals[rms]={"qoil":totoil,"qgas":totgas}
+                    if val["qwat"]:
+                        totwat+=float(val["qwat"])
+            subtotals[rms]={"qoil":totoil,"qgas":totgas,"qwat":totwat}
 
         # put subtotals and unit totals into totals dictionary
-        unit_totals.append({"subtotals":subtotals,"qgas":unit_total_qgas,"qoil":unit_total_qoil})
+        unit_totals.append({"subtotals":subtotals,"qgas":unit_total_qgas,"qoil":unit_total_qoil,"qwat":unit_total_qwat})
 
     # calculate field totals from units
     field_gas=unit_totals[0]["qgas"]+unit_totals[1]["qgas"]+unit_totals[2]["qgas"]
     field_oil=unit_totals[0]["qoil"]+unit_totals[1]["qoil"]+unit_totals[2]["qoil"]
+    field_wat=unit_totals[0]["qwat"]+unit_totals[1]["qwat"]+unit_totals[2]["qwat"]
 
     totals={
-        "field":{"qgas":field_gas,"qoil":field_oil},
+        "field":{"qgas":field_gas,"qoil":field_oil,"qwat":field_wat},
         "unit":unit_totals
     }
 
@@ -98,16 +105,19 @@ def merge_ref(data):
             if key in data_ref["totals"]["unit"][i]["subtotals"]:
                 data["totals"]["unit"][i]["subtotals"][key]["qgas_ref"]=data_ref["totals"]["unit"][i]["subtotals"][key]["qgas"]
                 data["totals"]["unit"][i]["subtotals"][key]["qoil_ref"]=data_ref["totals"]["unit"][i]["subtotals"][key]["qoil"]
+                data["totals"]["unit"][i]["subtotals"][key]["qwat_ref"]=data_ref["totals"]["unit"][i]["subtotals"][key]["qwat"]
 
 
 
     for i,d in enumerate(data["totals"]["unit"]):
         data["totals"]["unit"][i]["qoil_ref"]=data_ref["totals"]["unit"][i]["qoil"]
         data["totals"]["unit"][i]["qgas_ref"]=data_ref["totals"]["unit"][i]["qgas"]
+        data["totals"]["unit"][i]["qwat_ref"]=data_ref["totals"]["unit"][i]["qwat"]
 
 
     data["totals"]["field"]["qgas_ref"]=data_ref["totals"]["field"]["qgas"]
     data["totals"]["field"]["qoil_ref"]=data_ref["totals"]["field"]["qoil"]
+    data["totals"]["field"]["qwat_ref"]=data_ref["totals"]["field"]["qwat"]
 
 
     for u in range(3):

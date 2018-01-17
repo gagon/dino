@@ -138,6 +138,7 @@ def get_well_data(PE_server,well_data,afs):
     # gor=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].IPR[0].GOR",status,"float")
     qoil=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].OilRate",status,"float")
     qgas=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].GasRate",status,"float")
+    qwat=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].WatRate",status,"float")
     fwhp=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].FWHP",status,"float")
     dp=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].SolverResults[0].PControlResult",status,"float")
     # dd_lim=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxDrawdown",status,"float")
@@ -169,7 +170,8 @@ def get_well_data(PE_server,well_data,afs):
         ###################### FLOWLINE PRESSURE #############################
         if well_data[w]["selected_route"]:
             for i,r in enumerate(well_data[w]["connection"]["routes"]):
-                wd_route=str(r["unit"])+"--"+str(r["rms"])+"--"+str(r["tl"])+"--slot "+str(r["slot"])
+                # wd_route=str(r["unit"])+"--"+str(r["rms"])+"--"+str(r["tl"])+"--slot "+str(r["slot"])
+                wd_route=r["route_name"]
                 if wd_route==well_data[w]["selected_route"]:
                     fl_pipe_os=r["fl_pipe_os"]
         else:
@@ -186,6 +188,7 @@ def get_well_data(PE_server,well_data,afs):
 
         well_data[w]["qoil"]=qoil[d]*afs[well_data[w]["unit_id"]][0] # oil rate multiplied by af_oil
         well_data[w]["qgas"]=qgas[d]*afs[well_data[w]["unit_id"]][1] # gas rate multiplied by af_gas
+        well_data[w]["qwat"]=qwat[d]*afs[well_data[w]["unit_id"]][2] # water rate multiplied by af_wat
         well_data[w]["fwhp"]=fwhp[d]
         well_data[w]["dp"]=dp[d]
         well_data[w]["slotpres"]=slotpres
@@ -210,9 +213,9 @@ def get_all_well_data(session_json):
     units_simple=["kpc","u3","u2"]
 
     afs=[
-        [session_json["fb_data"]["wells"]["kpc"]["af_oil"],session_json["fb_data"]["wells"]["kpc"]["af_gas"]],
-        [session_json["fb_data"]["wells"]["u3"]["af_oil"],session_json["fb_data"]["wells"]["u3"]["af_gas"]],
-        [session_json["fb_data"]["wells"]["u2"]["af_oil"],session_json["fb_data"]["wells"]["u2"]["af_gas"]]
+        [session_json["fb_data"]["wells"]["kpc"]["af_oil"],session_json["fb_data"]["wells"]["kpc"]["af_gas"],session_json["fb_data"]["wells"]["kpc"]["af_wat"]],
+        [session_json["fb_data"]["wells"]["u3"]["af_oil"],session_json["fb_data"]["wells"]["u3"]["af_gas"],session_json["fb_data"]["wells"]["u3"]["af_wat"]],
+        [session_json["fb_data"]["wells"]["u2"]["af_oil"],session_json["fb_data"]["wells"]["u2"]["af_gas"],session_json["fb_data"]["wells"]["u2"]["af_wat"]]
     ]
 
     well_data=session_json["well_data"]
@@ -226,7 +229,7 @@ def get_all_well_data(session_json):
     #     if not "masked" in val:
     #         well_data[well]["masked"]=1
 
-    """ UNMASK ALL UNITS ====================================== """
+    # """ UNMASK ALL UNITS ====================================== """
     # ut.unmask_all_units(PE_server)
     #
     # ut.showinterface(PE_server,1)

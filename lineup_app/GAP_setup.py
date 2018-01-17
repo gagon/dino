@@ -16,6 +16,7 @@ def get_well_data(PE_server,unit,unit_id,well_data):
     status=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].MASKFLAG")
     wellname=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].Label",status,"string")
     gor=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].IPR[0].GOR",status,"float")
+    wct=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].IPR[0].WCT",status,"float")
     # dd_lim=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxDrawdown",status,"float")
     # qliq_lim=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxQliq",status,"float")
     pipe_status=ut.get_all(PE_server,"GAP.MOD[{PROD}].PIPE[$].MASKFLAG")
@@ -43,6 +44,7 @@ def get_well_data(PE_server,unit,unit_id,well_data):
                         # break
 
         well_data[w]["gor"]=gor[d]
+        well_data[w]["wct"]=wct[d]
         well_data[w]["unit_id"]=unit_id
         well_data[w]["curr_route"]=this_route
         well_data[w]["route_cnt"]=route_cnt
@@ -93,17 +95,16 @@ def set_unit_routes(well_data):
     pipes=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].PIPE[$].Label",pipe_status,"string")
 
     for well,val in well_data.items():
+        # if well is not masked then check and set routing
         if val["masked"]==0:
-            # print(well,val)
+
             # map selected_route to OS string
             route_open=""
             for i,r in enumerate(val["connection"]["routes"]):
-
-                route=str(r["unit"])+"--"+str(r["rms"])+"--"+str(r["tl"])+"--slot "+str(r["slot"])
+                route=r["route_name"]
                 print(well,route)
                 if route==val["selected_route"]:
                     route_open=r["os"]
-            # route_open=val["connection"]["routes"]
 
             # check if setting mask/unmask is needed by looking at maskflag of the pipes
             toset=0
@@ -180,7 +181,7 @@ def get_sep_pres():
     sep["u3_train2_sep_pres"]=sep["u3_train1_sep_pres"]
     sep["u3_train3_sep_pres"]=sep["u3_train1_sep_pres"]
     sep["u3_train4_sep_pres"]=sep["u3_train1_sep_pres"]
-    
+
     ut.showinterface(PE_server,1)
     PE_server=ut.PE.Stop()
 

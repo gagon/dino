@@ -73,6 +73,9 @@ def solve_network(PE_server):
     PE.DoCmd(PE_server,"GAP.SOLVENETWORK(0, MOD[0])")
     return None
 
+def solve_network_rb(PE_server):
+    PE.DoCmd(PE_server,"GAP.SOLVENETWORK(3, MOD[0])")
+    return None
 
 def showinterface(PE_server,s):
     PE.DoCmd(PE_server,"GAP.SHOWINTERFACE("+str(s)+")")
@@ -82,6 +85,31 @@ def showinterface(PE_server,s):
 def get_unit_qgas(PE_server,unit):
     return float(PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverResults[0].GasRate"))
 
+def get_unit_qoil(PE_server,unit):
+    return float(PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverResults[0].OilRate"))
+
+def get_unit_qwat(PE_server,unit):
+    return float(PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverResults[0].WatRate"))
+
+def set_unit_pres(PE_server,unit,pres):
+    PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverPres[0]",pres)
+    return None
+
+
+def shut_well(PE_server,well):
+    PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[{"+well+"}].DPControl","FIXEDVALUE")
+    PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[{"+well+"}].DPControlValue",10000)
+    return None
+
+def open_well(PE_server,well):
+    PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[{"+well+"}].DPControl","CALCULATED")
+    PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[{"+well+"}].DPControlValue",0)
+    return None
+
+def set_chokes_calculated(PE_server):
+    PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[$].DPControl","CALCULATED")
+    PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[$].DPControlValue",0)
+    return None
 
 def get_filtermasked(PE_server,s,status,t):
     par_orig=get_all(PE_server,s)

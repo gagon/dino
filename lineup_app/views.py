@@ -22,6 +22,7 @@ import json
 from lineup_app import field_balance as fb
 from lineup_app import state_init
 from lineup_app import results as rs
+import numpy as np
 
 
 
@@ -52,8 +53,8 @@ users = json.load(open(users_json))
 
 
 # Driver to be used to query data from EC. This is different on different computers
-db_driver="Oracle in OraClient11g"
-#db_driver="Oracle in OraClient11g_32_bit"
+# db_driver="Oracle in OraClient11g"
+db_driver="Oracle in OraClient11g_32bit"
 
 
 # # using session_json instead of flask session due to cookie size limitation
@@ -214,8 +215,9 @@ def load():
 @app.route('/load_state')
 @login_required
 def load_state():
+    session_json=get_session_json()
     # check is session "state" exists, if not send message and stop
-    if not "well_state" in session["state"]:
+    if not "state" in session_json: # check if state was exists. well_data ~ state
         return "NO session well state. Go back to setup and save state"
     page_active={"load_pcs":"","load_state":"active","setup":"","live":"","results":""}
     return render_template('load_state.html',page_active=page_active)
@@ -243,7 +245,8 @@ def setup():
     # get MAPs from "Deliverability.xlsx" file
     well_maps=xl_setup.read_maps()
     for well,m in session_json["well_data"].items(): # merge with well_data
-        session_json["well_data"][well]["map"]=well_maps[well]["map"]
+        if well in well_maps:
+            session_json["well_data"][well]["map"]=well_maps[well]["map"]
 
 
     if session_json["state"]==1: # check if state has been saved by the user
@@ -294,6 +297,16 @@ def clearstate():
 """ SAVE STATE FUNCTION ==================================================================== """
 @app.route('/savestate', methods = ['POST'])
 def savestate():
+    session_json=request.json
+
+    for well,val in session_json["well_data"].items(): # additional step to pre calculate required qgas_max equivalent to target FWHP
+        if "target_fwhp" in val:
+            if val["target_fwhp"]>0:
+                pc_fwhp=session_json["well_data"][well]["pc"]["thps"]
+                pc_qgas=session_json["well_data"][well]["pc"]["qgas"]
+                session_json["well_data"][well]["qgas_max"]=np.interp(val["target_fwhp"],pc_fwhp,pc_qgas)
+
+
     session_jsonfile=os.path.join(uploader_dirname,r"temp\session.json")
     json.dump(request.json, open(session_jsonfile, 'w'))
     return "None"
@@ -310,7 +323,6 @@ def savestate_results():
         session_json["well_data"][well]["target_fwhp"]=s["fwhp"] # overwrite existing session state fwhps with data from results page
         save_session_json(session_json)
         # Note: no need to check if session state exists because precondition to go to results page is to have state initialized
-    # session.modified=True
     return "None"
 """========================================================================================="""
 
@@ -324,54 +336,29 @@ def savestate_loaded():
     data=request.json
     loaded_state=data["state"]
     shut_the_rest=data["shut_the_rest"]
-    print(shut_the_rest)
-    # get MAPs from "Deliverability.xlsx" file.
-    # This is done in order to check if loaded fwhp is lower than MAP, if it is, then fwhp is set to MAP
-    well_maps=xl_setup.read_maps()
+    session_json=get_session_json() # read session data
 
-    wells2delete=[]
-    for well,s in loaded_state.items(): # loop through loaded well data
-        if well in well_maps: # if wells exists in well MAPs. This is to avoid incorrect or non-existing wells to be passed to session state
-            if s["fwhp"]: # if loaded fwhp is not empty
-                if float(s["fwhp"])<float(well_maps[well]["map"]) and float(s["fwhp"])!=float(-1): # if loaded fwhp is lower than MAP and not -1
-                    loaded_state[well]["fwhp"]=well_maps[well]["map"] # then set fwhp to MAP
+    for well,val in session_json["well_data"].items():
+        if well in loaded_state:
+            # check if selected route exist in well connection list
+            in_routes=0
+            for r in session_json["well_data"][well]["connection"]["routes"]:
+                if loaded_state[well]["selected_route"]==r["route_name"]:
+                    in_routes=1
+                    break
+
+            if in_routes==1:
+                session_json["well_data"][well]["selected_route"]=loaded_state[well]["selected_route"]
+                session_json["well_data"][well]["target_fwhp"]=round(float(loaded_state[well]["target_fwhp"]),1)
             else:
-                loaded_state[well]["fwhp"]=well_maps[well]["map"] # else set it loaded fwhp
-        else:
-            wells2delete.append(well) # remember wells to delete if well does not exist
+                print("Route is not in well connections list! Well %s, %s" % (well,loaded_state[well]["selected_route"]))
 
-    # delete wells with incorrect names/ does not exist
-    for w in wells2delete:
-        loaded_state.pop(w) # remove loaded well data if well does not exists in well MAPs
+        else: # if well is not in loaded_state then shut the well
+            if shut_the_rest:
+                session_json["well_data"][well]["target_fwhp"]=-1
 
-    if len(session)>0: # if session exists
-        if "state" in session: # if state exists
-            if "wells" in session["state"]: # if wells exists in session
+    save_session_json(session_json) # save data to file
 
-                for well,s in loaded_state.items(): # loop through loaded well data
-                    # check if loaded well exists in session
-                    if well in session["state"]["wells"]:
-                        if s["selected_route"]: # if loaded route is not empty
-                            session["state"]["wells"][well]["selected_route"]=s["selected_route"] # then save it to session state
-                        session["state"]["wells"][well]["fwhp"]=s["fwhp"] # overwrite loaded well fwhp to session state
-
-                # when bulk copy/paste states, you can choose to shut the rest of wells other than loaded
-                # this is done in case of replication of certain day in the field
-                if shut_the_rest==1:
-                    for well,s in session["state"]["wells"].items(): # loop through loaded well data
-                        # check if loaded well exists in session
-                        if not well in loaded_state:
-                            print("shut",well)
-                            session["state"]["wells"][well]["fwhp"]=-1
-
-        else:
-            session["state"]={} # initialize state if no state
-            session["state"]["wells"]=loaded_state # save loaded data to state
-    else:
-        session["state"]={} # initialize state if no state
-        session["state"]["wells"]=loaded_state # save loaded data to state
-
-    session.modified=True
     return "None"
 """========================================================================================="""
 
@@ -380,33 +367,43 @@ def savestate_loaded():
 """ START GAP CALCULATION ==================================================================== """
 @socketio.on('start_gap_calc')
 def gap_calc_start():
-    # sid=request.sid
-    print("hello")
-    gap_calc_json_fullpath=os.path.join(uploader_dirname,r"temp\gap_calc.json")
-    print("hello2")
-    #------------------------------------------------------------------------------
-    if MOCKUP:
-        #skip calc when xl is used
-        print("skip xls calc")
-        # post_opt_state=xlgob.xl_run_optimization(session["state"]) # pass state to GAP to make calculations
-    else:
 
-        post_opt_state=gob.run_optimization(session["state"],gap_calc_json_fullpath) # pass state to GAP to make calculations
+    session_json=get_session_json()
+    if MOCKUP:
+        print("skip xls calc")
+    else:
+        post_opt_state=gob.run_optimization(session_json) # pass state to GAP to make calculations
     #------------------------------------------------------------------------------
     return "None"
 """========================================================================================="""
 
-@socketio.on('disconnect_gap_calc')
-def disconnect_calc_start():
-    print("hi")
+
+""" START GAP CALCULATION ==================================================================== """
+@socketio.on('start_route_opt')
+def route_opt_start():
+
+    session_json=get_session_json()
+    if MOCKUP:
+        print("skip xls calc")
+    else:
+        print("route_opt")
+        post_opt_state=gob.route_optimization(session_json) # pass state to GAP to make calculations
+    #------------------------------------------------------------------------------
     return "None"
+"""========================================================================================="""
 
 
-@app.route('/stop', methods = ['POST'])
-def stop():
-    print("stop received")
-    disconnect(sid)
-    return "Session['state'] cleared!"
+# @socketio.on('disconnect_gap_calc')
+# def disconnect_calc_start():
+#     print("hi")
+#     return "None"
+#
+#
+# @app.route('/stop', methods = ['POST'])
+# def stop():
+#     print("stop received")
+#     disconnect(sid)
+#     return "Session['state'] cleared!"
 
 
 
@@ -416,7 +413,22 @@ def load_pcs():
     print('start loading PCs')
     well_pcs=xl_setup.read_pcs()
     emit('load_progress',{"data":"Well PCs read from Deliverability complete"})
+
+    print('saving PCs to session')
+    session_json=get_session_json()
+    for well,val in session_json["well_data"].items():
+        if well in well_pcs: # create well record in does not exist in well_data
+            session_json["well_data"][well]["pc"]=well_pcs[well]["pc"]
+    save_session_json(session_json)
+
+    print('loading PCs to GAP')
     pcs2gap.load_pcs2gap(well_pcs)
+    # print(well_pcs)
+    # json_fullpath_pcs=os.path.join(uploader_dirname,r"temp\well_pcs.json")
+    # json.dump(well_pcs, open(json_fullpath_pcs, 'w'))
+
+    emit('load_progress',{"data":"Finished PCs loading!"})
+
     return "None"
 """========================================================================================="""
 
@@ -438,19 +450,25 @@ def save_2ref():
 
 
 """ REMOVE REFERENCE JSON FILE==================================================== """
+@socketio.on('delete_refcase')
 def delete_refcase():
     json_fullpath_ref=os.path.join(uploader_dirname,r"temp\session_ref_case.json")
     if os.path.isfile(json_fullpath_ref):
         os.remove(json_fullpath_ref)
+    emit('delete_complete',{"data":"Reference case deleted"})
     return "None"
 """========================================================================================="""
 
 
 
 """ SAVE SESSION JSON FILE==================================================== """
-def save_session_json(data):
+def save_session_json(session_json):
+
+
+
     json_fullpath=os.path.join(uploader_dirname,r"temp\session.json")
-    json.dump(data, open(json_fullpath, 'w'))
+    json.dump(session_json, open(json_fullpath, 'w'))
+
     return "None"
 """========================================================================================="""
 
@@ -477,6 +495,17 @@ def get_session_json():
 """========================================================================================="""
 
 
+""" READ PCS FROM JSON FILE==================================================== """
+def get_well_pcs_json():
+    json_fullpath_pcs=os.path.join(uploader_dirname,r"temp\well_pcs.json")
+    if os.path.isfile(json_fullpath_pcs):
+        well_pcs = json.load(open(json_fullpath_pcs))
+    else:
+        well_pcs={}
+    return well_pcs
+"""========================================================================================="""
+
+
 """ PARSER GATHERING REPORT ==================================================================== """
 def allowed_file(filename): # make sure file is one of allowed extentions (look on top)
     return '.' in filename and \
@@ -488,7 +517,10 @@ def merge_route_slot(result_text,well_details):
         for w,val in well_details.items():
             if well[0]==w:
                 for r in val["routes"]:
+                    print(w,well[1],well[2],well[3])
+                    print(w,r["unit"],r["rms"],r["tl"])
                     if well[1]==r["unit"] and well[2]==r["rms"] and well[3]==r["tl"]:
+
                         row=well
                         row.append(r["slot"])
                         result_text_new.append(row)
