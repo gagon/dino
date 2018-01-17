@@ -15,7 +15,7 @@
   <div class="row">
 
     <div class="col-lg-4">
-      <a href="javascript:void(0);" id="#load_state" onclick="load_state();">Load data</a>
+      <button class="btn btn-primary" id="load_state" onclick="load_state();" type="button">Load data</button>
       <hr>
         <label for="comment">Copy/paste from Excel </label>
         <br>
@@ -23,7 +23,7 @@
           Column (3) - FWHP to be applied (leave blank to let GAP calculate) </caption>
         <textarea class="form-control" rows="30" id="excel_data"></textarea>
         <div class="checkbox">
-          <label><input type="checkbox" value="" id="shut_the_rest">Shut-in all other wells </label>
+          <label style="font-size:20px;color:red;"><input type="checkbox" value="" checked id="shut_the_rest">Shut-in all other wells not in the list above</label>
         </div>
         <p id="load_result"></p>
     </div>
@@ -130,7 +130,7 @@
       }
       $('#load_result').text("loaded successfully.");
       $('#showdata').append(table);
-      $('#showdata_div').append('<a href="javascript:void(0);" id="#save_table2state" onclick="save_table2state();">Save data to state</a>');
+      $('#showdata_div').append('<button class="btn btn-primary" id="save_table2state" onclick="save_table2state();" type="button">Save data to state</button>');
     }else{
       $('#load_result').text("No data entered!");
     }
@@ -154,8 +154,8 @@
           }
           var wellname=cells[0];
           var unit=cells[1];
-          var fwhp=cells[2];
-          state[wellname]={"selected_route":unit,"fwhp":fwhp}
+          var target_fwhp=cells[2];
+          state[wellname]={"selected_route":unit,"target_fwhp":target_fwhp}
         }
       }
       $('#load_result').text("loaded successfully.");
@@ -178,12 +178,13 @@
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(data){
+          alert("Routes and target FWHPs saved!");
         },
         failure: function(errMsg) {
             alert(errMsg);
         }
     });
-    alert("Routes and target FWHPs saved!");
+
   };
 
 
@@ -212,6 +213,7 @@
 
 
   function write2page(data){
+    console.log(data);
     for(var i=0, len=data["result_text"].length; i < len; i++){
       $("#parse_result").append(
         "<tr><td name='wellname'>"+

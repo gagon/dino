@@ -33,9 +33,9 @@
         </tr>
         <tr>
           <td style='width:40%;background-color:#f2f2f2;'>Qwater max, sm3/d</td>
-          <td class="text-center" style='width:20%;'><span id="kpc_qwat_max" contenteditable></span></td>
-          <td class="text-center" style='width:20%;' colspan="4"><span id="u3_qwat_max" contenteditable></span></td>
-          <td class="text-center" style='width:20%;'><span id="u2_qwat_max" contenteditable></span></td>
+          <td class="text-center" style='width:20%;'><span id="kpc_qwat_max" contenteditable>{{ data.unit_data.constraints.kpc_qwat_max }}</span></td>
+          <td class="text-center" style='width:20%;' colspan="4"><span id="u3_qwat_max" contenteditable>{{ data.unit_data.constraints.u3_qwat_max }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="u2_qwat_max" contenteditable>{{ data.unit_data.constraints.u2_qwat_max }}</span></td>
         </tr>
         <tr>
           <td style='width:40%;background-color:#f2f2f2;'>Qoil AF</td>
@@ -48,6 +48,12 @@
           <td class="text-center" style='width:20%;'><span id="kpc_af_gas" contenteditable >{{ data.fb_data.wells.kpc.af_gas }}</span></td>
           <td class="text-center" style='width:20%;' colspan="4"><span id="u3_af_gas" contenteditable>{{ data.fb_data.wells.u3.af_gas }}</span></td>
           <td class="text-center" style='width:20%;'><span id="u2_af_gas" contenteditable>{{ data.fb_data.wells.u2.af_gas }}</span></td>
+        </tr>
+        <tr>
+          <td style='width:40%;background-color:#f2f2f2;'>Qwater AF</td>
+          <td class="text-center" style='width:20%;'><span id="kpc_af_wat" contenteditable >{{ data.fb_data.wells.kpc.af_wat }}</span></td>
+          <td class="text-center" style='width:20%;' colspan="4"><span id="u3_af_wat" contenteditable>{{ data.fb_data.wells.u3.af_wat }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="u2_af_wat" contenteditable>{{ data.fb_data.wells.u2.af_wat }}</span></td>
         </tr>
         <tr>
           <td style='width:40%;background-color:#f2f2f2;'>Unit Inlet Pressure, bar</td>
@@ -205,6 +211,7 @@
               <tr>
                 <th>Wellname</th>
                 <th>GOR</th>
+                <th>Watercut</th>
                 <th>Connected</th>
                 <th>Comingled</th>
                 <th>Flow to</th>
@@ -216,12 +223,17 @@
                   <hr style="margin-bottom:5px;margin-top:5px;">
                   Target FWHP
                 </th>
-                <th title="If this box is fixed then well target FWHP will be fixed and excluded from optimization algorithm.">
+                <th title="If this box is checked then well target FWHP will be fixed and excluded from optimization algorithm.">
                   <a href="javascript:void(0);" id="#invert_select{{ loop.index0 }}" onclick="invert_select({{ loop.index0 }});">
                     Invert select
                   </a>
                   <hr style="margin-bottom:5px;margin-top:5px;">
-                  Fix well?
+                  Fix well Target FWHP?
+                </th>
+                <th title="If this box is checked then well will be included in routing optimization algorithm.">
+                  Optimize<br>routing?
+                  <!-- <hr style="margin-bottom:5px;margin-top:5px;"> -->
+                  <!-- <span id="comb_num"></span><br> -->
                 </th>
               </tr>
             </thead>
@@ -231,6 +243,7 @@
 
                   <td name="wellname">{{ well_key }}</td>
                   <td>{{ row.gor|round(1, 'common')  }}</td>
+                  <td>{{ row.wct|round(1, 'common')  }}</td>
                   <td>{{ row.connection.connected }}</td>
                   <td>{{ row.connection.comingled }}</td>
 
@@ -265,7 +278,15 @@
                       <input type="checkbox" name="fixed" value="">
                     {% endif %}
                   </td>
-
+                  <td>
+                    {% if row.connection.routes|length>1 %}
+                      {% if row.ro==1 %}
+                        <input type="checkbox" name="ro" value="" checked='checked'>
+                      {% else %}
+                        <input type="checkbox" name="ro" value="">
+                      {% endif %}
+                    {% endif %}
+                  </td>
                 </tr>
               {% endfor %}
             </tbody>
@@ -323,6 +344,17 @@
 
 
   ////////////////////////////////////////////////////////////////////////////////
+
+  $(document).ready(function() {
+    $(':checkbox').change(function(){
+      if(this.name=="ro"){
+        // if(this.checked) {
+          var comb_num=calculate_comb(session_json);
+          // $("#comb_num").text("Combinations: "+comb_num);
+        // }
+      }
+    });
+  });
 
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -407,6 +439,12 @@
           well_data[wellname]["fixed"]=0
         }
 
+        if ($(this).find("[name=ro]").is(":checked")){ // get fixed state from row
+          well_data[wellname]["ro"]=1
+        }else{
+          well_data[wellname]["ro"]=0
+        }
+
       })
     }
     // console.log(well_data);
@@ -422,6 +460,10 @@
         unit_data[item][i]=parseFloat($("#"+i).text());
       }
     }
+    // unit_data["constraints"]["kpc_qwat_max"]=parseFloat($("#kpc_qwat_max").text());
+    // unit_data["constraints"]["u3_qwat_max"]=parseFloat($("#u3_qwat_max").text());
+    // unit_data["constraints"]["u2_qwat_max"]=parseFloat($("#u2_qwat_max").text());
+    // data.unit_data.constraints.u2_qwat_max
     return unit_data;
   }
 
@@ -437,6 +479,7 @@
     for (var u in items){
       fb_data["wells"][u]["af_oil"]=parseFloat($("#"+u+"_af_oil").text());
       fb_data["wells"][u]["af_gas"]=parseFloat($("#"+u+"_af_gas").text());
+      fb_data["wells"][u]["af_wat"]=parseFloat($("#"+u+"_af_wat").text());
     }
 
     items=fb_data["lab"];  // to be able to overwrite unit_data dict
@@ -455,11 +498,58 @@
     $(table).children('tr').each(function () { // loop through rows
 
       var map=$(this).find("[name=map]").text() // get map from row
-      $(this).find("[name=fwhp]").val(map) // set fwhp as remembered map
+      $(this).find("[name=target_fwhp]").val(map) // set fwhp as remembered map
 
     })
   }
   ////////////////////////////////////////////////////////////////////////////////
+
+  function calculate_comb(data){
+
+    var comb_num=1;
+    var wellname;
+    for (i=0; i<3; ++i) { // loop from 0 to 2 (table number corresponding to each unit table)
+
+      table="#sort_table" + i.toString()+" tbody"; // table ID
+      console.log(table);
+      $(table).children('tr').each(function () { // loop through rows
+        if ($(this).find("[name=ro]").is(":checked")){
+          wellname=$(this).find("[name=wellname]").text() // get wellname
+          wellcombs=data["well_data"][wellname]["connection"]["routes"].length;
+          comb_num=comb_num*wellcombs;
+        }
+      })
+    }
+    runtime=comb_num*15.0/60.0/60.0
+    if(comb_num>1){
+      alert("Routing Optimization is on.\nNumber of combinations is "
+          + comb_num + ".\nEstimated run time is "
+          + runtime + " hrs (15sec for each combination).\nThis can be reduced by applying rules in GAP calculate.");
+    // }else{
+    //   $("#ro_on").hide()
+    }
+    return comb_num;
+  }
+
+
+  // $(document).ready(function() {
+  //   alert("loaded")
+  //   var comb_num=1;
+  //   var wellname;
+  //   for (i=0; i<3; ++i) { // loop from 0 to 2 (table number corresponding to each unit table)
+  //
+  //     table="#sort_table" + i.toString()+" tbody"; // table ID
+  //     // console.log(table);
+  //     $(table).children('tr').each(function () { // loop through rows
+  //       if ($(this).find("[name=ro]").is(":checked")){
+  //         $("#ro_on").show();
+  //         // wellname=$(this).find("[name=wellname]").text() // get wellname
+  //         // wellcombs=data["well_data"][wellname]["connection"]["routes"].length;
+  //         // comb_num=comb_num*wellcombs;
+  //       }
+  //     })
+  //   }
+  // }
 
 
   ////////////////////////////////////////////////////////////////////////////////

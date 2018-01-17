@@ -92,9 +92,11 @@
       <h3>TOTALS FIELD PRODUCTION</h3>
       <h4 style="color:#339933;">Qgas (ksm3/d) - {{ data.totals.field.qgas|round(1, 'common') }}</h4>
       <h4 style="color:#339933;">Qoil (sm3/d) - {{ data.totals.field.qoil|round(1, 'common') }}</h4>
+      <h4 style="color:#339933;">Qwater (sm3/d) - {{ data.totals.field.qwat|round(1, 'common') }}</h4>
       {% if merge_done==1 %}
         <h4>Qgas (ksm3/d) ref case - {{ data.totals.field.qgas_ref|round(1, 'common') }}</h4>
         <h4>Qoil (sm3/d) ref case - {{ data.totals.field.qoil_ref|round(1, 'common') }}</h4>
+        <h4>Qwater (sm3/d) ref case - {{ data.totals.field.qwat_ref|round(1, 'common') }}</h4>
       {% endif %}
 
     </div>
@@ -140,9 +142,11 @@
                   {% endif %}
                   <th>Qgas (ksm3/d)</th>
                   <th>Qoil (sm3/d)</th>
+                  <th>Qwater (sm3/d)</th>
                   {% if merge_done==1 %}
                     <th style="background-color:#f2f2f2;">Qgas (ksm3/d)<br>ref case</th>
                     <th style="background-color:#f2f2f2;">Qoil (sm3/d)<br>ref case</th>
+                    <th style="background-color:#f2f2f2;">Qwater (sm3/d)<br>ref case</th>
                   {% endif %}
                 </tr>
               </thead>
@@ -151,9 +155,11 @@
                   <td style="color:#339933;"><b>Total</b></td>
                   <td style="color:#339933;"><b>{{ tots.qgas|round(1, 'common') }}</b></td>
                   <td style="color:#339933;"><b>{{ tots.qoil|round(1, 'common') }}</b></td>
+                  <td style="color:#339933;"><b>{{ tots.qwat|round(1, 'common') }}</b></td>
                   {% if merge_done==1 %}
                     <td style="background-color:#f2f2f2;"><b>{{ tots.qgas_ref|round(1, 'common') }}</b></td>
                     <td style="background-color:#f2f2f2;"><b>{{ tots.qoil_ref|round(1, 'common') }}</b></td>
+                    <td style="background-color:#f2f2f2;"><b>{{ tots.qwat_ref|round(1, 'common') }}</b></td>
                   {% endif %}
                 </tr>
                 {% for rms,d in tots.subtotals.items() %}
@@ -161,9 +167,11 @@
                     <td><b>{{ rms }}</b></td>
                     <td>{{ d.qgas|round(1, 'common') }}</td>
                     <td>{{ d.qoil|round(1, 'common') }}</td>
+                    <td>{{ d.qwat|round(1, 'common') }}</td>
                     {% if merge_done==1 %}
                       <td style="background-color:#f2f2f2;">{{ d.qgas_ref|round(1, 'common') }}</td>
                       <td style="background-color:#f2f2f2;">{{ d.qoil_ref|round(1, 'common') }}</td>
+                      <td style="background-color:#f2f2f2;">{{ d.qwat_ref|round(1, 'common') }}</td>
                     {% endif %}
                   </tr>
                 {% endfor %}
@@ -211,6 +219,7 @@
                 <tr>
                   <th>Wellname</th>
                   <th>GOR</th>
+                  <th>Watercut</th>
                   <th>Connected</th>
                   <th>Comingled</th>
                   <th>MAP</th>
@@ -223,6 +232,7 @@
                   <th>Slot pressure</th>
                   <th>Qoil</th>
                   <th>Qgas</th>
+                  <th>Qwater</th>
 
                   {% if merge_done==1 %}
                     <th style="background-color:#f2f2f2; border-left: 1px solid #cccccc;">Flow to ref</th>
@@ -233,6 +243,7 @@
                     <th style="background-color:#f2f2f2;">Slot pressure ref</th>
                     <th style="background-color:#f2f2f2;">Qoil ref</th>
                     <th style="background-color:#f2f2f2;">Qgas ref</th>
+                    <th style="background-color:#f2f2f2;">Qwater ref</th>
                   {% endif %}
 
                 </tr>
@@ -243,6 +254,7 @@
 
                     <td name="wellname">{{ well_key }}</td>
                     <td title="GOR">{{ row.gor|round(1, 'common') }}</td>
+                    <td title="Watercut">{{ row.wct|round(1, 'common') }}</td>
                     <td title="Connected">{{ row.connection.connected }}</td>
                     <td title="Comingled">{{ row.connection.comingled }}</td>
                     <td title="MAP" name="map">{{ row.map }}</td>
@@ -257,6 +269,7 @@
                     <td title="Slot pressure" name="slotpres">{{ row.slotpres|round(1, 'common') }}</td>
                     <td title="Qoil">{{ row.qoil|round(1, 'common') }}</td>
                     <td title="Qgas">{{ row.qgas|round(1, 'common') }}</td>
+                    <td title="Qwater">{{ row.qwat|round(1, 'common') }}</td>
 
                     {% if merge_done==1 %}
                       <td title="Flow to ref" style="background-color:#f2f2f2; border-left: 1px solid #cccccc;">
@@ -270,6 +283,7 @@
                       <td title="Slot pressure ref" name="slotpres" style="background-color:#f2f2f2;">{{ row.slotpres_ref|round(1, 'common') }}</td>
                       <td title="Qoil ref" style="background-color:#f2f2f2;">{{ row.qoil_ref|round(1, 'common') }}</td>
                       <td title="Qgas ref"  style="background-color:#f2f2f2;">{{ row.qgas_ref|round(1, 'common') }}</td>
+                      <td title="Qwater ref"  style="background-color:#f2f2f2;">{{ row.qwat_ref|round(1, 'common') }}</td>
                     {% endif %}
 
                   </tr>
@@ -303,6 +317,10 @@
         alert(msg.data);
         // $("#save_2ref_done").append(msg.data);
     });
+    socket.on('delete_complete', function(msg) {
+        alert(msg.data);
+        // $("#save_2ref_done").append(msg.data);
+    });
 
   });
 
@@ -328,8 +346,19 @@
 
 
   function save_2ref() {
-    alert("Saving current results to reference case");
-    socket.emit('save_2ref');
+    // alert("Saving current results to reference case");
+    if (confirm('Are you sure you want save current results as reference case?')) {
+      socket.emit('save_2ref');
+    }
+
+  };
+
+  function delete_refcase() {
+    // alert("Deleting reference case!");
+    if (confirm('Are you sure you want to delete reference case?')) {
+      socket.emit('delete_refcase');
+    }
+
   };
 
 
@@ -1257,9 +1286,9 @@
   }
 
 
-  function save2ref(){
-
-  }
+  // function save2ref(){
+  //
+  // }
 
 
 

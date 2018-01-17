@@ -6,7 +6,11 @@
   <div class="row">
     <div class="col-lg-12">
 
-      <br>
+      <!-- <br> -->
+      <div id="gap_cal_status"><h4>Press Start on sidebar to start GAP calculation</h4></div>
+      <input type="checkbox" id="route_opt" value="" checked='checked'> <span>Optimize routing</span>
+      <img src="/static/img/ajax-loader.gif" id="calc_img" style="display:none"/ >
+      <hr>
       <div id="gap_cal_update"></div>
 
     </div>
@@ -20,13 +24,36 @@
 
   function start_gap_calc() {
     $("#gap_cal_update").empty();
-    $("#gap_well_results").empty();
-    socket.emit('start_gap_calc');
+    $("#gap_cal_status").empty();
+    if ($("#route_opt").is(":checked")){
+      $("#gap_cal_status").append("<h3>Routing optimization started</h3>");
+      socket.emit('start_route_opt');
+    }else{
+      $("#gap_cal_status").append("<h3>Calculations started</h3>");
+      socket.emit('start_gap_calc');
+    }
+    $('#calc_img').show();
   };
 
+  // function route_opt_calc() {
+  //   $("#gap_cal_update").empty();
+  //   $("#gap_cal_status").empty();
+  //   $("#gap_cal_status").append("<h3>Routing calculations started</h3>");
+  //   socket.emit('start_route_opt');
+  //   $('#calc_img').show();
+  // };
+
   socket.on('progress', function(msg) {
-      $("#gap_cal_update").append(msg.data+"<br>");
+      // $("#gap_cal_update").append(msg.data+"<br>");
+
       socket.emit('ping');
+      if(msg.finish==1){
+        $('#calc_img').hide();
+        $("#gap_cal_status").empty();
+        $("#gap_cal_status").append("<h3>"+msg.data+"</h3>");
+      }else{
+        $("#gap_cal_update").prepend(msg.data+"<br>");
+      }
   });
 
   socket.on('disconnect', function(data) {
