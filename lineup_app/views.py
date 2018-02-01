@@ -23,6 +23,8 @@ from lineup_app import field_balance as fb
 from lineup_app import state_init
 from lineup_app import results as rs
 import numpy as np
+from lineup_app import NetSimRoutines as NS
+# import requests
 
 
 
@@ -605,3 +607,21 @@ def get_alloc_thp():
                 thps.append(row)
 
     return jsonify({"thps":thps})
+
+
+@app.route('/netsim_test', methods = ['POST'])
+def netsim_test():
+
+    data=NS.DoGetAll("wells","label")
+    print(data)
+
+    data=NS.DoGet("wells/9815/gor")
+    print(data)
+
+    data=NS.DoSet("wells/9815/gor",1600.0)
+    print(data)
+
+    data=NS.DoGet("wells/9815/gor")
+    print(data)
+
+    return data

@@ -24,6 +24,7 @@
       </form>
 
     </div>
+
   </div>
 
   <!-- <div class="row">
@@ -34,7 +35,36 @@
     </div>
 
   </div> -->
+  <a href="#" onclick="netsim_test();">
+    Save state
+  </a>
 </div>
+
+<script type="text/javascript">
+
+
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  function netsim_test() {
+
+    $.ajax({
+        type: "POST",
+        url: "/netsim_test", // url to call in the views.py
+        // The key needs to match your method's input parameter (case-sensitive).
+        data: "",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
+        }
+    });
+
+
+  };
+</script>
 
 
 
