@@ -24,12 +24,15 @@ from lineup_app import state_init
 from lineup_app import results as rs
 import numpy as np
 from lineup_app import NetSimRoutines as NS
+from lineup_app import NetSim_setup as nsst
+from lineup_app import NetSim_get_results as nsgr
+from lineup_app import NetSim_optimization as nsopt
 # import requests
 
 
 
 # use mockup from EXCEL GAP file
-MOCKUP=False
+MOCKUP=True
 
 
 
@@ -125,15 +128,6 @@ def custom_401(error):
 @app.route('/')
 @login_required
 def index():
-    # session_json=get_session_json()
-    # print(session_json["well_data"])
-    # print(session_json)
-    # if not "state" in session_json:
-    #     session_json=state_init.init()
-        # session["state"]={} # initialize state if no state
-        # session["state"]=loaded_state # save loaded data to state
-        # session.modified=True
-    # print(session["state"]["fb_data"]["streams"]["constraints"])
     page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":""}
     return render_template('index.html',page_active=page_active)
 
@@ -172,7 +166,7 @@ def results():
 
     # get results from GAP or mockup excel
     if MOCKUP:
-        session_json["well_data"]=xlggr.xl_get_all_well_data(session_json)
+        session_json["well_data"]=nsgr.get_all_well_data(session_json)
     else:
         session_json["well_data"]=ggr.get_all_well_data(session_json)
     #------------------------------------------------------------------------------
@@ -189,6 +183,9 @@ def results():
 
     # field balance calculation
     session_json["fb_data"]=fb.calculate(session_json)
+
+    # this is done so that routings/sep pres dont get updated as cant be done on results page
+    session_json["state"]=0
 
     # save results to json
     save_session_json(session_json)
@@ -236,13 +233,18 @@ def setup():
 
     if not "well_data" in session_json: # create a well_data if does not exist, this normally happens very first time user logs in.
         session_json["well_data"]={}
+        # populate well data with wells from GAP
+        if MOCKUP:
+            session_json["well_data"]=nsst.get_gap_wells()
+        else:
+            print("add GAP openserver")
+        print(session_json["well_data"])
 
     # get well connections from "well_connections.xlsm" file
     well_conns=xl_setup.read_conns()
-    for well,conns in well_conns.items(): # merge with well_data
-        if not well in session_json["well_data"]: # create a well record in well_data if well not in list yet
-            session_json["well_data"][well]={}
-        session_json["well_data"][well]["connection"]=conns # assign list of connections
+    for well,m in session_json["well_data"].items(): # merge with well_data
+        if well in well_conns:
+            session_json["well_data"][well]["connection"]=well_conns[well] # assign list of connections
 
     # get MAPs from "Deliverability.xlsx" file
     well_maps=xl_setup.read_maps()
@@ -250,21 +252,21 @@ def setup():
         if well in well_maps:
             session_json["well_data"][well]["map"]=well_maps[well]["map"]
 
-
-    if session_json["state"]==1: # check if state has been saved by the user
-        #------------------------------------------------------------------------------
-        if MOCKUP:
-            xlst.xl_set_unit_routes(session_json["well_data"]) # set well routes as per state
-            xlst.xl_set_sep_pres(session_json["unit_data"]["sep"]) # set separator pressure as per state
-        else:
-            st.set_unit_routes(session_json["well_data"]) # set well routes as per state
-            st.set_sep_pres(session_json["unit_data"]["sep"]) # set separator pressure as per state
+    # print(session_json["well_data"])
 
     #------------------------------------------------------------------------------
     if MOCKUP:
-        session_json["well_data"]=xlst.xl_get_all_well_data(session_json["well_data"]) # get well data from GAP such as GOR and current routes
-        session_json["unit_data"]["sep"]=xlst.xl_get_sep_pres() # get separator pressure if state doesn't exist
+        if session_json["state"]==1: # check if state has been saved by the user (1)
+            nsst.set_unit_routes(session_json["well_data"]) # set well routes as per state
+            nsst.set_sep_pres(session_json["unit_data"]["sep"]) # set separator pressure as per state
+
+        session_json["well_data"]=nsst.get_all_well_data(session_json["well_data"])
+        session_json["unit_data"]["sep"]=nsst.get_sep_pres()
     else:
+        if session_json["state"]==1: # check if state has been saved by the user (1)
+            st.set_unit_routes(session_json["well_data"]) # set well routes as per state
+            st.set_sep_pres(session_json["unit_data"]["sep"]) # set separator pressure as per state
+
         session_json["well_data"]=st.get_all_well_data(session_json["well_data"]) # get well data from GAP such as GOR, limits and current routes
         session_json["unit_data"]["sep"]=st.get_sep_pres() # get separator pressure if state doesn't exist
     #------------------------------------------------------------------------------
@@ -302,11 +304,17 @@ def savestate():
     session_json=request.json
 
     for well,val in session_json["well_data"].items(): # additional step to pre calculate required qgas_max equivalent to target FWHP
+        # print(well,val)
         if "target_fwhp" in val:
             if val["target_fwhp"]>0:
-                pc_fwhp=session_json["well_data"][well]["pc"]["thps"]
-                pc_qgas=session_json["well_data"][well]["pc"]["qgas"]
-                session_json["well_data"][well]["qgas_max"]=np.interp(val["target_fwhp"],pc_fwhp,pc_qgas)
+                if MOCKUP:
+                    # NetSim uses fwhp_min to reach target THP
+                    session_json["well_data"][well]["target_fwhp"]
+                else:
+                    pc_fwhp=session_json["well_data"][well]["pc"]["thps"]
+                    pc_qgas=session_json["well_data"][well]["pc"]["qgas"]
+                    # GAP uses qgas_max to reach target THP
+                    session_json["well_data"][well]["qgas_max"]=np.interp(val["target_fwhp"],pc_fwhp,pc_qgas)
 
 
     session_jsonfile=os.path.join(uploader_dirname,r"temp\session.json")
@@ -387,6 +395,7 @@ def route_opt_start():
     session_json=get_session_json()
     if MOCKUP:
         print("skip xls calc")
+        post_opt_state=nsopt.route_optimization(session_json)
     else:
         print("route_opt")
         post_opt_state=gob.route_optimization(session_json) # pass state to GAP to make calculations
@@ -418,9 +427,10 @@ def load_pcs():
 
     print('saving PCs to session')
     session_json=get_session_json()
-    for well,val in session_json["well_data"].items():
-        if well in well_pcs: # create well record in does not exist in well_data
-            session_json["well_data"][well]["pc"]=well_pcs[well]["pc"]
+    session_json["well_pcs"]=well_pcs
+    # for well,val in session_json["well_data"].items():
+    #     if well in well_pcs: # create well record in does not exist in well_data
+    #         session_json["well_data"][well]["pc"]=well_pcs[well]["pc"]
     save_session_json(session_json)
 
     print('loading PCs to GAP')
@@ -453,23 +463,24 @@ def save_2ref():
 
 """ REMOVE REFERENCE JSON FILE==================================================== """
 @socketio.on('delete_refcase')
+def delete_refcase_url():
+    delete_refcase()
+    emit('delete_complete',{"data":"Reference case deleted"})
+    return "None"
+"""========================================================================================="""
+
 def delete_refcase():
     json_fullpath_ref=os.path.join(uploader_dirname,r"temp\session_ref_case.json")
     if os.path.isfile(json_fullpath_ref):
         os.remove(json_fullpath_ref)
-    emit('delete_complete',{"data":"Reference case deleted"})
     return "None"
-"""========================================================================================="""
 
 
 
 """ SAVE SESSION JSON FILE==================================================== """
 def save_session_json(session_json):
-
-
-
     json_fullpath=os.path.join(uploader_dirname,r"temp\session.json")
-    json.dump(session_json, open(json_fullpath, 'w'))
+    json.dump(session_json, open(json_fullpath, 'w'),indent=4, sort_keys=True)
 
     return "None"
 """========================================================================================="""
@@ -479,6 +490,7 @@ def save_session_json(session_json):
 def clear_well_data_session_json(): # when user logged out well_data to clear for cleaning after user.
     session_json=get_session_json()
     session_json.pop('well_data', None)
+    # session_json["well_data"]={}
     session_json["state"]=0
     save_session_json(session_json)
     return "None"
@@ -609,19 +621,47 @@ def get_alloc_thp():
     return jsonify({"thps":thps})
 
 
+
+
 @app.route('/netsim_test', methods = ['POST'])
 def netsim_test():
 
+    print('NS.DoGetAll("wells","label")')
     data=NS.DoGetAll("wells","label")
     print(data)
 
+    print('NS.DoGet("wells/9815/gor")')
     data=NS.DoGet("wells/9815/gor")
     print(data)
 
+    print('NS.DoSet("wells/9815/gor",1600.0)')
     data=NS.DoSet("wells/9815/gor",1600.0)
     print(data)
 
+    print('NS.DoGet("wells/9815/gor")')
     data=NS.DoGet("wells/9815/gor")
+    print(data)
+
+    print('NS.DoSetAll("wells","dp",vals)')
+    vals=[0,0]
+    vals=NS.list2gapstr(vals)
+    data=NS.DoSetAll("wells","dp",vals)
+    print(data)
+
+    print('NS.DoGetAll("wells","gor")')
+    data=NS.DoGetAll("wells","gor")
+    print(data)
+
+    print('NS.DoCmd("calculate_network")')
+    data=NS.DoCmd("calculate_network")
+    print(data)
+
+    print('NS.DoCmd("optimize_network")')
+    data=NS.DoCmd("optimize_network")
+    print(data)
+
+    print('NS.DoGetAll("wells","results/fwhp")')
+    data=NS.DoGetAll("wells","results/fwhp")
     print(data)
 
     return data
