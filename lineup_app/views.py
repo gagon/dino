@@ -309,7 +309,8 @@ def savestate():
             if val["target_fwhp"]>0:
                 if MOCKUP:
                     # NetSim uses fwhp_min to reach target THP
-                    session_json["well_data"][well]["target_fwhp"]
+                    # session_json["well_data"][well]["target_fwhp"]
+                    session_json["well_data"][well]["fwhp_min"]=val["target_fwhp"] # mimic GAP behavior with qgas_max
                 else:
                     pc_fwhp=session_json["well_data"][well]["pc"]["thps"]
                     pc_qgas=session_json["well_data"][well]["pc"]["qgas"]
@@ -381,6 +382,7 @@ def gap_calc_start():
     session_json=get_session_json()
     if MOCKUP:
         print("skip xls calc")
+        post_opt_state=nsopt.run_optimization(session_json) # pass state to GAP to make calculations
     else:
         post_opt_state=gob.run_optimization(session_json) # pass state to GAP to make calculations
     #------------------------------------------------------------------------------

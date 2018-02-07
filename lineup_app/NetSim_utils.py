@@ -12,9 +12,9 @@ from lineup_app import NetSimRoutines as NS
 
 
 
-# def list2gapstr(l):
-#     l=list(map(str, l))
-#     return "|".join(l)+"|"
+def list2gapstr(l):
+    l=list(map(str, l))
+    return "|".join(l)+"|"
 #
 #
 def filtermasked(par_orig,status,st):
@@ -26,15 +26,15 @@ def filtermasked(par_orig,status,st):
         return np.array(fpar,dtype=float)
     else:
         return fpar
-#
 
-# def updatepar(par_orig,par,status):
-#     cnt=0
-#     for idx,s in enumerate(status):
-#         if s=="0":
-#            par_orig[idx]=par[cnt]
-#            cnt+=1
-#     return par_orig
+
+def updatepar(par_orig,par,status):
+    cnt=0
+    for idx,s in enumerate(status):
+        if s=="0":
+           par_orig[idx]=par[cnt]
+           cnt+=1
+    return par_orig
 #
 #
 def get_all(item,param):
@@ -65,7 +65,7 @@ def open_pipes(pipe_open):
 #
 #
 def choose_unit(unit):
-    data=NS.DoSetAll("seps","masked","1|1|1|")
+    data=NS.DoSetAll("seps","masked","1|1|1|","int")
     data=NS.DoSet("seps/"+unit+"/masked",0)
     data=NS.DoCmd("build_network")
 
@@ -73,47 +73,45 @@ def choose_unit(unit):
 
 
 def unmask_all_units():
-    data=NS.DoSetAll("seps","masked","0|0|0|")
+    data=NS.DoSetAll("seps","masked","0|0|0|","int")
     data=NS.DoCmd("build_network")
     return None
 #
 #
-# def solve_network(PE_server):
-#     PE.DoCmd(PE_server,"GAP.SOLVENETWORK(0, MOD[0])")
-#     return None
+def solve_network():
+    NS.DoCmd("solve_network")
+    return None
 #
-# def solve_network_rb(PE_server):
-#     PE.DoCmd(PE_server,"GAP.SOLVENETWORK(3, MOD[0])")
-#     return None
+def solve_network_rb():
+    NS.DoCmd("optimize_network")
+    return None
 #
 # def showinterface(PE_server,s):
 #     PE.DoCmd(PE_server,"GAP.SHOWINTERFACE("+str(s)+")")
 #     return None
 #
 #
-# def get_unit_qgas(PE_server,unit):
-#     return float(PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverResults[0].GasRate"))
-#
-# def get_unit_qoil(PE_server,unit):
-#     return float(PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverResults[0].OilRate"))
-#
-# def get_unit_qwat(PE_server,unit):
-#     return float(PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverResults[0].WatRate"))
+def get_unit_qgas(unit):
+    return float(NS.DoGet("seps/"+unit+"/results/qgas"))
+
+def get_unit_qoil(unit):
+    return float(NS.DoGet("seps/"+unit+"/results/qoil"))
+
+def get_unit_qwat(unit):
+    return float(NS.DoGet("seps/"+unit+"/results/qwat"))
 #
 # def set_unit_pres(PE_server,unit,pres):
 #     PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{"+unit+"}].SolverPres[0]",pres)
 #     return None
 #
 #
-# def shut_well(PE_server,well):
-#     PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[{"+well+"}].DPControl","FIXEDVALUE")
-#     PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[{"+well+"}].DPControlValue",10000)
-#     return None
+def shut_well(well):
+    NS.DoSet("wells/"+well+"/results/dp",10000)
+    return None
 #
-# def open_well(PE_server,well):
-#     PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[{"+well+"}].DPControl","CALCULATED")
-#     PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[{"+well+"}].DPControlValue",0)
-#     return None
+def open_well(well):
+    NS.DoSet("wells/"+well+"/results/dp",0.0)
+    return None
 #
 # def set_chokes_calculated(PE_server):
 #     PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[$].DPControl","CALCULATED")

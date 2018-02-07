@@ -39,8 +39,8 @@ def DoSet(item,val):
     return data
 
 
-def DoSetAll(item,param,vals):
-    dictToSend = {'path':item,"param":param,"vals":gapstr2list(vals)}
+def DoSetAll(item,param,vals,t):
+    dictToSend = {'path':item,"param":param,"vals":gapstr2list(vals,t)}
     headers = {'content-type': 'application/json'}
     res = requests.post('http://localhost:8080/api/dosetall', data=json.dumps(dictToSend),headers=headers)
     dictFromServer = res.json()
@@ -61,5 +61,10 @@ def list2gapstr(l):
     l=list(map(str, l))
     return "|".join(l)+"|"
 
-def gapstr2list(l):
-    return l.split("|")[:-1]
+def gapstr2list(l,t):
+    l=l.split("|")[:-1]
+    if t=="float":
+        l=[float(i) for i in l]
+    elif t=="int":
+        l=[int(i) for i in l]
+    return l
