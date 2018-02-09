@@ -362,7 +362,7 @@
 
     session_json=get_state(session_json); // get state data from target fwhp, route and optimize columns
     session_json["state"]=1;
-    console.log(session_json["well_data"]);
+    // console.log(session_json["well_data"]);
 
 
     // Make AJAX call to save state data to session in the server, see "savestate" url call in views.py
@@ -375,12 +375,14 @@
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(data){
+          console.log(data);
+          alert(data.data); // send message after saving to state
         },
         failure: function(errMsg) {
             alert(errMsg);
         }
     });
-    alert("State saved. Reload page to update table"); // send message after saving to state
+
 
   };
   ////////////////////////////////////////////////////////////////////////////////

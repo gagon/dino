@@ -1,33 +1,35 @@
+
 from lineup_app import app
 from flask import render_template, request,redirect, url_for, session, flash, jsonify
+from flask_socketio import SocketIO, send, emit,disconnect
+import flask_login as flask_login
+from flask_login import LoginManager, UserMixin, login_required
+from werkzeug.utils import secure_filename
 
 import pyodbc
 import datetime
-from flask_socketio import SocketIO, send, emit,disconnect
-from lineup_app import GAP_optimization as gob
-from lineup_app import xlGAP_optimization as xlgob
-from lineup_app import GAP_get_results as ggr
-from lineup_app import xlGAP_get_results as xlggr
-from lineup_app import GAP_setup as st
-from lineup_app import xlGAP_setup as xlst
-from lineup_app import xl_setup
-from lineup_app import GAP_load_pcs2gap as pcs2gap
-import flask_login as flask_login
-from flask_login import LoginManager, UserMixin, login_required
 import os
-from werkzeug.utils import secure_filename
-from lineup_app import gathering_parser as gath_par
 import xlrd
 import json
-from lineup_app import field_balance as fb
-from lineup_app import state_init
-from lineup_app import results as rs
 import numpy as np
-from lineup_app import NetSimRoutines as NS
-from lineup_app import NetSim_setup as nsst
-from lineup_app import NetSim_get_results as nsgr
-from lineup_app import NetSim_optimization as nsopt
-# import requests
+
+from lineup_app.GAP_modules import GAP_optimization as gob
+from lineup_app.GAP_modules import GAP_get_results as ggr
+from lineup_app.GAP_modules import GAP_setup as st
+from lineup_app.GAP_modules import GAP_load_pcs2gap as pcs2gap
+
+from lineup_app.utils import xl_setup
+from lineup_app.utils import gathering_parser as gath_par
+from lineup_app.utils import field_balance as fb
+# from lineup_app.utils import state_init
+from lineup_app.utils import results as rs
+
+from lineup_app.NetSim_modules import NetSimRoutines as NS
+from lineup_app.NetSim_modules import NetSim_setup as nsst
+from lineup_app.NetSim_modules import NetSim_get_results as nsgr
+from lineup_app.NetSim_modules import NetSim_optimization as nsopt
+from lineup_app.NetSim_modules import NetSim_load_pcs2ns as pcs2ns
+
 
 
 
@@ -40,7 +42,7 @@ MOCKUP=True
 app.secret_key = 'any_random_string'
 # socket IO initialized, time out set to 500 sec
 socketio=SocketIO(app, ping_timeout=500)
-sid=None
+
 
 uploader_dirname, uploader_filename = os.path.split(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(uploader_dirname,'temp')
@@ -61,9 +63,6 @@ users = json.load(open(users_json))
 # db_driver="Oracle in OraClient11g"
 db_driver="Oracle in OraClient11g_32bit"
 
-
-# # using session_json instead of flask session due to cookie size limitation
-# session_json={}
 
 
 """ LOGIN ROUTINES (using flask-login library) ================================================================ """
@@ -307,20 +306,22 @@ def savestate():
         # print(well,val)
         if "target_fwhp" in val:
             if val["target_fwhp"]>0:
-                if MOCKUP:
-                    # NetSim uses fwhp_min to reach target THP
-                    # session_json["well_data"][well]["target_fwhp"]
-                    session_json["well_data"][well]["fwhp_min"]=val["target_fwhp"] # mimic GAP behavior with qgas_max
-                else:
-                    pc_fwhp=session_json["well_data"][well]["pc"]["thps"]
-                    pc_qgas=session_json["well_data"][well]["pc"]["qgas"]
-                    # GAP uses qgas_max to reach target THP
-                    session_json["well_data"][well]["qgas_max"]=np.interp(val["target_fwhp"],pc_fwhp,pc_qgas)
+                # if MOCKUP:
+                #     pc_fwhp=session_json["well_pcs"][well]["pc"]["thps"]
+                #     pc_qgas=session_json["well_pcs"][well]["pc"]["qgas"]
+                #     # NetSim uses qgas_max to reach target THP to mimic GAP
+                #     session_json["well_data"][well]["qgas_max"]=np.interp(val["target_fwhp"],pc_fwhp,pc_qgas)
+                #
+                # else:
+                pc_fwhp=session_json["well_pcs"][well]["pc"]["thps"]
+                pc_qgas=session_json["well_pcs"][well]["pc"]["qgas"]
+                # GAP uses qgas_max to reach target THP
+                session_json["well_data"][well]["qgas_max"]=np.interp(val["target_fwhp"],pc_fwhp,pc_qgas)
 
 
     session_jsonfile=os.path.join(uploader_dirname,r"temp\session.json")
     json.dump(request.json, open(session_jsonfile, 'w'))
-    return "None"
+    return jsonify({'data':"Saved State successfully!\nReload Page to update tables"})
 """========================================================================================="""
 
 
@@ -436,7 +437,10 @@ def load_pcs():
     save_session_json(session_json)
 
     print('loading PCs to GAP')
-    pcs2gap.load_pcs2gap(well_pcs)
+    if MOCKUP:
+        pcs2ns.load_pcs2ns(well_pcs)
+    else:
+        pcs2gap.load_pcs2gap(well_pcs)
     # print(well_pcs)
     # json_fullpath_pcs=os.path.join(uploader_dirname,r"temp\well_pcs.json")
     # json.dump(well_pcs, open(json_fullpath_pcs, 'w'))
