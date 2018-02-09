@@ -4,7 +4,7 @@ import numpy as np
 
 
 
-def read_conns():
+def read_conns(well_data):
     # get current directory using os library
     # dirname, filename = os.path.split(os.path.abspath(__file__))
     dirname=os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..')) # added after restructuring files/folders
@@ -86,7 +86,14 @@ def read_conns():
     if well: # to save very last well
         well_details[well]=well_conns
 
-    return well_details
+
+
+    for well,m in well_data.items(): # merge with well_data
+        if well in well_details:
+            # print(well,well_details[well])
+            well_data[well]["connection"]=well_details[well] # assign list of connections
+
+    return well_data
 
 
 def read_pcs():
@@ -170,7 +177,7 @@ def generate_pc(qoil_coeffs,wc,fbhp_coeffs,gor):
 
 
 
-def read_maps():
+def read_maps(well_data):
     # dirname, filename = os.path.split(os.path.abspath(__file__))
     dirname=os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..')) # added after restructuring files/folders
     xl_fullpath=os.path.join(dirname,'static\Deliverability.xlsx')
@@ -182,16 +189,34 @@ def read_maps():
     r=8
     while pc_sh.cell(row=r, column=2).value!=None:
         if pc_sh.cell(row=r, column=16).value!=None:
-            well_data={}
-            well_data["wellname"]=str(pc_sh.cell(row=r, column=2).value)
+            data={}
+            data["wellname"]=str(pc_sh.cell(row=r, column=2).value)
 
             if pc_sh.cell(row=r, column=32).value!=None:
-                well_data["map"]=pc_sh.cell(row=r, column=32).value
+                data["map"]=pc_sh.cell(row=r, column=32).value
             else:
-                well_data["map"]=0.0
-            well_maps[well_data["wellname"]]=well_data
+                data["map"]=0.0
+            well_maps[data["wellname"]]=data
         r+=1
-    return well_maps
+
+    for well,m in well_data.items(): # merge with well_data
+        if well in well_maps:
+            # print(well,well_maps[well]["map"])
+            well_data[well]["map"]=well_maps[well]["map"]
+
+    return well_data
+
+
+
+def make_well_data_by_unit(session_json):
+    # group wells by unit for html page
+    session_json["well_data_byunit"]=[{},{},{}]
+    for well,val in session_json["well_data"].items():
+        if "masked" in val: #required to know which well is masked/unmasked in GAP to include/exclude well in the list
+            if val["masked"]==0:
+                session_json["well_data_byunit"][val["unit_id"]][well]=val
+    return session_json
+
 
 
 if __name__=="__main__":

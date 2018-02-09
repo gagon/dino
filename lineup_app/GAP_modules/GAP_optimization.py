@@ -14,7 +14,7 @@ pert_tol=0.001 # perturbations limit below which changing variable has no signif
 
 
 import numpy as np
-from lineup_app.utils import utils as ut
+from lineup_app.GAP_modules import GAP_utils as ut
 from xlrd import open_workbook,xldate_as_tuple
 import datetime
 from flask_socketio import SocketIO, send, emit

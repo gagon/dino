@@ -6,7 +6,7 @@ Created on Mon Apr 25 14:34:45 2016
 """
 
 import numpy as np
-from lineup_app.utils import utils as ut
+from lineup_app.GAP_modules import GAP_utils as ut
 
 
 def get_well_data(PE_server,well_data,afs):

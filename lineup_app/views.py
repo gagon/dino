@@ -33,7 +33,7 @@ from lineup_app.NetSim_modules import NetSim_load_pcs2ns as pcs2ns
 
 
 
-# use mockup from EXCEL GAP file
+# use mockup from NetSim file
 MOCKUP=True
 
 
@@ -240,18 +240,11 @@ def setup():
         print(session_json["well_data"])
 
     # get well connections from "well_connections.xlsm" file
-    well_conns=xl_setup.read_conns()
-    for well,m in session_json["well_data"].items(): # merge with well_data
-        if well in well_conns:
-            session_json["well_data"][well]["connection"]=well_conns[well] # assign list of connections
+    session_json["well_data"]=xl_setup.read_conns(session_json["well_data"])
 
     # get MAPs from "Deliverability.xlsx" file
-    well_maps=xl_setup.read_maps()
-    for well,m in session_json["well_data"].items(): # merge with well_data
-        if well in well_maps:
-            session_json["well_data"][well]["map"]=well_maps[well]["map"]
+    session_json["well_data"]=xl_setup.read_maps(session_json["well_data"])
 
-    # print(session_json["well_data"])
 
     #------------------------------------------------------------------------------
     if MOCKUP:
@@ -271,13 +264,9 @@ def setup():
     #------------------------------------------------------------------------------
 
     # group wells by unit for html page
-    session_json["well_data_byunit"]=[{},{},{}]
-    for well,val in session_json["well_data"].items():
-        if "masked" in val: #required to know which well is masked/unmasked in GAP to include/exclude well in the list
-            if val["masked"]==0:
-                session_json["well_data_byunit"][val["unit_id"]][well]=val
+    session_json=xl_setup.make_well_data_by_unit(session_json)
 
-    #save gathered data to json file
+    # save gathered data to json file
     save_session_json(session_json)
 
 
@@ -301,23 +290,14 @@ def clearstate():
 @app.route('/savestate', methods = ['POST'])
 def savestate():
     session_json=request.json
-
     for well,val in session_json["well_data"].items(): # additional step to pre calculate required qgas_max equivalent to target FWHP
         # print(well,val)
         if "target_fwhp" in val:
             if val["target_fwhp"]>0:
-                # if MOCKUP:
-                #     pc_fwhp=session_json["well_pcs"][well]["pc"]["thps"]
-                #     pc_qgas=session_json["well_pcs"][well]["pc"]["qgas"]
-                #     # NetSim uses qgas_max to reach target THP to mimic GAP
-                #     session_json["well_data"][well]["qgas_max"]=np.interp(val["target_fwhp"],pc_fwhp,pc_qgas)
-                #
-                # else:
                 pc_fwhp=session_json["well_pcs"][well]["pc"]["thps"]
                 pc_qgas=session_json["well_pcs"][well]["pc"]["qgas"]
                 # GAP uses qgas_max to reach target THP
                 session_json["well_data"][well]["qgas_max"]=np.interp(val["target_fwhp"],pc_fwhp,pc_qgas)
-
 
     session_jsonfile=os.path.join(uploader_dirname,r"temp\session.json")
     json.dump(request.json, open(session_jsonfile, 'w'))
@@ -625,6 +605,8 @@ def get_alloc_thp():
                 thps.append(row)
 
     return jsonify({"thps":thps})
+
+
 
 
 

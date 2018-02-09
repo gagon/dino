@@ -7,7 +7,7 @@ Created on Mon Apr 25 14:34:45 2016
 
 import numpy as np
 # from lineup_app import PetexRoutines as PE
-from lineup_app.utils import utils as ut
+from lineup_app.GAP_modules import GAP_utils as ut
 from flask_socketio import SocketIO, send, emit
 import gevent
 from gevent import monkey, sleep
