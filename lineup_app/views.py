@@ -94,8 +94,8 @@ def request_loader(request):
 @app.route('/logout')
 def logout():
     flask_login.logout_user()
-    clear_well_data_session_json()
-    delete_refcase()
+    utils.clear_well_data_session_json()
+    utils.delete_refcase()
     return redirect(url_for('index'))
 
 # main fucntion where user is logged in if username and password are correct
@@ -138,7 +138,7 @@ def index():
 @login_required
 def setup():
 
-    session_json=get_session_json() # read from json file all necessary app data
+    session_json=utils.get_session_json() # read from json file all necessary app data
 
     if not "well_data" in session_json: # create a well_data if does not exist, this normally happens very first time user logs in.
         session_json["well_data"]={}
@@ -176,7 +176,7 @@ def setup():
     session_json=utils.make_well_data_by_unit(session_json)
 
     # save gathered data to json file
-    save_session_json(session_json)
+    utils.save_session_json(session_json)
 
     page_active={"load_pcs":"","load_state":"","setup":"active","live":"","results":""}
     # render page, pass data dictionary to the page
@@ -188,9 +188,9 @@ def setup():
 @app.route('/live')
 @login_required
 def live():
-    session_json=get_session_json()
+    session_json=utils.get_session_json()
     if not "well_data" in session_json: # check if state was exists. well_data ~ state
-        return "NO session well state. Go back to setup and save state"
+        return "NO session well state. Go back to <b>Setup</b> and save state"
 
     page_active={"load_pcs":"","load_state":"","setup":"","live":"active","results":""}
     # else load live page
@@ -203,9 +203,11 @@ def live():
 @login_required
 def results():
 
-    session_json=get_session_json()
-    if not "state" in session_json: # check if state was exists. well_data ~ state
-        return "NO session well state. Go back to setup and save state"
+    session_json=utils.get_session_json()
+
+    if not "well_data" in session_json: # check if state was exists. well_data ~ state
+        return "NO session well state. Go back to <b>Setup</b> and save state"
+
     # get well results from GAP
     #------------------------------------------------------------------------------
 
@@ -229,7 +231,7 @@ def results():
     session_json["state"]=0
 
     # save results to json
-    save_session_json(session_json)
+    utils.save_session_json(session_json)
 
     # merge data to present if ref case exists
     data,merge_done=rs.merge_ref(session_json)
@@ -244,6 +246,8 @@ def results():
 @app.route('/load')
 @login_required
 def load():
+    if not "well_data" in session_json: # check if state was exists. well_data ~ state
+        return "NO session well state. Go back to <b>Setup</b> and save state"
     page_active={"load_pcs":"active","load_state":"","setup":"","live":"","results":""}
     return render_template('load.html',page_active=page_active)
 """========================================================================================="""
@@ -253,10 +257,9 @@ def load():
 @app.route('/load_state')
 @login_required
 def load_state():
-    session_json=get_session_json()
-    # check is session "state" exists, if not send message and stop
-    if not "state" in session_json: # check if state was exists. well_data ~ state
-        return "NO session well state. Go back to setup and save state"
+    session_json=utils.get_session_json()
+    if not "well_data" in session_json: # check if state was exists. well_data ~ state
+        return "NO session well state. Go back to <b>Setup</b> and save state"
     page_active={"load_pcs":"","load_state":"active","setup":"","live":"","results":""}
     return render_template('load_state.html',page_active=page_active)
 """========================================================================================="""
@@ -274,7 +277,7 @@ def clearstate():
 @app.route('/savestate', methods = ['POST'])
 def savestate():
     session_json=utils.calc_target_fwhps(request.json)
-    save_session_json(session_json)
+    utils.save_session_json(session_json)
     return jsonify({'data':"Saved State successfully!\nReload Page to update tables"})
 """========================================================================================="""
 
@@ -283,10 +286,10 @@ def savestate():
 @app.route('/savestate_results', methods = ['POST'])
 def savestate_results():
     fwhp_results=request.json # remember fwhp data from results page passed from AJAX call
-    session_json=get_session_json()
+    session_json=utils.get_session_json()
     for well,s in fwhp_results["wells"].items(): # loop through fwhp data from results page
         session_json["well_data"][well]["target_fwhp"]=s["fwhp"] # overwrite existing session state fwhps with data from results page
-        save_session_json(session_json)
+        utils.save_session_json(session_json)
         # Note: no need to check if session state exists because precondition to go to results page is to have state initialized
     return "None"
 """========================================================================================="""
@@ -295,33 +298,10 @@ def savestate_results():
 """ SAVE LOADED STATE ==================================================================== """
 @app.route('/savestate_loaded', methods = ['POST'])
 def savestate_loaded():
-
-    # get data loaded in load state page
-    data=request.json
-    loaded_state=data["state"]
-    shut_the_rest=data["shut_the_rest"]
-    session_json=get_session_json() # read session data
-
-    for well,val in session_json["well_data"].items():
-        if well in loaded_state:
-            # check if selected route exist in well connection list
-            in_routes=0
-            for r in session_json["well_data"][well]["connection"]["routes"]:
-                if loaded_state[well]["selected_route"]==r["route_name"]:
-                    in_routes=1
-                    break
-
-            if in_routes==1:
-                session_json["well_data"][well]["selected_route"]=loaded_state[well]["selected_route"]
-                session_json["well_data"][well]["target_fwhp"]=round(float(loaded_state[well]["target_fwhp"]),1)
-            else:
-                print("Route is not in well connections list! Well %s, %s" % (well,loaded_state[well]["selected_route"]))
-
-        else: # if well is not in loaded_state then shut the well
-            if shut_the_rest:
-                session_json["well_data"][well]["target_fwhp"]=-1
-
-    save_session_json(session_json) # save data to file
+    loaded_data=request.json # get data loaded in load state page
+    session_json=utils.get_session_json() # read session data
+    session_json=utils.save_loaded2session(session_json,loaded_data) # populate session with loaded data
+    utils.save_session_json(session_json) # save data to file
 
     return "None"
 """========================================================================================="""
@@ -331,7 +311,7 @@ def savestate_loaded():
 @socketio.on('start_gap_calc')
 def gap_calc_start():
 
-    session_json=get_session_json()
+    session_json=utils.get_session_json()
     if MOCKUP:
         print("skip xls calc")
         post_opt_state=nsopt.run_optimization(session_json) # pass state to GAP to make calculations
@@ -346,7 +326,7 @@ def gap_calc_start():
 @socketio.on('start_route_opt')
 def route_opt_start():
 
-    session_json=get_session_json()
+    session_json=utils.get_session_json()
     if MOCKUP:
         print("skip xls calc")
         post_opt_state=nsopt.route_optimization(session_json)
@@ -367,9 +347,9 @@ def load_pcs():
     emit('load_progress',{"data":"Well PCs read from Deliverability complete"})
 
     print('saving PCs to session')
-    session_json=get_session_json()
+    session_json=utils.get_session_json()
     session_json["well_pcs"]=well_pcs
-    save_session_json(session_json)
+    utils.save_session_json(session_json)
 
     print('loading PCs to GAP')
     if MOCKUP:
@@ -386,82 +366,22 @@ def load_pcs():
 """ SAVE RESULTS TO REFEREENCE JSON FILE==================================================== """
 @socketio.on('save_2ref')
 def save_2ref():
-    session_json=get_session_json()
-
-    json_fullpath_ref=os.path.join(uploader_dirname,r"temp\session_ref_case.json")
-    json.dump(session_json, open(json_fullpath_ref, 'w'))
-
+    session_json=utils.get_session_json()
+    utils.save_2ref(session_json)
     emit('save_complete',{"data":"Reference case saved"})
-    #------------------------------------------------------------------------------
     return "None"
 """========================================================================================="""
-
 
 
 """ REMOVE REFERENCE JSON FILE==================================================== """
 @socketio.on('delete_refcase')
 def delete_refcase_url():
-    delete_refcase()
+    utils.delete_refcase()
     emit('delete_complete',{"data":"Reference case deleted"})
     return "None"
 
-def delete_refcase():
-    json_fullpath_ref=os.path.join(uploader_dirname,r"temp\session_ref_case.json")
-    if os.path.isfile(json_fullpath_ref):
-        os.remove(json_fullpath_ref)
-    return "None"
-"""========================================================================================="""
-
-
-""" SAVE SESSION JSON FILE==================================================== """
-def save_session_json(session_json):
-    json_fullpath=os.path.join(uploader_dirname,r"temp\session.json")
-    json.dump(session_json, open(json_fullpath, 'w'),indent=4, sort_keys=True)
-
-    return "None"
-"""========================================================================================="""
-
-
-""" CLEAR WELL DATA FROM SESSION JSON FILE==================================================== """
-def clear_well_data_session_json(): # when user logged out well_data to clear for cleaning after user.
-    session_json=get_session_json()
-    session_json.pop('well_data', None)
-    session_json["state"]=0
-    save_session_json(session_json)
-    return "None"
-"""========================================================================================="""
-
-
-""" READ SESSION JSON FILE==================================================== """
-def get_session_json():
-    json_fullpath=os.path.join(uploader_dirname,r"temp\session.json")
-    if os.path.isfile(json_fullpath):
-        data = json.load(open(json_fullpath))
-    else:
-        data={}
-    return data
-"""========================================================================================="""
-
 
 """ PARSER GATHERING REPORT ==================================================================== """
-def allowed_file(filename): # make sure file is one of allowed extentions (look on top)
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def merge_route_slot(result_text,well_details):
-    result_text_new=[]
-    for well in result_text:
-        for w,val in well_details.items():
-            if well[0]==w:
-                for r in val["routes"]:
-                    print(w,well[1],well[2],well[3])
-                    print(w,r["unit"],r["rms"],r["tl"])
-                    if well[1]==r["unit"] and well[2]==r["rms"] and well[3]==r["tl"]:
-
-                        row=well
-                        row.append(r["slot"])
-                        result_text_new.append(row)
-    return result_text_new
 
 @app.route('/upload_gath_rep', methods=['POST'])
 def upload_file():
@@ -476,14 +396,14 @@ def upload_file():
         if file.filename == '': # check if filename is not empty
             flash('No selected file')
             return redirect(request.url)
-        if file and allowed_file(file.filename): # check if file exists and file is one of the allowed (look on top)
+        if file and utils.allowed_file(file.filename): # check if file exists and file is one of the allowed (look on top)
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename)) # save file in temp folder
 
             result_text,warn_text=gath_par.parse_gathering_report() # parse the data in excel file and return results
             well_details=xl_setup.read_conns()
 
-            result_text=merge_route_slot(result_text,well_details)
+            result_text=utils.merge_route_slot(result_text,well_details)
 
             #remove file after getting data
             os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
