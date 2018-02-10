@@ -21,7 +21,7 @@ from lineup_app.GAP_modules import GAP_load_pcs2gap as pcs2gap
 from lineup_app.utils import xl_setup
 from lineup_app.utils import gathering_parser as gath_par
 from lineup_app.utils import field_balance as fb
-# from lineup_app.utils import state_init
+from lineup_app.utils import utils
 from lineup_app.utils import results as rs
 
 from lineup_app.NetSim_modules import NetSimRoutines as NS
@@ -133,96 +133,6 @@ def index():
 """ ========================================================================================================== """
 
 
-
-
-
-""" GAP CALCULATION PAGE ==================================================================================== """
-@app.route('/live')
-@login_required
-def live():
-    session_json=get_session_json()
-    if not "well_data" in session_json: # check if state was exists. well_data ~ state
-        return "NO session well state. Go back to setup and save state"
-
-    page_active={"load_pcs":"","load_state":"","setup":"","live":"active","results":""}
-    # else load live page
-    return render_template('live.html',page_active=page_active)
-""" ========================================================================================================= """
-
-
-
-""" GET GAP RESULTS =========================================================================================== """
-@app.route('/results')
-@login_required
-def results():
-
-
-    session_json=get_session_json()
-    if not "state" in session_json: # check if state was exists. well_data ~ state
-        return "NO session well state. Go back to setup and save state"
-    # get well results from GAP
-    #------------------------------------------------------------------------------
-
-    # get results from GAP or mockup excel
-    if MOCKUP:
-        session_json["well_data"]=nsgr.get_all_well_data(session_json)
-    else:
-        session_json["well_data"]=ggr.get_all_well_data(session_json)
-    #------------------------------------------------------------------------------
-
-    # group well results by unit
-    session_json["well_data_byunit"]=[{},{},{}]
-    for well,val in session_json["well_data"].items():
-        if "masked" in val: #required to know which well is masked/unmasked in GAP to include/exclude well in the list
-            if val["masked"]==0:
-                session_json["well_data_byunit"][val["unit_id"]][well]=val
-
-    # calculate totals by field/unit/rms
-    session_json["totals"]=rs.calculate_totals(session_json["well_data_byunit"])
-
-    # field balance calculation
-    session_json["fb_data"]=fb.calculate(session_json)
-
-    # this is done so that routings/sep pres dont get updated as cant be done on results page
-    session_json["state"]=0
-
-    # save results to json
-    save_session_json(session_json)
-
-    # merge data to present if ref case exists
-    data,merge_done=rs.merge_ref(session_json)
-
-    page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":"active"}
-
-    return render_template('results.html',data=data,page_active=page_active,merge_done=merge_done)
-"""========================================================================================="""
-
-
-
-""" LOAD PC PAGE RENDER ================================================================= """
-@app.route('/load')
-@login_required
-def load():
-    page_active={"load_pcs":"active","load_state":"","setup":"","live":"","results":""}
-    return render_template('load.html',page_active=page_active)
-"""========================================================================================="""
-
-
-
-""" LOAD STATE PAGE RENDER ================================================================= """
-@app.route('/load_state')
-@login_required
-def load_state():
-    session_json=get_session_json()
-    # check is session "state" exists, if not send message and stop
-    if not "state" in session_json: # check if state was exists. well_data ~ state
-        return "NO session well state. Go back to setup and save state"
-    page_active={"load_pcs":"","load_state":"active","setup":"","live":"","results":""}
-    return render_template('load_state.html',page_active=page_active)
-"""========================================================================================="""
-
-
-
 """ SETUP PAGE ============================================================================ """
 @app.route('/setup')
 @login_required
@@ -245,36 +155,111 @@ def setup():
     # get MAPs from "Deliverability.xlsx" file
     session_json["well_data"]=xl_setup.read_maps(session_json["well_data"])
 
-
     #------------------------------------------------------------------------------
     if MOCKUP:
         if session_json["state"]==1: # check if state has been saved by the user (1)
             nsst.set_unit_routes(session_json["well_data"]) # set well routes as per state
-            nsst.set_sep_pres(session_json["unit_data"]["sep"]) # set separator pressure as per state
+            nsst.set_sep_pres(session_json["unit_data"]) # set separator pressure as per state
 
         session_json["well_data"]=nsst.get_all_well_data(session_json["well_data"])
-        session_json["unit_data"]["sep"]=nsst.get_sep_pres()
+        session_json["unit_data"]=nsst.get_sep_pres(session_json["unit_data"])
     else:
         if session_json["state"]==1: # check if state has been saved by the user (1)
             st.set_unit_routes(session_json["well_data"]) # set well routes as per state
-            st.set_sep_pres(session_json["unit_data"]["sep"]) # set separator pressure as per state
+            st.set_sep_pres(session_json["unit_data"]) # set separator pressure as per state
 
         session_json["well_data"]=st.get_all_well_data(session_json["well_data"]) # get well data from GAP such as GOR, limits and current routes
-        session_json["unit_data"]["sep"]=st.get_sep_pres() # get separator pressure if state doesn't exist
+        session_json["unit_data"]=st.get_sep_pres(session_json["unit_data"]) # get separator pressure if state doesn't exist
     #------------------------------------------------------------------------------
 
     # group wells by unit for html page
-    session_json=xl_setup.make_well_data_by_unit(session_json)
+    session_json=utils.make_well_data_by_unit(session_json)
 
     # save gathered data to json file
     save_session_json(session_json)
-
 
     page_active={"load_pcs":"","load_state":"","setup":"active","live":"","results":""}
     # render page, pass data dictionary to the page
     return render_template('setup.html',data=session_json,page_active=page_active)
 """========================================================================================="""
 
+
+""" GAP CALCULATION PAGE ==================================================================================== """
+@app.route('/live')
+@login_required
+def live():
+    session_json=get_session_json()
+    if not "well_data" in session_json: # check if state was exists. well_data ~ state
+        return "NO session well state. Go back to setup and save state"
+
+    page_active={"load_pcs":"","load_state":"","setup":"","live":"active","results":""}
+    # else load live page
+    return render_template('live.html',page_active=page_active)
+""" ========================================================================================================= """
+
+
+""" GET GAP RESULTS =========================================================================================== """
+@app.route('/results')
+@login_required
+def results():
+
+    session_json=get_session_json()
+    if not "state" in session_json: # check if state was exists. well_data ~ state
+        return "NO session well state. Go back to setup and save state"
+    # get well results from GAP
+    #------------------------------------------------------------------------------
+
+    # get results from GAP or mockup excel
+    if MOCKUP:
+        session_json["well_data"]=nsgr.get_all_well_data(session_json)
+    else:
+        session_json["well_data"]=ggr.get_all_well_data(session_json)
+    #------------------------------------------------------------------------------
+
+    # group wells by unit for html page
+    session_json=utils.make_well_data_by_unit(session_json)
+
+    # calculate totals by field/unit/rms
+    session_json["totals"]=rs.calculate_totals(session_json["well_data_byunit"])
+
+    # field balance calculation
+    session_json["fb_data"]=fb.calculate(session_json)
+
+    # this is done so that routings/sep pres dont get updated as cant be done on results page
+    session_json["state"]=0
+
+    # save results to json
+    save_session_json(session_json)
+
+    # merge data to present if ref case exists
+    data,merge_done=rs.merge_ref(session_json)
+
+    page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":"active"}
+
+    return render_template('results.html',data=data,page_active=page_active,merge_done=merge_done)
+"""========================================================================================="""
+
+
+""" LOAD PC PAGE RENDER ================================================================= """
+@app.route('/load')
+@login_required
+def load():
+    page_active={"load_pcs":"active","load_state":"","setup":"","live":"","results":""}
+    return render_template('load.html',page_active=page_active)
+"""========================================================================================="""
+
+
+""" LOAD STATE PAGE RENDER ================================================================= """
+@app.route('/load_state')
+@login_required
+def load_state():
+    session_json=get_session_json()
+    # check is session "state" exists, if not send message and stop
+    if not "state" in session_json: # check if state was exists. well_data ~ state
+        return "NO session well state. Go back to setup and save state"
+    page_active={"load_pcs":"","load_state":"active","setup":"","live":"","results":""}
+    return render_template('load_state.html',page_active=page_active)
+"""========================================================================================="""
 
 
 """ CLEAR STATE FUNCTION ==================================================================== """
@@ -285,25 +270,13 @@ def clearstate():
 """========================================================================================="""
 
 
-
 """ SAVE STATE FUNCTION ==================================================================== """
 @app.route('/savestate', methods = ['POST'])
 def savestate():
-    session_json=request.json
-    for well,val in session_json["well_data"].items(): # additional step to pre calculate required qgas_max equivalent to target FWHP
-        # print(well,val)
-        if "target_fwhp" in val:
-            if val["target_fwhp"]>0:
-                pc_fwhp=session_json["well_pcs"][well]["pc"]["thps"]
-                pc_qgas=session_json["well_pcs"][well]["pc"]["qgas"]
-                # GAP uses qgas_max to reach target THP
-                session_json["well_data"][well]["qgas_max"]=np.interp(val["target_fwhp"],pc_fwhp,pc_qgas)
-
-    session_jsonfile=os.path.join(uploader_dirname,r"temp\session.json")
-    json.dump(request.json, open(session_jsonfile, 'w'))
+    session_json=utils.calc_target_fwhps(request.json)
+    save_session_json(session_json)
     return jsonify({'data':"Saved State successfully!\nReload Page to update tables"})
 """========================================================================================="""
-
 
 
 """ SAVE FWHP TO STATE FUNCTION ==================================================================== """
@@ -317,7 +290,6 @@ def savestate_results():
         # Note: no need to check if session state exists because precondition to go to results page is to have state initialized
     return "None"
 """========================================================================================="""
-
 
 
 """ SAVE LOADED STATE ==================================================================== """
@@ -355,7 +327,6 @@ def savestate_loaded():
 """========================================================================================="""
 
 
-
 """ START GAP CALCULATION ==================================================================== """
 @socketio.on('start_gap_calc')
 def gap_calc_start():
@@ -387,19 +358,6 @@ def route_opt_start():
 """========================================================================================="""
 
 
-# @socketio.on('disconnect_gap_calc')
-# def disconnect_calc_start():
-#     print("hi")
-#     return "None"
-#
-#
-# @app.route('/stop', methods = ['POST'])
-# def stop():
-#     print("stop received")
-#     disconnect(sid)
-#     return "Session['state'] cleared!"
-
-
 
 """ LOAD PCS ==================================================================== """
 @socketio.on('load_pcs')
@@ -411,9 +369,6 @@ def load_pcs():
     print('saving PCs to session')
     session_json=get_session_json()
     session_json["well_pcs"]=well_pcs
-    # for well,val in session_json["well_data"].items():
-    #     if well in well_pcs: # create well record in does not exist in well_data
-    #         session_json["well_data"][well]["pc"]=well_pcs[well]["pc"]
     save_session_json(session_json)
 
     print('loading PCs to GAP')
@@ -421,9 +376,6 @@ def load_pcs():
         pcs2ns.load_pcs2ns(well_pcs)
     else:
         pcs2gap.load_pcs2gap(well_pcs)
-    # print(well_pcs)
-    # json_fullpath_pcs=os.path.join(uploader_dirname,r"temp\well_pcs.json")
-    # json.dump(well_pcs, open(json_fullpath_pcs, 'w'))
 
     emit('load_progress',{"data":"Finished PCs loading!"})
 
@@ -434,11 +386,10 @@ def load_pcs():
 """ SAVE RESULTS TO REFEREENCE JSON FILE==================================================== """
 @socketio.on('save_2ref')
 def save_2ref():
-    json_fullpath=os.path.join(uploader_dirname,r"temp\session.json")
-    data = json.load(open(json_fullpath))
+    session_json=get_session_json()
 
     json_fullpath_ref=os.path.join(uploader_dirname,r"temp\session_ref_case.json")
-    json.dump(data, open(json_fullpath_ref, 'w'))
+    json.dump(session_json, open(json_fullpath_ref, 'w'))
 
     emit('save_complete',{"data":"Reference case saved"})
     #------------------------------------------------------------------------------
@@ -453,14 +404,13 @@ def delete_refcase_url():
     delete_refcase()
     emit('delete_complete',{"data":"Reference case deleted"})
     return "None"
-"""========================================================================================="""
 
 def delete_refcase():
     json_fullpath_ref=os.path.join(uploader_dirname,r"temp\session_ref_case.json")
     if os.path.isfile(json_fullpath_ref):
         os.remove(json_fullpath_ref)
     return "None"
-
+"""========================================================================================="""
 
 
 """ SAVE SESSION JSON FILE==================================================== """
@@ -476,12 +426,10 @@ def save_session_json(session_json):
 def clear_well_data_session_json(): # when user logged out well_data to clear for cleaning after user.
     session_json=get_session_json()
     session_json.pop('well_data', None)
-    # session_json["well_data"]={}
     session_json["state"]=0
     save_session_json(session_json)
     return "None"
 """========================================================================================="""
-
 
 
 """ READ SESSION JSON FILE==================================================== """
@@ -492,17 +440,6 @@ def get_session_json():
     else:
         data={}
     return data
-"""========================================================================================="""
-
-
-""" READ PCS FROM JSON FILE==================================================== """
-def get_well_pcs_json():
-    json_fullpath_pcs=os.path.join(uploader_dirname,r"temp\well_pcs.json")
-    if os.path.isfile(json_fullpath_pcs):
-        well_pcs = json.load(open(json_fullpath_pcs))
-    else:
-        well_pcs={}
-    return well_pcs
 """========================================================================================="""
 
 
@@ -554,7 +491,7 @@ def upload_file():
     return jsonify({"result_text":result_text,"warn_text":warn_text}) # send back AJAX response with results from parsing
 """ ==================================================================================== """
 
-
+""" GET DATA FROM EC ==================================================================== """
 def ec_connect(driver):
     connStr = "DRIVER={"+driver+"};" +\
                 "DSN=ECPROD;" +\
@@ -587,9 +524,16 @@ def get_alloc_thp():
     dt_start=dt.strftime('%d/%m/%Y %H:%M:%S')
     dt_end=(dt+datetime.timedelta(hours=23.9999)).strftime('%d/%m/%Y %H:%M:%S')
 
-    sqlstr="SELECT OBJECT_CODE,DAYTIME,AVG_WH_PRESS,ON_STREAM_HRS FROM DV_PWEL_DAY_STATUS "+\
-            "WHERE DAYTIME BETWEEN to_date('"+dt_start+"','dd/mm/yyyy hh24:mi:ss') AND "+\
-            "to_date('"+dt_end+"','dd/mm/yyyy hh24:mi:ss') ORDER BY OBJECT_CODE;"
+    sqlstr=\
+    """
+    SELECT OBJECT_CODE,DAYTIME,AVG_WH_PRESS,ON_STREAM_HRS
+    FROM DV_PWEL_DAY_STATUS
+    WHERE DAYTIME BETWEEN
+            to_date('{0}','dd/mm/yyyy hh24:mi:ss') AND
+            to_date('{1}','dd/mm/yyyy hh24:mi:ss')
+    ORDER BY OBJECT_CODE;
+    """
+    sqlstr=sqlstr.format(dt_start, dt_end)
 
     cursor.execute(sqlstr)
     thp_result=cursor.fetchall() # restructure list from db to send to jinja2
@@ -605,51 +549,3 @@ def get_alloc_thp():
                 thps.append(row)
 
     return jsonify({"thps":thps})
-
-
-
-
-
-
-@app.route('/netsim_test', methods = ['POST'])
-def netsim_test():
-
-    print('NS.DoGetAll("wells","label")')
-    data=NS.DoGetAll("wells","label")
-    print(data)
-
-    print('NS.DoGet("wells/9815/gor")')
-    data=NS.DoGet("wells/9815/gor")
-    print(data)
-
-    print('NS.DoSet("wells/9815/gor",1600.0)')
-    data=NS.DoSet("wells/9815/gor",1600.0)
-    print(data)
-
-    print('NS.DoGet("wells/9815/gor")')
-    data=NS.DoGet("wells/9815/gor")
-    print(data)
-
-    print('NS.DoSetAll("wells","dp",vals)')
-    vals=[0,0]
-    vals=NS.list2gapstr(vals)
-    data=NS.DoSetAll("wells","dp",vals)
-    print(data)
-
-    print('NS.DoGetAll("wells","gor")')
-    data=NS.DoGetAll("wells","gor")
-    print(data)
-
-    print('NS.DoCmd("calculate_network")')
-    data=NS.DoCmd("calculate_network")
-    print(data)
-
-    print('NS.DoCmd("optimize_network")')
-    data=NS.DoCmd("optimize_network")
-    print(data)
-
-    print('NS.DoGetAll("wells","results/fwhp")')
-    data=NS.DoGetAll("wells","results/fwhp")
-    print(data)
-
-    return data

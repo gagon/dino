@@ -146,18 +146,25 @@ def set_unit_routes(well_data):
     PE_server=ut.PE.Stop()
 
 
-def set_sep_pres(sep):
+def set_sep_pres(unit_data):
 
     PE_server=ut.PE.Initialize()
     ut.showinterface(PE_server,0)
 
     units=["KPC MP A","UN3 - TR1","UN2 - Slug01"]
-    if sep["kpc_sep_pres"]:
-        ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]",sep["kpc_sep_pres"])
-    if sep["u3_train1_sep_pres"]:
-        ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[1] + "}].SolverPres[0]",sep["u3_train1_sep_pres"])
-    if sep["u2_sep_pres"]:
-        ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[2] + "}].SolverPres[0]",sep["u2_sep_pres"])
+    units_simple=["kpc","u3","u2"]
+
+    for idx,unit in enumerate(units):
+        ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[idx] + "}].SolverPres[0]",unit_data[unit]["sep"]["sep_pres"])
+
+
+
+    # if sep["kpc_sep_pres"]:
+    #     ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]",sep["kpc_sep_pres"])
+    # if sep["u3_train1_sep_pres"]:
+    #     ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[1] + "}].SolverPres[0]",sep["u3_train1_sep_pres"])
+    # if sep["u2_sep_pres"]:
+    #     ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[2] + "}].SolverPres[0]",sep["u2_sep_pres"])
 
     ut.showinterface(PE_server,1)
     PE_server=ut.PE.Stop()
@@ -165,24 +172,31 @@ def set_sep_pres(sep):
     return None
 
 
-def get_sep_pres():
+def get_sep_pres(unit_data):
 
     PE_server=ut.PE.Initialize()
     ut.showinterface(PE_server,0)
 
     units=["KPC MP A","UN3 - TR1","UN2 - Slug01"]
+    units_simple=["kpc","u3","u2"]
 
-    sep={}
-    sep["kpc_sep_pres"]=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]"))
-    sep["u3_train1_sep_pres"]=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[1] + "}].SolverPres[0]"))
-    sep["u2_sep_pres"]=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[2] + "}].SolverPres[0]"))
+    for idx,unit in enumerate(units):
+        unit_data[unit]["sep"]["sep_pres"]=float(ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[idx] + "}].SolverPres[0]"))
+
+    # sep={}
+    # sep["kpc_sep_pres"]=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]"))
+    # sep["u3_train1_sep_pres"]=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[1] + "}].SolverPres[0]"))
+    # sep["u2_sep_pres"]=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[2] + "}].SolverPres[0]"))
 
     # temporarily all 4 trains at U3 set equal
-    sep["u3_train2_sep_pres"]=sep["u3_train1_sep_pres"]
-    sep["u3_train3_sep_pres"]=sep["u3_train1_sep_pres"]
-    sep["u3_train4_sep_pres"]=sep["u3_train1_sep_pres"]
+    unit_data["u3tr2"]["sep"]["sep_pres"]=unit_data["u3"]["sep"]["sep_pres"]
+    unit_data["u3tr3"]["sep"]["sep_pres"]=unit_data["u3"]["sep"]["sep_pres"]
+    unit_data["u3tr4"]["sep"]["sep_pres"]=unit_data["u3"]["sep"]["sep_pres"]
 
     ut.showinterface(PE_server,1)
     PE_server=ut.PE.Stop()
 
-    return sep
+    return unit_data
+
+
+    

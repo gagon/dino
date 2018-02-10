@@ -8,6 +8,7 @@ Created on Mon Apr 25 14:34:45 2016
 import numpy as np
 # from lineup_app import PetexRoutines as PE
 from lineup_app.NetSim_modules import NetSim_utils as nsut
+import json
 
 
 def get_well_data(unit,unit_id,well_data):
@@ -148,55 +149,51 @@ def set_unit_routes(well_data):
     return None
 
 
-def set_sep_pres(sep):
+def set_sep_pres(unit_data):
 
-    # PE_server=ut.PE.Initialize()
-    # ut.showinterface(PE_server,0)
-
-    # units=["KPC MP A","UN3 - TR1","UN2 - Slug01"]
-    # if sep["kpc_sep_pres"]:
-    #     ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]",sep["kpc_sep_pres"])
-    # if sep["u3_train1_sep_pres"]:
-    #     ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[1] + "}].SolverPres[0]",sep["u3_train1_sep_pres"])
-    # if sep["u2_sep_pres"]:
-    #     ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[2] + "}].SolverPres[0]",sep["u2_sep_pres"])
-
-
-    if sep["kpc_sep_pres"]:
-        nsut.NS.DoSet("seps/kpc/pres",sep["kpc_sep_pres"])
-    if sep["u3_train1_sep_pres"]:
-        nsut.NS.DoSet("seps/u3/pres",sep["u3_train1_sep_pres"])
-    if sep["u2_sep_pres"]:
-        nsut.NS.DoSet("seps/u2/pres",sep["u2_sep_pres"])
-
-    # ut.showinterface(PE_server,1)
-    # PE_server=ut.PE.Stop()
+    sep_data=nsut.NS.DoGet("seps").replace('\'', '"') # get sep data
+    seps=list(json.loads(sep_data).keys()) # get list of sep names in NetSim
+    for u,v in unit_data.items():
+        if u in seps: # apply sep_pres if unit exists in NetSim seps
+            nsut.NS.DoSet("seps/"+u+"/pres",v["sep"]["sep_pres"])
 
     return None
 
 
-def get_sep_pres():
+def get_sep_pres(unit_data):
 
     # PE_server=ut.PE.Initialize()
     # ut.showinterface(PE_server,0)
 
-    # units=["KPC MP A","UN3 - TR1","UN2 - Slug01"]
-    units_simple=["kpc","u3","u2"]
+    sep_data=nsut.NS.DoGet("seps").replace('\'', '"') # get sep data
+    seps=list(json.loads(sep_data).keys()) # get list of sep names in NetSim
 
-    sep={}
-    sep["kpc_sep_pres"]=float(nsut.NS.DoGet("seps/" + units_simple[0] +"/pres"))
-    sep["u3_train1_sep_pres"]=float(nsut.NS.DoGet("seps/" + units_simple[1] +"/pres"))
-    sep["u2_sep_pres"]=float(nsut.NS.DoGet("seps/" + units_simple[2] +"/pres"))
 
-    # temporarily all 4 trains at U3 set equal
-    sep["u3_train2_sep_pres"]=sep["u3_train1_sep_pres"]
-    sep["u3_train3_sep_pres"]=sep["u3_train1_sep_pres"]
-    sep["u3_train4_sep_pres"]=sep["u3_train1_sep_pres"]
+    # sep={}
+    for sep in seps:
+        p=float(nsut.NS.DoGet("seps/" + sep +"/pres"))
+        unit_data[sep]["sep"]={"sep_pres":p}
+
+
+    # temporarily u3tr2,3,4 are dublicated from 1. Will be resolved after adding all u3 u3_trains
+    unit_data["u3tr2"]["sep"]["sep_pres"]=unit_data["u3"]["sep"]["sep_pres"]
+    unit_data["u3tr3"]["sep"]["sep_pres"]=unit_data["u3"]["sep"]["sep_pres"]
+    unit_data["u3tr4"]["sep"]["sep_pres"]=unit_data["u3"]["sep"]["sep_pres"]
+
+    # sep["kpc"]
+    # sep["kpc_sep_pres"]=float(nsut.NS.DoGet("seps/" + units_simple[0] +"/pres"))
+    # sep["u3_train1_sep_pres"]=float(nsut.NS.DoGet("seps/" + units_simple[1] +"/pres"))
+    # sep["u2_sep_pres"]=float(nsut.NS.DoGet("seps/" + units_simple[2] +"/pres"))
+    #
+    # # temporarily all 4 trains at U3 set equal
+    # sep["u3_train2_sep_pres"]=sep["u3_train1_sep_pres"]
+    # sep["u3_train3_sep_pres"]=sep["u3_train1_sep_pres"]
+    # sep["u3_train4_sep_pres"]=sep["u3_train1_sep_pres"]
 
     # ut.showinterface(PE_server,1)
     # PE_server=ut.PE.Stop()
 
-    return sep
+    return unit_data
 
 
 

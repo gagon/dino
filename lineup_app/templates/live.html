@@ -12,6 +12,7 @@
       <br>
       <img src="/static/img/dino-calc.gif" id="calc_img" style="display:none" height="120" / >
       <hr>
+      <!-- <div id="gap_cal_update" style="line-height:100%;"></div> -->
       <div id="gap_cal_update"></div>
 
     </div>
@@ -53,7 +54,7 @@
         $("#gap_cal_status").empty();
         $("#gap_cal_status").append("<h3>"+msg.data+"</h3>");
       }else{
-        $("#gap_cal_update").prepend(msg.data+"<br>");
+        $("#gap_cal_update").prepend("<span style='font-size:14px;'>"+msg.data+"</span><br>");
       }
   });
 

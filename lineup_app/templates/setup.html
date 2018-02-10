@@ -20,22 +20,22 @@
         </tr>
         <tr>
           <td style='width:40%;background-color:#f2f2f2;'>Qoil max, sm3/d</td>
-          <td class="text-center" style='width:20%;'><span id="kpc_qoil_max" contenteditable>{{ data.unit_data.constraints.kpc_qoil_max }}</span></td>
-          <td class="text-center" style='width:20%;' colspan="4"><span id="u3_qoil_max" contenteditable>{{ data.unit_data.constraints.u3_qoil_max }}</span></td>
-          <td class="text-center" style='width:20%;'><span id="u2_qoil_max" contenteditable>{{ data.unit_data.constraints.u2_qoil_max }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="kpc-qoil_max" contenteditable>{{ data.unit_data.kpc.constraints.qoil_max }}</span></td>
+          <td class="text-center" style='width:20%;' colspan="4"><span id="u3-qoil_max" contenteditable>{{ data.unit_data.u3.constraints.qoil_max }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="u2-qoil_max" contenteditable>{{ data.unit_data.u2.constraints.qoil_max }}</span></td>
         </tr>
 
         <tr>
           <td style='width:40%;background-color:#f2f2f2;'>Qgas max, ksm3/d</td>
-          <td class="text-center" style='width:20%;'><span id="kpc_qgas_max" contenteditable>{{ data.unit_data.constraints.kpc_qgas_max }}</span></td>
-          <td class="text-center" style='width:20%;' colspan="4"><span id="u3_qgas_max" contenteditable>{{ data.unit_data.constraints.u3_qgas_max }}</span></td>
-          <td class="text-center" style='width:20%;'><span id="u2_qgas_max" contenteditable>{{ data.unit_data.constraints.u2_qgas_max }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="kpc-qgas_max" contenteditable>{{ data.unit_data.kpc.constraints.qgas_max }}</span></td>
+          <td class="text-center" style='width:20%;' colspan="4"><span id="u3-qgas_max" contenteditable>{{ data.unit_data.u3.constraints.qgas_max }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="u2-qgas_max" contenteditable>{{ data.unit_data.u2.constraints.qgas_max }}</span></td>
         </tr>
         <tr>
           <td style='width:40%;background-color:#f2f2f2;'>Qwater max, sm3/d</td>
-          <td class="text-center" style='width:20%;'><span id="kpc_qwat_max" contenteditable>{{ data.unit_data.constraints.kpc_qwat_max }}</span></td>
-          <td class="text-center" style='width:20%;' colspan="4"><span id="u3_qwat_max" contenteditable>{{ data.unit_data.constraints.u3_qwat_max }}</span></td>
-          <td class="text-center" style='width:20%;'><span id="u2_qwat_max" contenteditable>{{ data.unit_data.constraints.u2_qwat_max }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="kpc-qwat_max" contenteditable>{{ data.unit_data.kpc.constraints.qwat_max }}</span></td>
+          <td class="text-center" style='width:20%;' colspan="4"><span id="u3-qwat_max" contenteditable>{{ data.unit_data.u3.constraints.qwat_max }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="u2-qwat_max" contenteditable>{{ data.unit_data.u2.constraints.qwat_max }}</span></td>
         </tr>
         <tr>
           <td style='width:40%;background-color:#f2f2f2;'>Qoil AF</td>
@@ -57,12 +57,12 @@
         </tr>
         <tr>
           <td style='width:40%;background-color:#f2f2f2;'>Unit Inlet Pressure, bar</td>
-          <td class="text-center" style='width:20%;'><span id="kpc_sep_pres" contenteditable>{{ data.unit_data.sep.kpc_sep_pres|round(1, 'common')  }}</span></td>
-          <td class="text-center" style='width:5%;'><span id="u3_train1_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train1_sep_pres|round(1, 'common')  }}</span></td>
-          <td class="text-center" style='width:5%;'><span id="u3_train2_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train2_sep_pres|round(1, 'common')  }}</span></td>
-          <td class="text-center" style='width:5%;'><span id="u3_train3_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train3_sep_pres|round(1, 'common')  }}</span></td>
-          <td class="text-center" style='width:5%;'><span id="u3_train4_sep_pres" contenteditable>{{ data.unit_data.sep.u3_train4_sep_pres|round(1, 'common')  }}</span></td>
-          <td class="text-center" style='width:20%;'><span id="u2_sep_pres" contenteditable>{{ data.unit_data.sep.u2_sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="kpc-sep_pres" contenteditable>{{ data.unit_data.kpc.sep.sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:5%;'><span id="u3-sep_pres" contenteditable>{{ data.unit_data.u3.sep.sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:5%;'><span id="u3tr2-sep_pres" contenteditable>{{ data.unit_data.u3tr2.sep.sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:5%;'><span id="u3tr3-sep_pres" contenteditable>{{ data.unit_data.u3tr3.sep.sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:5%;'><span id="u3tr4-sep_pres" contenteditable>{{ data.unit_data.u3tr4.sep.sep_pres|round(1, 'common')  }}</span></td>
+          <td class="text-center" style='width:20%;'><span id="u2-sep_pres" contenteditable>{{ data.unit_data.u2.sep.sep_pres|round(1, 'common')  }}</span></td>
         </tr>
       </table>
     </div>
@@ -456,11 +456,20 @@
 
   function get_unit_data(unit_data){
 
-    var items=unit_data;  // to be able to overwrite unit_data dict
-    for (var item in items){
-      for (var i in items[item]){
-        unit_data[item][i]=parseFloat($("#"+i).text());
+    var level1=unit_data;  // to be able to overwrite unit_data dict
+    for (var level2 in level1){
+      for (var level3 in level1[level2]){
+        for (var level4 in level1[level2][level3]){
+          var col_id=level2+"-"+level4
+      //     console.log(level4);
+          console.log(col_id);
+          unit_data[level2][level3][level4]=parseFloat($("#"+col_id).text());
+      //     console.log(unit_data[level2][level3][level4]);
+          console.log(level2,level3,level4);
+        }
+
       }
+
     }
     // unit_data["constraints"]["kpc_qwat_max"]=parseFloat($("#kpc_qwat_max").text());
     // unit_data["constraints"]["u3_qwat_max"]=parseFloat($("#u3_qwat_max").text());

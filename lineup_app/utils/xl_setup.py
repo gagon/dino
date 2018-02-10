@@ -208,14 +208,7 @@ def read_maps(well_data):
 
 
 
-def make_well_data_by_unit(session_json):
-    # group wells by unit for html page
-    session_json["well_data_byunit"]=[{},{},{}]
-    for well,val in session_json["well_data"].items():
-        if "masked" in val: #required to know which well is masked/unmasked in GAP to include/exclude well in the list
-            if val["masked"]==0:
-                session_json["well_data_byunit"][val["unit_id"]][well]=val
-    return session_json
+
 
 
 
