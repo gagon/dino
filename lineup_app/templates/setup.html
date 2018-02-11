@@ -522,7 +522,7 @@
     for (i=0; i<3; ++i) { // loop from 0 to 2 (table number corresponding to each unit table)
 
       table="#sort_table" + i.toString()+" tbody"; // table ID
-      console.log(table);
+
       $(table).children('tr').each(function () { // loop through rows
         if ($(this).find("[name=ro]").is(":checked")){
           wellname=$(this).find("[name=wellname]").text() // get wellname

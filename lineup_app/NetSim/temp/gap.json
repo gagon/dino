@@ -2953,7 +2953,7 @@
             "label": "KPC",
             "masked": 0,
             "maskflag": 0,
-            "pres": 80.0,
+            "pres": 80,
             "results": {
                 "qgas": 8000.084911023387,
                 "qoil": 5863.115642929137,
@@ -2964,7 +2964,7 @@
             "label": "Unit-2",
             "masked": 0,
             "maskflag": 0,
-            "pres": 80.0,
+            "pres": 80,
             "results": {
                 "qgas": 6000.002255938024,
                 "qoil": 4047.2654182328815,
@@ -2975,7 +2975,7 @@
             "label": "Unit-3",
             "masked": 0,
             "maskflag": 0,
-            "pres": 131.0,
+            "pres": 131,
             "results": {
                 "qgas": 1513.065944814555,
                 "qoil": 1243.2999555336573,

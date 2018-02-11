@@ -31,14 +31,25 @@
         <hr>
         <h4>Route options</h4>
         <table class="table table-bordered table-condensed" id="var_table" style="font-size:10px;">
-            <tr>
-              <td style='background-color:#f2f2f2;'><b>Well<b/></td>
-              <td style='background-color:#f2f2f2;'><b>Unit</b></td>
-              <td style='background-color:#f2f2f2;'><b>RMS</b></td>
-              <td style='background-color:#f2f2f2;'><b>TL</b></td>
-              <td style='background-color:#f2f2f2;'><b>Route</b></td>
-              <td style="width:5%;background-color:#f2f2f2;"><b>Select/Unselect</b></td>
+          <thead class="thead-default">
+            <tr class="info">
+              <!-- <td style='background-color:#f2f2f2;'><b>Well<b/></td> -->
+              <!-- <td style='background-color:#BDE5F1;'><b>Well<b/></td>
+              <td style='background-color:#BDE5F1;'><b>Unit</b></td>
+              <td style='background-color:#BDE5F1;'><b>RMS</b></td>
+              <td style='background-color:#BDE5F1;'><b>TL</b></td>
+              <td style='background-color:#BDE5F1;'><b>Route</b></td>
+              <td style="width:5%;background-color:#BDE5F1;"><b>Select/Unselect</b></td> -->
+
+              <th><b>Well<b/></th>
+              <th><b>Unit</b></th>
+              <th><b>RMS</b></th>
+              <th><b>TL</b></th>
+              <th><b>Route</b></th>
+              <th style="width:5%;"><b>Select/Unselect</b></th>
             </tr>
+          </thead>
+          <tbody></tbody>
         </table>
       </div>
     </div>
@@ -50,7 +61,6 @@
     </div>
     <div class="col-lg-6">
       <div id="best"></div>
-      <!-- <hr> -->
       <div id="route_opt_update"></div>
     </div>
   </div>
@@ -71,17 +81,12 @@
 
 
     if ($("#route_opt").is(":checked")){
-
       $("#gap_cal_status").append("<h3>Routing optimization</h3>");
-
       socket.emit('prep_route_opt');
-
     }else{
-
       $("#gap_cal_status").append("<h3>Calculations started</h3>");
       socket.emit('start_gap_calc');
       $('#calc_img').show();
-
     }
 
 
@@ -96,18 +101,16 @@
   // };
 
   socket.on('progress', function(msg) {
-      // $("#gap_cal_update").append(msg.data+"<br>");
 
-      // socket.emit('ping');
-      if(msg.finish==1){
+      if(msg.finish==1){ // finished performing routing optimization
 
         $('#calc_img').hide();
         $("#gap_cal_status").empty();
         $("#gap_cal_status").append("<h3>"+msg.data+"</h3>");
         complete=1;
 
-      }else if(msg.finish==2){
-        // console.log(msg);
+      }else if(msg.finish==2){ // finished performing constraints optimization at certain state
+
         $("#gap_cal_update").empty();
         $("#gap_cal_update").prepend("<span style='font-size:14px;'>"+msg.data+"</span><br>");
         $("#route_opt_update").prepend(
@@ -120,7 +123,7 @@
             +"</span><br>"
           );
 
-        if (msg.best==1){
+        if (msg.best==1){ // update best field with best result from calculations
           $("#best").empty();
           $("#best").append(
             "<h4>Best result:</h4>"+
@@ -146,8 +149,40 @@
     console.log("ping");
   });
 
-  socket.on('prep_ro_data', function(msg) {
+  socket.on('prep_ro_data', function(data) {
     $("#variations").show();
+
+    var color="#ffffff";
+    var prev_color="#ffffff";
+
+    for (var well in data.data){
+
+      if (prev_color=="#ffffff"){
+        color="#f2f2f2";
+      }else{
+        color="#ffffff";
+      }
+
+      var arrayLength = data.data[well].length;
+      for (var i = 0; i < arrayLength; i++) {
+
+        //$('#var_table tbody tr:last').after(
+        $('#var_table tbody').append(
+          '<tr>'+
+            '<td style="background-color:'+color+'" name="wellname">'+well+'</td>'+
+            '<td style="background-color:'+color+'" name="unit">'+data.data[well][i]["unit"]+'</td>'+
+            '<td style="background-color:'+color+'" name="rms">'+data.data[well][i]["rms"]+'</td>'+
+            '<td style="background-color:'+color+'" name="tl">'+data.data[well][i]["tl"]+'</td>'+
+            '<td style="background-color:'+color+'" name="route_name">'+data.data[well][i]["route_name"]+'</td>'+
+            '<td style="background-color:'+color+'">'+
+              '<input type="checkbox" value="" id="" checked="checked" name="ro">'+
+            '</td>'+
+          '</tr>'
+        );
+
+      }
+      prev_color=color;
+    }
 
 
   });
@@ -160,14 +195,38 @@
   }, 50000);
 
   function start_route_opt() {
-    $("#variations").hide();
-    $("#gap_cal_status").append("<h4>Calculations started</h4>");
-    // socket.emit('start_gap_calc');
-    socket.emit('start_route_opt');
-    $('#calc_img').show();
+    // $("#variations").hide();
+    // $("#gap_cal_status").append("<h4>Calculations started</h4>");
+    // $('#calc_img').show();
+    // socket.emit('start_route_opt');
+    var ro_data=get_route_options();
+    console.log(ro_data);
   }
 
+  function get_route_options(){
 
+    var ro_data={};
+    var routes=[];
+    var wellname_="";
+
+    $("#var_table tbody").children('tr').each(function () { // loop through rows
+      if ($(this).find("[name=ro]").is(":checked")){
+
+
+        var wellname=$(this).find("[name=wellname]").text() // get wellname
+        var route_name=$(this).find("[name=route_name]").text() // get route_name
+
+        if (wellname_!=wellname){
+          ro_data[wellname]={"routes":[]}
+          routes=[];
+        }
+        routes.push(route_name);
+        ro_data[wellname]["routes"]=routes;
+        wellname_=wellname
+      }
+    })
+    return ro_data
+  }
 
   //
   // function disconnect_gap_calc() {

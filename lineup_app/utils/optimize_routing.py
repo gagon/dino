@@ -34,46 +34,41 @@ def get_well_routes(session_json):
     for w,x in session_json["well_data"].items():
         if "ro" in x:
             if x["ro"]==1:
-                # rnames=[]
-                # for route in x["connection"]["routes"]:
-                #     rnames.append(route["route_name"])
-                # ro_data[w]=rnames
                 ro_data[w]=x["connection"]["routes"]
-
     return ro_data
 
-def make_msg(ro_data):
-
-    s=""
-    for w,val in ro_data.items():
-        for v in val:
-            t="""
-            <tr>
-              <td name="well">%s</td>
-              <td name="unit">%s</td>
-              <td name="rms">%s</td>
-              <td name="tl">%s</td>
-              <td name="route">%s</td>
-              <td><input type="checkbox" name="ro" value="" checked='checked'></td>
-            </tr>
-            """
-            s+=t % (w,v["unit"],v["rms"],v["tl"],v["route_name"])
-    s+="</table>"
-
-    return s
+# def make_msg(ro_data):
+#
+#     s=""
+#     for w,val in ro_data.items():
+#         for v in val:
+#             t="""
+#             <tr>
+#               <td name="well">%s</td>
+#               <td name="unit">%s</td>
+#               <td name="rms">%s</td>
+#               <td name="tl">%s</td>
+#               <td name="route">%s</td>
+#               <td><input type="checkbox" name="ro" value="" checked='checked'></td>
+#             </tr>
+#             """
+#             s+=t % (w,v["unit"],v["rms"],v["tl"],v["route_name"])
+#     s+="</table>"
+#
+#     return s
 
 
 def prep_route_opt(session_json):
 
     ro_data=get_well_routes(session_json)
 
-    ro_msg=make_msg(ro_data)
+    # ro_msg=make_msg(ro_data)
 
-    emit("prep_ro_data",{"data":ro_msg})
+    emit("prep_ro_data",{"data":ro_data})
 
 
-    for w,val in ro_data.items():
-        print(w,val)
+    # for w,val in ro_data.items():
+    #     print(w,val)
 
     # combinations=generate_comb(session_json)
     # # print(combinations)
