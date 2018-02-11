@@ -23,6 +23,7 @@ from lineup_app.utils import gathering_parser as gath_par
 from lineup_app.utils import field_balance as fb
 from lineup_app.utils import utils
 from lineup_app.utils import results as rs
+from lineup_app.utils import optimize_routing as ro
 
 from lineup_app.NetSim_modules import NetSimRoutines as NS
 from lineup_app.NetSim_modules import NetSim_setup as nsst
@@ -41,7 +42,7 @@ MOCKUP=True
 # secret key initialized for the server
 app.secret_key = 'any_random_string'
 # socket IO initialized, time out set to 500 sec
-socketio=SocketIO(app, ping_timeout=500)
+socketio=SocketIO(app, ping_timeout=500000)
 
 
 uploader_dirname, uploader_filename = os.path.split(os.path.abspath(__file__))
@@ -309,14 +310,14 @@ def savestate_loaded():
 
 """ START GAP CALCULATION ==================================================================== """
 @socketio.on('start_gap_calc')
-def gap_calc_start():
+def start_gap_calc():
 
     session_json=utils.get_session_json()
     if MOCKUP:
         print("skip xls calc")
-        post_opt_state=nsopt.run_optimization(session_json) # pass state to GAP to make calculations
+        post_opt_state=nsopt.run_optimization(session_json,1) # pass state to GAP to make calculations, mode 1= normal optimization
     else:
-        post_opt_state=gob.run_optimization(session_json) # pass state to GAP to make calculations
+        post_opt_state=gob.run_optimization(session_json,"None",1) # pass state to GAP to make calculations, "None" is placeholder for PE_server
     #------------------------------------------------------------------------------
     return "None"
 """========================================================================================="""
@@ -324,19 +325,40 @@ def gap_calc_start():
 
 """ START GAP CALCULATION ==================================================================== """
 @socketio.on('start_route_opt')
-def route_opt_start():
+def start_route_opt():
 
     session_json=utils.get_session_json()
-    if MOCKUP:
-        print("skip xls calc")
-        post_opt_state=nsopt.route_optimization(session_json)
-    else:
-        print("route_opt")
-        post_opt_state=gob.route_optimization(session_json) # pass state to GAP to make calculations
+
+    ro.route_optimization(session_json,MOCKUP)
+
+    # if MOCKUP:
+    #     print("skip xls calc")
+    #     post_opt_state=nsopt.route_optimization(session_json)
+    # else:
+    #     print("route_opt")
+    #     post_opt_state=gob.route_optimization(session_json) # pass state to GAP to make calculations
     #------------------------------------------------------------------------------
     return "None"
 """========================================================================================="""
 
+
+""" START GAP CALCULATION ==================================================================== """
+@socketio.on('prep_route_opt')
+def prep_route_opt():
+
+    session_json=utils.get_session_json()
+
+    ro.prep_route_opt(session_json)
+
+    # if MOCKUP:
+    #     print("skip xls calc")
+    #     post_opt_state=nsopt.route_optimization(session_json)
+    # else:
+    #     print("route_opt")
+    #     post_opt_state=gob.route_optimization(session_json) # pass state to GAP to make calculations
+    #------------------------------------------------------------------------------
+    return "None"
+"""========================================================================================="""
 
 
 """ LOAD PCS ==================================================================== """
@@ -379,8 +401,6 @@ def delete_refcase_url():
     utils.delete_refcase()
     emit('delete_complete',{"data":"Reference case deleted"})
     return "None"
-
-
 """ PARSER GATHERING REPORT ==================================================================== """
 
 @app.route('/upload_gath_rep', methods=['POST'])
@@ -469,3 +489,11 @@ def get_alloc_thp():
                 thps.append(row)
 
     return jsonify({"thps":thps})
+
+
+""" SOCKETIO HEARTBEAT ==================================================== """
+@socketio.on('ping')
+def ping():
+    emit("ping")
+    return "None"
+"""========================================================================================="""

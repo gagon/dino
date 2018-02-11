@@ -27,7 +27,7 @@ from lineup_app.NetSim_modules import NetSim_utils as nsut
 
 
 
-def run_optimization(session_json):
+def run_optimization(session_json,mode):
 
     units=["KPC MP A","UN3 - TR1","UN2 - Slug01"]
     units_label=["KPC","Unit-3","Unit-2"]
@@ -133,7 +133,7 @@ def run_optimization(session_json):
 
                 qgas_max=session_json["well_data"][swing_well]["qgas_max"]
                 qgas_max2gap=qgas_max+delta_qgas_max
-                # print(swing_well,qgas_max,qgas_max2gap)
+                # print(swing_well,qgas_max,qgas_max2gap,"------")
                 if qgas_max2gap>10.0:
                     nsut.NS.DoSet("wells/"+swing_well+"/constraints/qgas_max",qgas_max2gap)
                     session_json["well_data"][swing_well]["qgas_max"]=qgas_max2gap
@@ -150,10 +150,16 @@ def run_optimization(session_json):
             nsut.solve_network_rb()
 
         conv=0.0
+        tot_qoil=0.0
+        tot_qgas=0.0
+        tot_qwat=0.0
         for unit_idx,unit in enumerate(units_simple):
             unit_qgas=nsut.get_unit_qgas(unit)
             unit_qoil=nsut.get_unit_qoil(unit)
             unit_qwat=nsut.get_unit_qwat(unit)
+            tot_qoil+=unit_qoil
+            tot_qgas+=unit_qgas
+            tot_qwat+=unit_qwat
             unit_qgas_max=unit_data[unit]["constraints"]["qgas_max"]
             unit_qoil_max=unit_data[unit]["constraints"]["qoil_max"]
             unit_qwat_max=unit_data[unit]["constraints"]["qwat_max"]
@@ -199,60 +205,29 @@ def run_optimization(session_json):
     nsut.set_chokes_calculated()
 
     dt=datetime.datetime.now()-start
-    emit("progress",{"data":"Calculations complete. Go to Results. <br> Time spent: %s" % dt,"finish":1})
+
+    res={
+        "tot_qoil":round(tot_qoil,1),
+        "tot_qgas":round(tot_qgas,1),
+        "tot_qwat":round(tot_qwat,1)
+    }
+
+    if mode==1:
+        emit("progress",{
+                "data":"Calculations complete. Go to Results. <br> Time spent: %s" % dt,
+                "finish":1
+            })
+    # elif mode==2:
+
+        # emit("progress",{
+        #         "data":"Calculations complete. Switching to next State... <br> Time spent: %s" % dt,
+        #         "finish":2
+        #     })
     sleep(0.1)
 
-    return None
+    return res
 
 
-def route_optimization(session_json):
-
-    combinations=generate_comb(session_json)
-    # print(combinations)
-    for cnt,comb in enumerate(combinations):
-        print(comb)
-
-    session_json_copy=session_json
-    return None
-    # PE_server=ut.PE.Initialize()
-    # ut.showinterface(PE_server,0)
-    start=datetime.datetime.now()
-
-    for cnt,comb in enumerate(combinations):
-        print(comb)
-        session_json_copy=session_json
-        emit("progress",{"data":"-----> Performing routing combination: %s out of %s" % (cnt,len(combinations))})
-        sleep(0.1)
-
-        for well,val in session_json_copy["well_data"].items(): # additional step to pre calculate required qgas_max equivalent to target FWHP
-            if "target_fwhp" in val:
-                if val["target_fwhp"]>0:
-                    pc_fwhp=session_json_copy["well_data"][well]["pc"]["thps"]
-                    pc_qgas=session_json_copy["well_data"][well]["pc"]["qgas"]
-                    session_json_copy["well_data"][well]["qgas_max"]=np.interp(val["target_fwhp"],pc_fwhp,pc_qgas)
-
-        for c in comb:
-            session_json_copy["well_data"][c["well"]]["selected_route"]=c["route_name"]
-        st.set_unit_routes(session_json_copy["well_data"]) # set well routes as per state
-
-
-
-
-
-
-
-
-        run_optimization(session_json_copy,PE_server)
-
-
-    ut.showinterface(PE_server,1)
-    # PE_server=ut.PE.Initialize()
-    PE_server=ut.PE.Stop()
-    dt=datetime.datetime.now()-start
-    emit("progress",{"data":"Calculations complete. Go to Results. <br> Time spent: %s" % dt,"finish":1})
-    sleep(1)
-
-    return "None"
 
 
 
@@ -278,16 +253,8 @@ def set_qgas_max(wellname,status,well_data,qgas_max_orig):
     return None
 
 
-
-def generate_comb(session_json):
-    r=[[]]
-    for w,x in session_json["well_data"].items():
-        if "ro" in x:
-            if x["ro"]==1:
-                t = []
-                for y in x["connection"]["routes"]:
-                    # print(y)
-                    for i in r:
-                        t.append(i+[{"well":w,"route_name":y["route_name"]}])
-                r = t
-    return r
+# def prep_route_opt(session_json):
+#
+#     combs=generate_comb(session_json):
+#
+#     return combs

@@ -25,15 +25,20 @@ from lineup_app.GAP_modules import GAP_setup as st
 
 
 
-def run_optimization(session_json,PE_server):
+def run_optimization(session_json,PE_server,mode):
 
     units=["KPC MP A","UN3 - TR1","UN2 - Slug01"]
     units_label=["KPC","Unit-3","Unit-2"]
     units_simple=["kpc","u3","u2"]
 
     #
-    PE_server=ut.PE.Initialize()
-    ut.showinterface(PE_server,0)
+    if mode==1:
+        PE_server=ut.PE.Initialize()
+        # ut.showinterface(PE_server,0)
+
+    # PE_server=ut.PE.Initialize()
+    # ut.showinterface(PE_server,0)
+
     #
     start=datetime.datetime.now()
 
@@ -201,13 +206,15 @@ def run_optimization(session_json,PE_server):
 
     ut.set_chokes_calculated(PE_server)
 
-    ut.showinterface(PE_server,1)
-
     dt=datetime.datetime.now()-start
-    emit("progress",{"data":"Calculations complete. Go to Results. <br> Time spent: %s" % dt,"finish":1})
+    if mode==1:
+        # ut.showinterface(PE_server,1)
+        PE_server=ut.PE.Stop()
+        emit("progress",{"data":"Calculations complete. Go to Results. <br> Time spent: %s" % dt,"finish":1})
+    elif mode==2:
+        emit("progress",{"data":"Calculations complete. Switching to next State... <br> Time spent: %s" % dt})
     sleep(0.1)
 
-    PE_server=ut.PE.Stop()
     return None
 
 

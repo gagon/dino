@@ -97,7 +97,7 @@ def set_unit_routes(well_data):
 
     for well,val in well_data.items():
         # if well is not masked then check and set routing
-        print(well)
+        # print(well)
         if val["masked"]==0:
 
             # map selected_route to OS string

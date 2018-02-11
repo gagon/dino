@@ -76,35 +76,35 @@ def merge_route_slot(result_text,well_details):
     return result_text_new
 
 
-"""========================================================================================="""
+
 def delete_refcase():
     json_fullpath_ref=os.path.join(dirname,r"temp\session_ref_case.json")
     if os.path.isfile(json_fullpath_ref):
         os.remove(json_fullpath_ref)
     return "None"
-"""========================================================================================="""
 
-
-""" SAVE SESSION JSON FILE==================================================== """
 def save_session_json(session_json):
     json_fullpath=os.path.join(dirname,r"temp\session.json")
     json.dump(session_json, open(json_fullpath, 'w'),indent=4, sort_keys=True)
-
     return "None"
-"""========================================================================================="""
 
+def save_orig_session_json(session_json):
+    json_fullpath=os.path.join(dirname,r"temp\route_opt\orig_session.json")
+    json.dump(session_json, open(json_fullpath, 'w'),indent=4, sort_keys=True)
+    return "None"
 
-""" CLEAR WELL DATA FROM SESSION JSON FILE==================================================== """
+def save_best_session_json(session_json):
+    json_fullpath=os.path.join(dirname,r"temp\route_opt\best_session.json")
+    json.dump(session_json, open(json_fullpath, 'w'),indent=4, sort_keys=True)
+    return "None"
+
 def clear_well_data_session_json(): # when user logged out well_data to clear for cleaning after user.
     session_json=get_session_json()
     session_json.pop('well_data', None)
     session_json["state"]=0
     save_session_json(session_json)
     return "None"
-"""========================================================================================="""
 
-
-""" READ SESSION JSON FILE==================================================== """
 def get_session_json():
     json_fullpath=os.path.join(dirname,r"temp\session.json")
     if os.path.isfile(json_fullpath):
@@ -112,9 +112,22 @@ def get_session_json():
     else:
         data={}
     return data
-"""========================================================================================="""
 
+def get_orig_session_json():
+    json_fullpath=os.path.join(dirname,r"temp\route_opt\orig_session.json")
+    if os.path.isfile(json_fullpath):
+        data = json.load(open(json_fullpath))
+    else:
+        data={}
+    return data
 
+def get_best_session_json():
+    json_fullpath=os.path.join(dirname,r"temp\route_opt\best_session.json")
+    if os.path.isfile(json_fullpath):
+        data = json.load(open(json_fullpath))
+    else:
+        data={}
+    return data
 
 def save_2ref(session_json):
     json_fullpath_ref=os.path.join(dirname,r"temp\session_ref_case.json")

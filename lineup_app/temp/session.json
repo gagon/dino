@@ -14,29 +14,29 @@
         },
         "streams": {
             "actuals": {
-                "cpc_oil": 11430.585033549894,
+                "cpc_oil": 11153.501270046581,
                 "fuel_gas": 2500,
-                "gas_inj": 6229.005775156356,
-                "kpc_free_gas": 5005.0401234641895,
+                "gas_inj": 5635.764545393618,
+                "kpc_free_gas": 5031.035659589055,
                 "kpc_gas_2_u2": 0,
-                "kpc_gas_2_u3": 5957.000354759664,
-                "kpc_tot_gas": 5957.000354759664,
+                "kpc_gas_2_u3": 5961.300017997553,
+                "kpc_tot_gas": 5961.300017997553,
                 "kpc_tot_oil": 0,
                 "mtu_oil": 0,
-                "ogp_gas": 7373.088903126594,
+                "ogp_gas": 7377.388566280483,
                 "ogp_oil": 0,
-                "u2_free_gas": 6229.005775156356,
-                "u2_gas_2_kpc": 360.0002567046632,
+                "u2_free_gas": 5635.764545393618,
+                "u2_gas_2_kpc": 364.23771044254084,
                 "u2_gas_2_u3": 0,
-                "u2_oil_2_kpc": 4000.002852274035,
+                "u2_oil_2_kpc": 4047.0856715837867,
                 "u2_oil_2_u3": 0,
                 "u2_tot_gas": 0,
                 "u2_tot_oil": 0,
-                "u3_free_gas": 1363.8699502305274,
-                "u3_gas_2_kpc": 96.97739653903396,
-                "u3_oil_2_kpc": 1243.2999556286404,
-                "u3_tot_gas": 1416.0885483669304,
-                "u3_tot_oil": 1243.2999556286404
+                "u3_free_gas": 1363.8699501505162,
+                "u3_gas_2_kpc": 96.97739653162527,
+                "u3_oil_2_kpc": 1243.2999555336573,
+                "u3_tot_gas": 1416.0885482829297,
+                "u3_tot_oil": 1243.2999555336573
             },
             "constraints": {
                 "cpc_oil_max": 33000,
@@ -53,17 +53,17 @@
                 "u3_free_gas_max": 19500
             },
             "perc": {
-                "cpc_oil_perc": 34.64,
+                "cpc_oil_perc": 33.8,
                 "fuel_gas_perc": 100,
-                "gas_inj_perc": 41.53,
-                "kpc_free_gas_perc": 33.59,
+                "gas_inj_perc": 37.57,
+                "kpc_free_gas_perc": 33.77,
                 "kpc_gas_2_u2_perc": 0,
-                "kpc_gas_2_u3_perc": 58.98,
-                "kpc_tot_gas_perc": 39.71,
+                "kpc_gas_2_u3_perc": 59.02,
+                "kpc_tot_gas_perc": 39.74,
                 "mtu_oil_perc": 0,
-                "ogp_gas_perc": 28.36,
+                "ogp_gas_perc": 28.37,
                 "ogp_oil_perc": 0,
-                "u2_free_gas_perc": 32.96,
+                "u2_free_gas_perc": 29.82,
                 "u3_free_gas_perc": 6.99
             }
         },
@@ -80,94 +80,84 @@
                     0
                 ],
                 [
-                    79.47697345826182,
-                    104.52762799201727,
-                    42.901210378711696
+                    79.86514346839756,
+                    105.03814680836896,
+                    42.166299344831636
                 ],
                 [
-                    231.77486095614847,
-                    281.4362241031927,
-                    125.11072877728881
+                    232.1524318082976,
+                    281.9344309814725,
+                    122.56922742689088
                 ],
                 [
-                    388.3839845175311,
-                    460.89806254793007,
-                    209.64742745594367
+                    388.3237640272457,
+                    460.89459470010297,
+                    205.02280927052772
                 ],
                 [
-                    649.4278481296872,
-                    745.9585740303298,
-                    356.66924037112733
+                    650.4868823989615,
+                    747.1773350057522,
+                    344.5835186675047
                 ],
                 [
-                    1174.2482056524448,
-                    1271.5809582040656,
-                    662.2792546397543
+                    1192.0519855279367,
+                    1271.8601432170722,
+                    636.9172275663009
                 ],
                 [
-                    1715.8133087849378,
-                    1796.2637664187937,
-                    994.1723356692692
+                    1302.808230493603,
+                    1372.2995836866944,
+                    696.8329915266747
                 ],
                 [
-                    1827.3318337665619,
-                    1897.3944814825275,
-                    1064.4717389359453
+                    1646.8721581625978,
+                    1682.1739601528946,
+                    897.1860844222408
                 ],
                 [
-                    2171.395736297827,
-                    2207.2688353089284,
-                    1288.4504853388657
+                    2439.659692792753,
+                    2324.4914975759557,
+                    1371.9957803569907
                 ],
                 [
-                    2440.635685078292,
-                    2428.2535509924196,
-                    1464.3332893374952
+                    2785.9012864781757,
+                    2604.8966568477263,
+                    1593.2409898337216
                 ],
                 [
-                    3233.497026374256,
-                    3070.6308866763725,
-                    1986.6605075142477
+                    4042.6437079229136,
+                    3504.558337796812,
+                    2419.5510516643385
                 ],
                 [
-                    3579.7684041248194,
-                    3351.0601666941247,
-                    2234.5451053887264
+                    5344.47967071436,
+                    4354.991419956973,
+                    3363.7397676537616
                 ],
                 [
-                    4836.564556774525,
-                    4250.760312093328,
-                    3173.396936005545
+                    5834.1689825796875,
+                    4663.683329358342,
+                    3760.411715062675
                 ],
                 [
-                    6138.445701154374,
-                    5101.222909429426,
-                    4259.045511683334
+                    6700.3384349980815,
+                    5168.065552567273,
+                    4493.592615144519
                 ],
                 [
-                    6628.135013021683,
-                    5409.914818832044,
-                    4724.222831569503
+                    7446.573236298067,
+                    5570.878780216152,
+                    5221.835462210191
                 ],
                 [
-                    7494.337535429488,
-                    5914.316299144459,
-                    5598.290997633373
+                    8000.084911023387,
+                    5863.115642929137,
+                    5863.115642929137
                 ],
                 [
-                    8000.022701515968,
-                    6187.282225647221,
-                    6187.282225647219
-                ],
-                [
-                    8000.022701515968,
-                    6187.282225647221,
-                    6187.282225647219
-                ],
-                [
-                    8000.022701515968,
-                    6187.282225647221,
-                    6187.282225647219
+                    8000.084911023387,
+                    5863.115642929137,
+                    5863.115642929137
                 ]
             ],
             "u2_pc": [
@@ -182,44 +172,54 @@
                     0
                 ],
                 [
-                    1595.4752788317248,
-                    1325.3313109363628,
-                    815.9269570337578
+                    539.9066876231894,
+                    540.7317690940359,
+                    278.7378157264744
                 ],
                 [
-                    2666.605169318028,
-                    1955.5237826092248,
-                    1372.9740788750785
+                    2135.381966454914,
+                    1866.0630800303989,
+                    1121.2147913503406
                 ],
                 [
-                    3778.7968565751808,
-                    2552.222270006771,
-                    1967.4345330736921
+                    2404.6219130869176,
+                    2087.0477939504926,
+                    1265.663873952742
                 ],
                 [
-                    4883.266506384531,
-                    3127.564942714305,
-                    2609.798271767479
+                    3475.751768856074,
+                    2717.240245197742,
+                    1889.655165570047
                 ],
                 [
-                    6488.733576362823,
-                    3950.3744764868115,
-                    3916.7084091325896
+                    4593.448520319699,
+                    3316.892237393665,
+                    2786.4464972527567
                 ],
                 [
-                    6589.00603186102,
-                    4000.0028522740354,
-                    4000.002852274035
+                    5701.6279100396605,
+                    3894.1673956842924,
+                    3748.255352283466
                 ],
                 [
-                    6589.00603186102,
-                    4000.0028522740354,
-                    4000.002852274035
+                    6000.002255836159,
+                    4047.0856715837867,
+                    4047.0856715837867
                 ],
                 [
-                    6589.00603186102,
-                    4000.0028522740354,
-                    4000.002852274035
+                    6000.002255836159,
+                    4047.0856715837867,
+                    4047.0856715837867
+                ],
+                [
+                    6000.002255836159,
+                    4047.0856715837867,
+                    4047.0856715837867
+                ],
+                [
+                    6000.002255836159,
+                    4047.0856715837867,
+                    4047.0856715837867
                 ]
             ],
             "u3_pc": [
@@ -234,14 +234,14 @@
                     0
                 ],
                 [
-                    484.4747153330392,
-                    575.9619682620258,
-                    314.32154209073195
+                    484.47471526697535,
+                    575.9619681834865,
+                    314.3215420478705
                 ],
                 [
-                    1513.0659449059642,
-                    1243.2999556286404,
-                    1243.2999556286404
+                    1513.065944814555,
+                    1243.2999555336573,
+                    1243.2999555336573
                 ]
             ]
         },
@@ -250,42 +250,42 @@
                 "af_gas": 1,
                 "af_oil": 1,
                 "af_wat": 1,
-                "gor": 1292.978469343885,
+                "gor": 1364.4767386895078,
                 "lp_rs": 0,
                 "mp_rs": 80,
-                "qgas": 8000.022701515967,
-                "qgas_alloc": 8000.022701515967,
+                "qgas": 8000.084911023387,
+                "qgas_alloc": 8000.084911023387,
                 "qgas_pot": 0,
-                "qoil": 6187.282225647219,
-                "qoil_alloc": 6187.282225647219,
+                "qoil": 5863.115642929138,
+                "qoil_alloc": 5863.115642929138,
                 "qoil_pot": 0
             },
             "u2": {
                 "af_gas": 1,
                 "af_oil": 1,
                 "af_wat": 1,
-                "gor": 1647.250333362916,
+                "gor": 1482.548861756148,
                 "lp_rs": 0,
                 "mp_rs": 90,
-                "qgas": 6589.006031861019,
-                "qgas_alloc": 6589.006031861019,
+                "qgas": 6000.002255836159,
+                "qgas_alloc": 6000.002255836159,
                 "qgas_pot": 0,
-                "qoil": 4000.002852274035,
-                "qoil_alloc": 4000.002852274035,
+                "qoil": 4047.0856715837867,
+                "qoil_alloc": 4047.0856715837867,
                 "qoil_pot": 0
             },
             "u3": {
                 "af_gas": 1,
                 "af_oil": 1,
                 "af_wat": 1,
-                "gor": 1216.9757893548094,
+                "gor": 1216.97578937426,
                 "lp_rs": 78,
                 "mp_rs": 120,
-                "qgas": 1513.0659449059642,
-                "qgas_alloc": 1513.0659449059642,
+                "qgas": 1513.065944814555,
+                "qgas_alloc": 1513.065944814555,
                 "qgas_pot": 0,
-                "qoil": 1243.2999556286404,
-                "qoil_alloc": 1243.2999556286404,
+                "qoil": 1243.2999555336573,
+                "qoil_alloc": 1243.2999555336573,
                 "qoil_pot": 0
             }
         }
@@ -293,49 +293,54 @@
     "state": 1,
     "totals": {
         "field": {
-            "qgas": 16102.09467828295,
-            "qoil": 11430.585033549894,
-            "qwat": 50.0134765212547
+            "qgas": 15513.153111674099,
+            "qoil": 11153.501270046581,
+            "qwat": 50.91948515322934
         },
         "unit": [
             {
-                "qgas": 8000.022701515967,
-                "qoil": 6187.282225647219,
-                "qwat": 47.61709705379468,
+                "qgas": 8000.084911023387,
+                "qoil": 5863.115642929138,
+                "qwat": 48.51124422071559,
                 "subtotals": {
                     "RMSD": {
-                        "qgas": 1639.9029006132268,
-                        "qoil": 1503.5554106002342,
-                        "qwat": 6.682281691711745
+                        "qgas": 1640.2102540190313,
+                        "qoil": 1504.0952089149596,
+                        "qwat": 6.697252456448406
                     },
                     "RMSM": {
-                        "qgas": 6360.119800902739,
-                        "qoil": 4683.726815046985,
-                        "qwat": 40.93481536208293
+                        "qgas": 6359.874657004356,
+                        "qoil": 4359.020434014177,
+                        "qwat": 41.813991764267186
                     }
                 }
             },
             {
-                "qgas": 1513.0659449059642,
-                "qoil": 1243.2999556286404,
+                "qgas": 1513.065944814555,
+                "qoil": 1243.2999555336573,
                 "qwat": 0,
                 "subtotals": {
                     "DIRECT": {
-                        "qgas": 1513.0659449059642,
-                        "qoil": 1243.2999556286404,
+                        "qgas": 1513.065944814555,
+                        "qoil": 1243.2999555336573,
                         "qwat": 0
                     }
                 }
             },
             {
-                "qgas": 6589.006031861019,
-                "qoil": 4000.002852274035,
-                "qwat": 2.3963794674600254,
+                "qgas": 6000.002255836159,
+                "qoil": 4047.0856715837867,
+                "qwat": 2.4082409325137473,
                 "subtotals": {
+                    "FromRMSM": {
+                        "qgas": 809.146634255193,
+                        "qoil": 761.7164830141296,
+                        "qwat": 0
+                    },
                     "RMSP": {
-                        "qgas": 4993.530753029295,
-                        "qoil": 2674.6715413376724,
-                        "qwat": 2.3963794674600254
+                        "qgas": 3595.380342749241,
+                        "qoil": 1960.037877633294,
+                        "qwat": 2.4082409325137473
                     },
                     "RMSS": {
                         "qgas": 1595.4752788317248,
@@ -354,17 +359,17 @@
                 "qwat_max": 50000
             },
             "sep": {
-                "sep_pres": 80.0
+                "sep_pres": 80
             }
         },
         "u2": {
             "constraints": {
-                "qgas_max": 50000,
-                "qoil_max": 4000,
+                "qgas_max": 6000,
+                "qoil_max": 50000,
                 "qwat_max": 50000
             },
             "sep": {
-                "sep_pres": 80.0
+                "sep_pres": 80
             }
         },
         "u3": {
@@ -374,22 +379,22 @@
                 "qwat_max": 50000
             },
             "sep": {
-                "sep_pres": 131.0
+                "sep_pres": 131
             }
         },
         "u3tr2": {
             "sep": {
-                "sep_pres": 131.0
+                "sep_pres": 131
             }
         },
         "u3tr3": {
             "sep": {
-                "sep_pres": 131.0
+                "sep_pres": 131
             }
         },
         "u3tr4": {
             "sep": {
-                "sep_pres": 131.0
+                "sep_pres": 131
             }
         }
     },
@@ -616,7 +621,7 @@
                 ],
                 "wellname": "15"
             },
-            "curr_route": 0,
+            "curr_route": 2,
             "fixed": 0,
             "gor": 998.4741390870581,
             "map": 80,
@@ -624,9 +629,9 @@
             "qgas_max": 542.9000592030523,
             "ro": 0,
             "route_cnt": 1,
-            "selected_route": "KPC--RMSM--RMSM_TL1--slot 7",
+            "selected_route": "U2--FromRMSM--FromRMSM_GORline1--slot 7",
             "target_fwhp": 80,
-            "unit_id": 0,
+            "unit_id": 2,
             "wct": 0.0
         },
         "162": {
@@ -804,7 +809,7 @@
             "gor": 1951.201346218453,
             "map": 80,
             "masked": 0,
-            "qgas_max": 1623.2628840724838,
+            "qgas_max": 298.00445236115957,
             "ro": 0,
             "route_cnt": 1,
             "selected_route": "U2--RMSP--RMSP_TL2--slot 2",
@@ -1023,7 +1028,7 @@
                 ],
                 "wellname": "308"
             },
-            "curr_route": 0,
+            "curr_route": 1,
             "fixed": 0,
             "gor": 1032.1761922697794,
             "map": 90,
@@ -1031,7 +1036,7 @@
             "qgas_max": 541.565103128963,
             "ro": 0,
             "route_cnt": 1,
-            "selected_route": "KPC--RMSD--RMSD_TL1--slot 3",
+            "selected_route": "KPC--RMSD--RMSD_TEST--slot 3",
             "target_fwhp": 90,
             "unit_id": 0,
             "wct": 0.3
@@ -1217,17 +1222,17 @@
                 ],
                 "wellname": "439"
             },
-            "curr_route": 0,
+            "curr_route": 3,
             "fixed": 0,
             "gor": 1218.3645730779313,
             "map": 118,
             "masked": 0,
             "qgas_max": 269.23994663200295,
-            "ro": 0,
+            "ro": 1,
             "route_cnt": 1,
-            "selected_route": "KPC--RMSM--RMSM_TL1--slot 1",
+            "selected_route": "U2--FromRMSM--FromRMSM_GORline2--slot 1",
             "target_fwhp": 118,
-            "unit_id": 0,
+            "unit_id": 2,
             "wct": 0.0
         },
         "442": {
@@ -1482,7 +1487,7 @@
                 ],
                 "wellname": "806"
             },
-            "curr_route": 0,
+            "curr_route": 1,
             "fixed": 0,
             "gor": 1102.7166663594116,
             "map": 80,
@@ -1490,7 +1495,7 @@
             "qgas_max": 115.27360338849262,
             "ro": 0,
             "route_cnt": 1,
-            "selected_route": "KPC--RMSD--RMSD_TEST--slot 5",
+            "selected_route": "KPC--RMSD--RMSD_TL1--slot 5",
             "target_fwhp": 80,
             "unit_id": 0,
             "wct": 0.0
@@ -1670,7 +1675,7 @@
             "gor": 1894.0515224081837,
             "map": 80,
             "masked": 0,
-            "qgas_max": 2078.882377061286,
+            "qgas_max": 553.5115842996784,
             "ro": 0,
             "route_cnt": 1,
             "selected_route": "KPC--RMSM--RMSM_TL1--slot 9",
@@ -1879,7 +1884,7 @@
                 ],
                 "wellname": "9824"
             },
-            "curr_route": 0,
+            "curr_route": 1,
             "fixed": 0,
             "gor": 915.7489483711727,
             "map": 80,
@@ -1887,7 +1892,7 @@
             "qgas_max": 270.45731552349747,
             "ro": 0,
             "route_cnt": 1,
-            "selected_route": "KPC--RMSD--RMSD_TL1--slot 2",
+            "selected_route": "KPC--RMSD--RMSD_TEST--slot 2",
             "target_fwhp": 80,
             "unit_id": 0,
             "wct": 0.5
@@ -2017,67 +2022,6 @@
     },
     "well_data_byunit": [
         {
-            "15": {
-                "connection": {
-                    "comingled": "",
-                    "connected": "KPC/U2",
-                    "routes": [
-                        {
-                            "default": "1",
-                            "fl_pipe_os": "p_RMSM_TL1_15",
-                            "os": "p_RMSM_TL1_15",
-                            "rms": "RMSM",
-                            "route_name": "KPC--RMSM--RMSM_TL1--slot 7",
-                            "slot": "7",
-                            "tl": "RMSM_TL1",
-                            "unit": "KPC"
-                        },
-                        {
-                            "default": "None",
-                            "fl_pipe_os": "p_RMSM_TEST_15",
-                            "os": "p_RMSM_TEST_15",
-                            "rms": "RMSM",
-                            "route_name": "KPC--RMSM--RMSM_TEST--slot 7",
-                            "slot": "7",
-                            "tl": "RMSM_TEST",
-                            "unit": "KPC"
-                        },
-                        {
-                            "default": "None",
-                            "fl_pipe_os": "p_FromRMSM_GORline1_15",
-                            "os": "p_FromRMSM_GORline1_15",
-                            "rms": "FromRMSM",
-                            "route_name": "U2--FromRMSM--FromRMSM_GORline1--slot 7",
-                            "slot": "7",
-                            "tl": "FromRMSM_GORline1",
-                            "unit": "U2"
-                        },
-                        {
-                            "default": "None",
-                            "fl_pipe_os": "p_FromRMSM_GORline2_15",
-                            "os": "p_FromRMSM_GORline2_15",
-                            "rms": "FromRMSM",
-                            "route_name": "U2--FromRMSM--FromRMSM_GORline2--slot 7",
-                            "slot": "7",
-                            "tl": "FromRMSM_GORline2",
-                            "unit": "U2"
-                        }
-                    ],
-                    "wellname": "15"
-                },
-                "curr_route": 0,
-                "fixed": 0,
-                "gor": 998.4741390870581,
-                "map": 80,
-                "masked": 0,
-                "qgas_max": 542.9000592030523,
-                "ro": 0,
-                "route_cnt": 1,
-                "selected_route": "KPC--RMSM--RMSM_TL1--slot 7",
-                "target_fwhp": 80,
-                "unit_id": 0,
-                "wct": 0.0
-            },
             "308": {
                 "connection": {
                     "comingled": "",
@@ -2106,16 +2050,11 @@
                     ],
                     "wellname": "308"
                 },
-                "curr_route": 0,
-                "fixed": 0,
+                "curr_route": 1,
                 "gor": 1032.1761922697794,
                 "map": 90,
                 "masked": 0,
-                "qgas_max": 541.565103128963,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSD--RMSD_TL1--slot 3",
-                "target_fwhp": 90,
                 "unit_id": 0,
                 "wct": 0.3
             },
@@ -2148,17 +2087,12 @@
                     "wellname": "408"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 872.6597527284785,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 157.90232421613712,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSD--RMSD_TEST--slot 5",
-                "target_fwhp": 80,
                 "unit_id": 0,
-                "wct": 0.0
+                "wct": 0
             },
             "437": {
                 "connection": {
@@ -2209,15 +2143,10 @@
                     "wellname": "437"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1717.2878276869812,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 890.6013585909863,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSM--RMSM_TL1--slot 4",
-                "target_fwhp": 80,
                 "unit_id": 0,
                 "wct": 0.9000000000000001
             },
@@ -2269,18 +2198,13 @@
                     ],
                     "wellname": "439"
                 },
-                "curr_route": 0,
-                "fixed": 0,
+                "curr_route": 1,
                 "gor": 1218.3645730779313,
                 "map": 118,
                 "masked": 0,
-                "qgas_max": 269.23994663200295,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSM--RMSM_TL1--slot 1",
-                "target_fwhp": 118,
                 "unit_id": 0,
-                "wct": 0.0
+                "wct": 0
             },
             "442": {
                 "connection": {
@@ -2331,17 +2255,12 @@
                     "wellname": "442"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1234.7903818340333,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 366.7542678871036,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSM--RMSM_TL1--slot 5",
-                "target_fwhp": 80,
                 "unit_id": 0,
-                "wct": 0.0
+                "wct": 0
             },
             "5887": {
                 "connection": {
@@ -2392,17 +2311,12 @@
                     "wellname": "5887"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1530.791769629526,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 1335.7027003398252,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSM--RMSM_TL1--slot 8",
-                "target_fwhp": 80,
                 "unit_id": 0,
-                "wct": 0.0
+                "wct": 0
             },
             "803": {
                 "connection": {
@@ -2443,15 +2357,10 @@
                     "wellname": "803"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1586.3367226402488,
                 "map": 92,
                 "masked": 0,
-                "qgas_max": 489.68931186532336,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSD--RMSD_TL1--slot 4",
-                "target_fwhp": 92,
                 "unit_id": 0,
                 "wct": 0.6
             },
@@ -2483,18 +2392,13 @@
                     ],
                     "wellname": "806"
                 },
-                "curr_route": 0,
-                "fixed": 0,
+                "curr_route": 1,
                 "gor": 1102.7166663594116,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 115.27360338849262,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSD--RMSD_TEST--slot 5",
-                "target_fwhp": 80,
                 "unit_id": 0,
-                "wct": 0.0
+                "wct": 0
             },
             "818": {
                 "connection": {
@@ -2545,17 +2449,12 @@
                     "wellname": "818"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 860.8846084685302,
                 "map": 82,
                 "masked": 0,
-                "qgas_max": 157.48051487760947,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSM--RMSM_TL1--slot 6",
-                "target_fwhp": 82,
                 "unit_id": 0,
-                "wct": 0.0
+                "wct": 0
             },
             "918": {
                 "connection": {
@@ -2606,17 +2505,12 @@
                     "wellname": "918"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 2129.6350989932903,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 1448.497954793756,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSM--RMSM_TL1--slot 3",
-                "target_fwhp": 80,
                 "unit_id": 0,
-                "wct": 0.0
+                "wct": 0
             },
             "9805": {
                 "connection": {
@@ -2667,15 +2561,10 @@
                     "wellname": "9805"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1894.0515224081837,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 2078.882377061286,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSM--RMSM_TL1--slot 9",
-                "target_fwhp": 80,
                 "unit_id": 0,
                 "wct": 0.3
             },
@@ -2728,17 +2617,12 @@
                     "wellname": "9808"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1234.2610756212118,
                 "map": 84,
                 "masked": 0,
-                "qgas_max": 814.8372539709845,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSM--RMSM_TL1--slot 2",
-                "target_fwhp": 84,
                 "unit_id": 0,
-                "wct": 0.0
+                "wct": 0
             },
             "9815": {
                 "connection": {
@@ -2789,15 +2673,10 @@
                     "wellname": "9815"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1110.3335861218707,
                 "map": 115,
                 "masked": 0,
-                "qgas_max": 344.0638807881145,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSM--RMSM_TL1--slot 10",
-                "target_fwhp": 115,
                 "unit_id": 0,
                 "wct": 10.5
             },
@@ -2840,15 +2719,10 @@
                     "wellname": "9823"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 760.3441787115981,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 81.17117282997432,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSD--RMSD_TL1--slot 4",
-                "target_fwhp": 80,
                 "unit_id": 0,
                 "wct": 1.7000000000000002
             },
@@ -2880,16 +2754,11 @@
                     ],
                     "wellname": "9824"
                 },
-                "curr_route": 0,
-                "fixed": 0,
+                "curr_route": 1,
                 "gor": 915.7489483711727,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 270.45731552349747,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSD--RMSD_TL1--slot 2",
-                "target_fwhp": 80,
                 "unit_id": 0,
                 "wct": 0.5
             },
@@ -2942,17 +2811,12 @@
                     "wellname": "9831"
                 },
                 "curr_route": 1,
-                "fixed": 0,
                 "gor": 1852.557835936947,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 768.6011968583188,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSM--RMSM_TEST--slot 5",
-                "target_fwhp": 80,
                 "unit_id": 0,
-                "wct": 0.0
+                "wct": 0
             },
             "9841": {
                 "connection": {
@@ -3003,17 +2867,12 @@
                     "wellname": "9841"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1396.9055791272062,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 1297.0798004518688,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "KPC--RMSM--RMSM_TL1--slot 4",
-                "target_fwhp": 80,
                 "unit_id": 0,
-                "wct": 0.0
+                "wct": 0
             }
         },
         {
@@ -3036,17 +2895,12 @@
                     "wellname": "121"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1541.3347494750803,
                 "map": 135,
                 "masked": 0,
-                "qgas_max": 1028.5912295471248,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "U3--DIRECT----slot 33",
-                "target_fwhp": 135,
                 "unit_id": 1,
-                "wct": 0.0
+                "wct": 0
             },
             "310": {
                 "connection": {
@@ -3067,17 +2921,12 @@
                     "wellname": "310"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 841.1574757183173,
                 "map": 135,
                 "masked": 0,
-                "qgas_max": 484.4747152657891,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "U3--DIRECT----slot 31",
-                "target_fwhp": 135,
                 "unit_id": 1,
-                "wct": 0.0
+                "wct": 0
             }
         },
         {
@@ -3130,17 +2979,68 @@
                     "wellname": "116"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1203.831272728705,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 1605.539868849907,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "U2--RMSS--RMSS_TL1--slot 2",
-                "target_fwhp": 80,
                 "unit_id": 2,
-                "wct": 0.0
+                "wct": 0
+            },
+            "15": {
+                "connection": {
+                    "comingled": "",
+                    "connected": "KPC/U2",
+                    "routes": [
+                        {
+                            "default": "1",
+                            "fl_pipe_os": "p_RMSM_TL1_15",
+                            "os": "p_RMSM_TL1_15",
+                            "rms": "RMSM",
+                            "route_name": "KPC--RMSM--RMSM_TL1--slot 7",
+                            "slot": "7",
+                            "tl": "RMSM_TL1",
+                            "unit": "KPC"
+                        },
+                        {
+                            "default": "None",
+                            "fl_pipe_os": "p_RMSM_TEST_15",
+                            "os": "p_RMSM_TEST_15",
+                            "rms": "RMSM",
+                            "route_name": "KPC--RMSM--RMSM_TEST--slot 7",
+                            "slot": "7",
+                            "tl": "RMSM_TEST",
+                            "unit": "KPC"
+                        },
+                        {
+                            "default": "None",
+                            "fl_pipe_os": "p_FromRMSM_GORline1_15",
+                            "os": "p_FromRMSM_GORline1_15",
+                            "rms": "FromRMSM",
+                            "route_name": "U2--FromRMSM--FromRMSM_GORline1--slot 7",
+                            "slot": "7",
+                            "tl": "FromRMSM_GORline1",
+                            "unit": "U2"
+                        },
+                        {
+                            "default": "None",
+                            "fl_pipe_os": "p_FromRMSM_GORline2_15",
+                            "os": "p_FromRMSM_GORline2_15",
+                            "rms": "FromRMSM",
+                            "route_name": "U2--FromRMSM--FromRMSM_GORline2--slot 7",
+                            "slot": "7",
+                            "tl": "FromRMSM_GORline2",
+                            "unit": "U2"
+                        }
+                    ],
+                    "wellname": "15"
+                },
+                "curr_route": 2,
+                "gor": 998.4741390870581,
+                "map": 80,
+                "masked": 0,
+                "route_cnt": 1,
+                "unit_id": 2,
+                "wct": 0
             },
             "162": {
                 "connection": {
@@ -3191,17 +3091,12 @@
                     "wellname": "162"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 2102.849138278991,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 1586.7552353653527,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "U2--RMSS--RMSS_TL1--slot 5",
-                "target_fwhp": 80,
                 "unit_id": 2,
-                "wct": 0.0
+                "wct": 0
             },
             "196-1": {
                 "connection": {
@@ -3252,17 +3147,12 @@
                     "wellname": "196-1"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1699.6869030233904,
                 "map": 160,
                 "masked": 0,
-                "qgas_max": 1071.1298545484844,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "U2--RMSP--RMSP_TEST--slot 4",
-                "target_fwhp": 160,
                 "unit_id": 2,
-                "wct": 0.0
+                "wct": 0
             },
             "203": {
                 "connection": {
@@ -3313,17 +3203,12 @@
                     "wellname": "203"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1951.201346218453,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 1623.2628840724838,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "U2--RMSP--RMSP_TL2--slot 2",
-                "target_fwhp": 80,
                 "unit_id": 2,
-                "wct": 0.0
+                "wct": 0
             },
             "231": {
                 "connection": {
@@ -3374,17 +3259,12 @@
                     "wellname": "231"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 3056.3559575906297,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 1908.5189273056844,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "U2--RMSS--RMSS_TL1--slot 8",
-                "target_fwhp": 80,
                 "unit_id": 2,
-                "wct": 0.0
+                "wct": 0
             },
             "239": {
                 "connection": {
@@ -3435,17 +3315,12 @@
                     "wellname": "239"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1919.672748436633,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 1117.9361411015104,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "U2--RMSP--RMSP_TL2--slot 7",
-                "target_fwhp": 80,
                 "unit_id": 2,
-                "wct": 0.0
+                "wct": 0
             },
             "243": {
                 "connection": {
@@ -3496,17 +3371,12 @@
                     "wellname": "243"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 2020.4661931332255,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 1565.8910215179937,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "U2--RMSP--RMSP_TL2--slot 3",
-                "target_fwhp": 80,
                 "unit_id": 2,
-                "wct": 0.0
+                "wct": 0
             },
             "710": {
                 "connection": {
@@ -3547,15 +3417,10 @@
                     "wellname": "710"
                 },
                 "curr_route": 0,
-                "fixed": 0,
                 "gor": 1863.9090105756584,
                 "map": 80,
                 "masked": 0,
-                "qgas_max": 1131.3717144187176,
-                "ro": 0,
                 "route_cnt": 1,
-                "selected_route": "U2--RMSP--RMSP_TL2--slot 5",
-                "target_fwhp": 80,
                 "unit_id": 2,
                 "wct": 0.4
             }
