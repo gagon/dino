@@ -29,6 +29,59 @@ def generate_comb(session_json):
     return r
 
 
+def generate_comb2(ro_data):
+    r=[[]]
+    for w,x in ro_data.items():
+        t = []
+        for y in x:
+            for i in r:
+                t.append(i+[{"well":w,"route_name":y}])
+        r = t
+    return r
+
+
+def filter_combs(combs,max_wells):
+
+    filtered_combs=[]
+    for comb in combs:
+        print("hi")
+        # routes=[]
+        unique_routes=[]
+        flag=0
+        comb_=[]
+        for c in comb: # generate unique route list
+            c=c["route_name"].split("--")[:-1]
+            c='--'.join([str(x) for x in c])
+            comb_.append(c)
+
+            if not c in unique_routes:
+                unique_routes.append(c)
+
+        for ur in unique_routes: # count same routes in combination
+            cnt=0
+            for c in comb_:
+                if c == ur:
+                    cnt+=1
+
+            if cnt>max_wells:
+                flag=1
+                break
+
+        if flag==0:
+            filtered_combs.append(comb)
+
+    return filtered_combs
+
+
+
+def count_combs(ro_data):
+    comb_num=1
+    for w,r in ro_data.items():
+        if r:
+            comb_num=comb_num*len(r)
+    return comb_num
+
+
 def get_well_routes(session_json):
     ro_data={}
     for w,x in session_json["well_data"].items():
@@ -37,25 +90,6 @@ def get_well_routes(session_json):
                 ro_data[w]=x["connection"]["routes"]
     return ro_data
 
-# def make_msg(ro_data):
-#
-#     s=""
-#     for w,val in ro_data.items():
-#         for v in val:
-#             t="""
-#             <tr>
-#               <td name="well">%s</td>
-#               <td name="unit">%s</td>
-#               <td name="rms">%s</td>
-#               <td name="tl">%s</td>
-#               <td name="route">%s</td>
-#               <td><input type="checkbox" name="ro" value="" checked='checked'></td>
-#             </tr>
-#             """
-#             s+=t % (w,v["unit"],v["rms"],v["tl"],v["route_name"])
-#     s+="</table>"
-#
-#     return s
 
 
 def prep_route_opt(session_json):
@@ -76,13 +110,15 @@ def prep_route_opt(session_json):
     #     print(comb)
     return None
 
-def route_optimization(session_json,mockup):
+def route_optimization(session_json,ro_data,mockup):
 
-    combinations=generate_comb(session_json)
-    # print(combinations)
-    for cnt,comb in enumerate(combinations):
-        print(comb)
-
+    # combinations=generate_comb(session_json)
+    combinations=generate_comb2(ro_data)
+    combinations=filter_combs(combinations,3)
+    print(len(combinations))
+    # for cnt,comb in enumerate(combinations):
+    #     print(comb)
+    # return None
     utils.save_orig_session_json(session_json)
 
     # session_json_copy=session_json

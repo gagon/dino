@@ -533,11 +533,8 @@
     }
     runtime=comb_num*15.0/60.0/60.0
     if(comb_num>1){
-      alert("Routing Optimization is on.\nNumber of combinations is "
-          + comb_num + ".\nEstimated run time is "
-          + runtime + " hrs (15sec for each combination).\nThis can be reduced by applying rules in GAP calculate.");
-    // }else{
-    //   $("#ro_on").hide()
+      alert("Number of combinations is "
+          + comb_num + ".\nThis can be reduced by applying rules and filters in Calculate GAP page.");
     }
     return comb_num;
   }

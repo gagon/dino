@@ -30,17 +30,10 @@
 
         <hr>
         <h4>Route options</h4>
+        <span id="comb_num"></span>
         <table class="table table-bordered table-condensed" id="var_table" style="font-size:10px;">
           <thead class="thead-default">
             <tr class="info">
-              <!-- <td style='background-color:#f2f2f2;'><b>Well<b/></td> -->
-              <!-- <td style='background-color:#BDE5F1;'><b>Well<b/></td>
-              <td style='background-color:#BDE5F1;'><b>Unit</b></td>
-              <td style='background-color:#BDE5F1;'><b>RMS</b></td>
-              <td style='background-color:#BDE5F1;'><b>TL</b></td>
-              <td style='background-color:#BDE5F1;'><b>Route</b></td>
-              <td style="width:5%;background-color:#BDE5F1;"><b>Select/Unselect</b></td> -->
-
               <th><b>Well<b/></th>
               <th><b>Unit</b></th>
               <th><b>RMS</b></th>
@@ -72,6 +65,46 @@
 
   var socket = io.connect('http://' + document.domain + ':' + location.port);
   var complete=0;
+
+
+  $( document ).on( "change", ":checkbox", function() {
+    if(this.name=="ro"){
+      count_combinations();
+      // var ro_data=get_route_options();
+      // socket.emit('update_combs',{"ro_data":ro_data});
+    }
+  });
+
+ function count_combinations(){
+   var ro_data=get_route_options();
+   // var comb_num=calculate_comb(ro_data);
+   // $("#comb_num").text("Combinations: "+comb_num);
+   socket.emit('update_combs',{"ro_data":ro_data});
+ }
+
+  // function calculate_comb(ro_data){
+  //   var comb_num=1;
+  //   for (var well in ro_data){
+  //     var wellcombs=ro_data[well].length;
+  //     comb_num=comb_num*wellcombs;
+  //   }
+  //   return comb_num;
+  // }
+
+  // function calculate_comb(ro_data){
+  //   var comb_num=1;
+  //   for (var well in ro_data){
+  //     var wellcombs=ro_data[well].length;
+  //     comb_num=comb_num*wellcombs;
+  //   }
+  //   return comb_num;
+  // }
+
+
+  socket.on('comb_num', function(msg) {
+    $("#comb_num").text("Combinations: "+msg.comb_num);
+  });
+
 
   function start_gap_calc() {
 
@@ -184,6 +217,7 @@
       prev_color=color;
     }
 
+    count_combinations();
 
   });
 
@@ -195,12 +229,13 @@
   }, 50000);
 
   function start_route_opt() {
-    // $("#variations").hide();
-    // $("#gap_cal_status").append("<h4>Calculations started</h4>");
-    // $('#calc_img').show();
-    // socket.emit('start_route_opt');
+    $("#variations").hide();
+    $("#gap_cal_status").append("<h4>Calculations started</h4>");
+    $('#calc_img').show();
     var ro_data=get_route_options();
-    console.log(ro_data);
+    socket.emit('start_route_opt',{"ro_data":ro_data});
+
+
   }
 
   function get_route_options(){
@@ -216,15 +251,20 @@
         var wellname=$(this).find("[name=wellname]").text() // get wellname
         var route_name=$(this).find("[name=route_name]").text() // get route_name
 
-        if (wellname_!=wellname){
-          ro_data[wellname]={"routes":[]}
+        if (wellname_!=wellname){ // start new well dict
           routes=[];
+          if (wellname_){
+            if (ro_data[wellname_].length<2){ // remove well route options that are less than 2
+              delete ro_data[wellname_];
+            }
+          }
         }
         routes.push(route_name);
-        ro_data[wellname]["routes"]=routes;
+        ro_data[wellname]=routes;
         wellname_=wellname
       }
     })
+
     return ro_data
   }
 

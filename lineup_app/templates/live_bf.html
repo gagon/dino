@@ -1,0 +1,324 @@
+{% extends 'base.html' %}
+{% block currentpage %}
+
+
+<div class="container-fluid">
+
+  <!-- <div class="row"> -->
+    <!-- <div class="col-lg-12"> -->
+      <!-- <div id="gap_cal_status"><h4>Press Start on sidebar to start GAP calculation</h4></div> -->
+      <!-- <div class="checkbox" id="route_opt_div"> -->
+        <!-- <label><input type="checkbox" value="" id="route_opt">Optimize routing</label> -->
+      <!-- </div> -->
+
+      <!-- <hr> -->
+    <!-- </div> -->
+  <!-- </div> -->
+
+  <div class="row">
+    <div class="col-lg-4">
+      <h3>Setup</h3>
+
+      <hr>
+
+      <h4>Rules to apply</h4>
+      <div class="checkbox">
+        <label><input type="checkbox" value="" id="rule1">Not more than 3 wells on 1 Trunkline</label>
+      </div>
+      <div class="checkbox">
+        <label><input type="checkbox" value="" id="rule2">Not more than 2 wells on 1 Testline</label>
+      </div>
+
+      <hr>
+
+      <h4>Route options</h4>
+      {% if comb_num>1000 %}
+        <span id="comb_num" style="color:red;">Combinations: {{ comb_num }}</span>
+      {% else %}
+        <span id="comb_num">Combinations: {{ comb_num }}</span>
+      {% endif %}
+      <table class="table table-bordered table-condensed" id="var_table" style="font-size:10px;">
+        <thead class="thead-default">
+          <tr class="info">
+            <th><b>Well<b/></th>
+            <th><b>Route</b></th>
+            <th style="width:5%;"><b>Select/Unselect</b></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for well_key, rows in ro_data.items() %}
+            {% for row in rows %}
+              <tr>
+                <td name="wellname">{{ well_key }}</td>
+                <td name="route_name">{{ row.route_name }}</td>
+                <td style="background-color:'+color+'">
+                  <input type="checkbox" value="" id="" checked="checked" name="ro">
+                </td>
+              </tr>
+            {% endfor %}
+            <tr>
+              <td style="background-color:#f2f2f2"></td>
+              <td style="background-color:#f2f2f2"></td>
+              <td style="background-color:#f2f2f2"></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="col-lg-4">
+      <h3>Calculations</h3>
+      <hr>
+      <div id="gap_cal_status"><h4>Press Start on sidebar to start GAP calculation</h4></div>
+      <img src="/static/img/calc.gif" id="calc_img" style="display:none;" height="40" / >
+      <div id="gap_cal_update"></div>
+    </div>
+
+    <div class="col-lg-4">
+      <h3>Results</h3>
+      <hr>
+      <div id="best"></div>
+      <div id="route_opt_update"></div>
+    </div>
+
+  </div>
+
+
+
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+ //
+  var socket = io.connect('http://' + document.domain + ':' + location.port);
+ //  var complete=0;
+ //
+ //
+  $( document ).on( "change", ":checkbox", function() {
+    if(this.name=="ro"){
+      count_combinations();
+    }
+  });
+ //
+ function count_combinations(){
+   var ro_data=get_route_options();
+   var comb_num=calculate_comb(ro_data);
+   if (comb_num>1000){
+     $("#comb_num").css('color', 'red');
+   }else{
+     $("#comb_num").css('color', '');
+   }
+   $("#comb_num").text("Combinations: "+comb_num);
+ }
+ //
+  function calculate_comb(ro_data){
+    var comb_num=1;
+    for (var well in ro_data){
+      var wellcombs=ro_data[well].length;
+      comb_num=comb_num*wellcombs;
+    }
+    return comb_num;
+  }
+ //
+ //  // function calculate_comb(ro_data){
+ //  //   var comb_num=1;
+ //  //   for (var well in ro_data){
+ //  //     var wellcombs=ro_data[well].length;
+ //  //     comb_num=comb_num*wellcombs;
+ //  //   }
+ //  //   return comb_num;
+ //  // }
+ //
+ //
+ //  socket.on('comb_num', function(msg) {
+ //    $("#comb_num").text("Combinations: "+msg.comb_num);
+ //  });
+ //
+ //
+  function start_gap_calc() {
+
+    $("#gap_cal_update").empty();
+    $("#gap_cal_status").empty();
+    $("#gap_cal_status").append("<h3>Calculations started</h3>");
+    socket.emit('start_gap_calc');
+    $('#calc_img').show();
+
+  };
+
+  // function route_opt_calc() {
+  //   $("#gap_cal_update").empty();
+  //   $("#gap_cal_status").empty();
+  //   $("#gap_cal_status").append("<h3>Routing calculations started</h3>");
+  //   socket.emit('start_route_opt');
+  //   $('#calc_img').show();
+  // };
+ //
+ //  socket.on('progress', function(msg) {
+ //
+ //      if(msg.finish==1){ // finished performing routing optimization
+ //
+ //        $('#calc_img').hide();
+ //        $("#gap_cal_status").empty();
+ //        $("#gap_cal_status").append("<h3>"+msg.data+"</h3>");
+ //        complete=1;
+ //
+ //      }else if(msg.finish==2){ // finished performing constraints optimization at certain state
+ //
+ //        $("#gap_cal_update").empty();
+ //        $("#gap_cal_update").prepend("<span style='font-size:14px;'>"+msg.data+"</span><br>");
+ //        $("#route_opt_update").prepend(
+ //            "<span style='font-size:14px;'>"
+ //              +"State_id="+msg.state_id+", "
+ //              +"Qoil="+msg.res.tot_qoil+", "
+ //              +"Qgas="+msg.res.tot_qgas+", "
+ //              +"Qwat="+msg.res.tot_qwat+", "
+ //              +"time:"+msg.time
+ //            +"</span><br>"
+ //          );
+ //
+ //        if (msg.best==1){ // update best field with best result from calculations
+ //          $("#best").empty();
+ //          $("#best").append(
+ //            "<h4>Best result:</h4>"+
+ //            "<span style='font-size:14px;color:green;'>"
+ //              +"State_id="+msg.state_id+", "
+ //              +"Qoil="+msg.res.tot_qoil+", "
+ //              +"Qgas="+msg.res.tot_qgas+", "
+ //              +"Qwat="+msg.res.tot_qwat
+ //            +"</span><hr>"
+ //          );
+ //        }
+ //
+ //      }else{
+ //        $("#gap_cal_update").prepend("<span style='font-size:14px;'>"+msg.data+"</span><br>");
+ //      }
+ //  });
+ //
+ //  socket.on('disconnect', function(data) {
+ //    alert("socket disconnect!");
+ //  });
+ //
+ //  socket.on('ping', function(data) {
+ //    console.log("ping");
+ //  });
+ //
+ //  socket.on('prep_ro_data', function(data) {
+ //    $("#variations").show();
+ //
+ //    var color="#ffffff";
+ //    var prev_color="#ffffff";
+ //
+ //    for (var well in data.data){
+ //
+ //      if (prev_color=="#ffffff"){
+ //        color="#f2f2f2";
+ //      }else{
+ //        color="#ffffff";
+ //      }
+ //
+ //      var arrayLength = data.data[well].length;
+ //      for (var i = 0; i < arrayLength; i++) {
+ //
+ //        //$('#var_table tbody tr:last').after(
+ //        $('#var_table tbody').append(
+ //          '<tr>'+
+ //            '<td style="background-color:'+color+'" name="wellname">'+well+'</td>'+
+ //            '<td style="background-color:'+color+'" name="unit">'+data.data[well][i]["unit"]+'</td>'+
+ //            '<td style="background-color:'+color+'" name="rms">'+data.data[well][i]["rms"]+'</td>'+
+ //            '<td style="background-color:'+color+'" name="tl">'+data.data[well][i]["tl"]+'</td>'+
+ //            '<td style="background-color:'+color+'" name="route_name">'+data.data[well][i]["route_name"]+'</td>'+
+ //            '<td style="background-color:'+color+'">'+
+ //              '<input type="checkbox" value="" id="" checked="checked" name="ro">'+
+ //            '</td>'+
+ //          '</tr>'
+ //        );
+ //
+ //      }
+ //      prev_color=color;
+ //    }
+ //
+ //    count_combinations();
+ //
+ //  });
+ //
+ //
+ //  setInterval(function(){
+ //      if (complete==1){
+ //        socket.emit('ping');
+ //      }
+ //  }, 50000);
+ //
+  function start_route_opt() {
+    // $("#variations").hide();
+    $("#gap_cal_status").append("<h4>Calculations started</h4>");
+    $('#calc_img').show();
+    var ro_data=get_route_options();
+    socket.emit('start_route_opt',{"ro_data":ro_data});
+   }
+
+  function get_route_options(){
+
+    var ro_data={};
+    var routes=[];
+    var wellname_="";
+
+    $("#var_table tbody").children('tr').each(function () { // loop through rows
+      if ($(this).find("[name=ro]").is(":checked")){
+
+        var wellname=$(this).find("[name=wellname]").text() // get wellname
+        var route_name=$(this).find("[name=route_name]").text() // get route_name
+
+        if (wellname_!=wellname){ // start new well dict
+          routes=[];
+          if (wellname_){
+            if (ro_data[wellname_].length<2){ // remove well route options that are less than 2
+              delete ro_data[wellname_];
+            }
+          }
+        }
+        routes.push(route_name);
+        ro_data[wellname]=routes;
+        wellname_=wellname
+      }
+    })
+
+    console.log(ro_data);
+    return ro_data
+  }
+ //
+ //  //
+ //  // function disconnect_gap_calc() {
+ //  //   // alert("stop")
+ //  //   // socket.emit('disconnect_gap_calc');
+ //  //   stop_calc();
+ //  // };
+ //  //
+ //  //
+ //  // function stop_calc() {
+ //  //
+ //  //   // var state=get_state(); // get state data from target fwhp, route and optimize columns
+ //  //
+ //  //   // Make AJAX call to save state data to session in the server, see "savestate" url call in views.py
+ //  //   // AJAX standard form for calling
+ //  //   $.ajax({
+ //  //       type: "POST",
+ //  //       url: "/stop", // url to call in the views.py
+ //  //       // The key needs to match your method's input parameter (case-sensitive).
+ //  //       data: "stop",
+ //  //       success: function(data){
+ //  //       },
+ //  //       failure: function(errMsg) {
+ //  //           alert(errMsg);
+ //  //       }
+ //  //   });
+ //  //
+ //  //   return "";
+ //  //
+ //  // };
+
+
+</script>
+
+
+{% endblock %}

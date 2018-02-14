@@ -199,6 +199,18 @@ def live():
 """ ========================================================================================================= """
 
 
+""" GAP CALCULATION PAGE ==================================================================================== """
+@app.route('/live_bf')
+@login_required
+def live_bf():
+    session_json=utils.get_session_json()
+    ro_data=ro.get_well_routes(session_json)
+    comb_num=ro.count_combs(ro_data)
+    page_active={"load_pcs":"","load_state":"","setup":"","live":"active","results":""}
+    return render_template('live_bf.html',page_active=page_active,ro_data=ro_data,comb_num=comb_num)
+""" ========================================================================================================= """
+
+
 """ GET GAP RESULTS =========================================================================================== """
 @app.route('/results')
 @login_required
@@ -325,11 +337,12 @@ def start_gap_calc():
 
 """ START GAP CALCULATION ==================================================================== """
 @socketio.on('start_route_opt')
-def start_route_opt():
+def start_route_opt(data):
 
     session_json=utils.get_session_json()
+    print(data["ro_data"].keys())
 
-    ro.route_optimization(session_json,MOCKUP)
+    ro.route_optimization(session_json,data["ro_data"],MOCKUP)
 
     # if MOCKUP:
     #     print("skip xls calc")
@@ -359,6 +372,19 @@ def prep_route_opt():
     #------------------------------------------------------------------------------
     return "None"
 """========================================================================================="""
+
+
+
+""" START GAP CALCULATION ==================================================================== """
+@socketio.on('update_combs')
+def update_combs(data):
+    combs=ro.generate_comb2(data["ro_data"])
+    combs=ro.filter_combs(combs,3)
+    emit("comb_num",{"comb_num":len(combs)})
+    return "None"
+"""========================================================================================="""
+
+
 
 
 """ LOAD PCS ==================================================================== """
