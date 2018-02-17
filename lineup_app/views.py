@@ -193,21 +193,21 @@ def live():
     if not "well_data" in session_json: # check if state was exists. well_data ~ state
         return "NO session well state. Go back to <b>Setup</b> and save state"
 
-    page_active={"load_pcs":"","load_state":"","setup":"","live":"active","results":""}
-    # else load live page
+    page_active={"live":"active"}
+
     return render_template('live.html',page_active=page_active)
 """ ========================================================================================================= """
 
 
 """ GAP CALCULATION PAGE ==================================================================================== """
-@app.route('/live_bf')
+@app.route('/live_ro')
 @login_required
-def live_bf():
+def live_ro():
     session_json=utils.get_session_json()
     ro_data=ro.get_well_routes(session_json)
     comb_num=ro.count_combs(ro_data)
-    page_active={"load_pcs":"","load_state":"","setup":"","live":"active","results":""}
-    return render_template('live_bf.html',page_active=page_active,ro_data=ro_data,comb_num=comb_num)
+    page_active={"live_ro":"active"}
+    return render_template('live_ro.html',page_active=page_active,ro_data=ro_data,comb_num=comb_num)
 """ ========================================================================================================= """
 
 
@@ -338,48 +338,51 @@ def start_gap_calc():
 """ START GAP CALCULATION ==================================================================== """
 @socketio.on('start_route_opt')
 def start_route_opt(data):
-
     session_json=utils.get_session_json()
-    print(data["ro_data"].keys())
-
-    ro.route_optimization(session_json,data["ro_data"],MOCKUP)
-
-    # if MOCKUP:
-    #     print("skip xls calc")
-    #     post_opt_state=nsopt.route_optimization(session_json)
-    # else:
-    #     print("route_opt")
-    #     post_opt_state=gob.route_optimization(session_json) # pass state to GAP to make calculations
-    #------------------------------------------------------------------------------
+    ro.route_optimization(session_json,data["ro_data"],data["filters"],MOCKUP)
     return "None"
 """========================================================================================="""
 
+#
+# """ START GAP CALCULATION ==================================================================== """
+# @socketio.on('prep_route_opt')
+# def prep_route_opt():
+#
+#     session_json=utils.get_session_json()
+#
+#     ro.prep_route_opt(session_json)
+#
+#     # if MOCKUP:
+#     #     print("skip xls calc")
+#     #     post_opt_state=nsopt.route_optimization(session_json)
+#     # else:
+#     #     print("route_opt")
+#     #     post_opt_state=gob.route_optimization(session_json) # pass state to GAP to make calculations
+#     #------------------------------------------------------------------------------
+#     return "None"
+# """========================================================================================="""
 
-""" START GAP CALCULATION ==================================================================== """
-@socketio.on('prep_route_opt')
-def prep_route_opt():
 
-    session_json=utils.get_session_json()
-
-    ro.prep_route_opt(session_json)
-
-    # if MOCKUP:
-    #     print("skip xls calc")
-    #     post_opt_state=nsopt.route_optimization(session_json)
-    # else:
-    #     print("route_opt")
-    #     post_opt_state=gob.route_optimization(session_json) # pass state to GAP to make calculations
-    #------------------------------------------------------------------------------
-    return "None"
-"""========================================================================================="""
-
-
-
+#
 """ START GAP CALCULATION ==================================================================== """
 @socketio.on('update_combs')
 def update_combs(data):
+    session_json=utils.get_session_json()
     combs=ro.generate_comb2(data["ro_data"])
-    combs=ro.filter_combs(combs,3)
+    # for comb in combs:
+    #     for c in comb:
+    #         print(c)
+    #     print("--")
+    # data["filters"]["tl_max_num"]
+    # data["filters"]["test_max_num"]
+    # print(data["filters"])
+    # print(session_json.keys())
+    combs=ro.filter_combs(combs,data["filters"],session_json)
+    # print("++++++++++++++++++++++++++")
+    # for comb in combs:
+    #     for c in comb:
+    #         print(c)
+    #     print("--")
     emit("comb_num",{"comb_num":len(combs)})
     return "None"
 """========================================================================================="""

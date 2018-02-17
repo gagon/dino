@@ -1,0 +1,410 @@
+{% extends 'base.html' %}
+{% block currentpage %}
+
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-lg-4">
+      <h3>Setup</h3>
+
+      <hr>
+
+      <h4>Rules to apply</h4>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" value="" id="apply_tl_max" name="filter">
+          Not more than
+          <input type="input" value=3 id="tl_max" style="width:40px;">
+          wells on same Trunkline
+          <span class="glyphicon glyphicon-info-sign" aria-hidden="true" title=
+          "Max number of wells allowed to connect to the same routes for combination. For instance, 'KPC--RMSM--TL1' will be allowed only to connect max 3 wells. This will remove unnecessary combinations for optimization. "
+          ></span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" value="" id="apply_test_max" name="filter">
+          Not more than
+          <input type="input" value=1 id="test_max" style="width:40px;">
+          wells on same Testline
+          <span class="glyphicon glyphicon-info-sign" aria-hidden="true" title=
+          "Max number of wells allowed to connect to the same test line for combination. For instance, 'KPC--RMSM--TEST' will be allowed only to connect max 1 well. This will remove unnecessary combinations for optimization. NOTE: this will work only for routes with 'TEST' in the route name."
+          ></span>
+        </label>
+      </div>
+
+      <hr>
+
+      <h4>Route options</h4>
+      {% if comb_num>1000 %}
+        <span id="comb_num" style="color:red;">Combinations: {{ comb_num }}</span>
+      {% else %}
+        <span id="comb_num">Combinations: {{ comb_num }}</span>
+      {% endif %}
+      <img src="/static/img/loading-dots.gif" id="load_img" style="display:none;" height="18" / >
+      <table class="table table-bordered table-condensed" id="var_table" style="font-size:10px;">
+        <thead class="thead-default">
+          <tr class="info">
+            <th><b>Well<b/></th>
+            <th><b>Route</b></th>
+            <th style="width:5%;"><b>Select/Unselect</b></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for well_key, rows in ro_data.items() %}
+            {% for row in rows %}
+              <tr>
+                <td name="wellname">{{ well_key }}</td>
+                <td name="route_name">{{ row.route_name }}</td>
+                <td style="background-color:'+color+'">
+                  <input type="checkbox" value="" id="" checked="checked" name="ro">
+                </td>
+              </tr>
+            {% endfor %}
+            <tr>
+              <td style="background-color:#f2f2f2"></td>
+              <td style="background-color:#f2f2f2"></td>
+              <td style="background-color:#f2f2f2"></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="col-lg-4">
+      <h3>Calculations</h3>
+      <hr>
+      <div id="gap_cal_status"><h4>Press Start on sidebar to start GAP calculation</h4></div>
+      <img src="/static/img/calc.gif" id="calc_img" style="display:none;" height="40" / >
+      <div id="gap_cal_update"></div>
+    </div>
+
+    <div class="col-lg-4">
+      <h3>Results</h3>
+      <hr>
+      <div id="best"></div>
+      <div id="route_opt_update"></div>
+    </div>
+
+  </div>
+
+
+
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+  var socket = io.connect('http://' + document.domain + ':' + location.port);
+  var complete=0;
+
+  $( document ).on( "change", ":checkbox", function() {
+    if(this.name=="ro" || this.name=="filter"){
+      count_combinations();
+      $("#load_img").show();
+    }
+  });
+
+
+  $( document ).on( "click", "span", function() {
+    var s=$(this).attr('id');
+    var v=$(this).val();
+    if (v=="0"){
+      $("#state_id_"+s).show();
+      $(this).val("1");
+    }else{
+      $("#state_id_"+s).hide();
+      $(this).val("0");
+    }
+  });
+
+ function count_combinations(){
+   var ro_data=get_route_options();
+   calculate_comb(ro_data);
+ }
+
+  function calculate_comb(ro_data){
+    var filters=get_comb_filters();
+    socket.emit('update_combs',{"ro_data":ro_data,"filters":filters});
+  }
+
+  function get_comb_filters(){
+    var filters={};
+    var apply_tl_max=$("#apply_tl_max").is(":checked");
+    var apply_test_max=$("#apply_test_max").is(":checked");
+    if (apply_tl_max){
+      filters["tl_max_num"]=$("#tl_max").val();
+    }else{
+      filters["tl_max_num"]="";
+    }
+    if (apply_test_max){
+      filters["test_max_num"]=$("#test_max").val();
+    }else{
+      filters["test_max_num"]="";
+    }
+    return filters
+  }
+
+  function start_calc() {
+
+    var comb_num=parseInt($("#comb_num").text().replace('Combinations: ', '')); // check combinations and stop if more than 1000
+    if (comb_num>1000){
+      alert("Too many combinations (max=1000). Reduce number of options!")
+      return
+    }
+
+    $("#gap_cal_update").empty();
+    $("#gap_cal_status").empty();
+    $('#calc_img').show();
+    var ro_data=get_route_options();
+    var filters=get_comb_filters();
+    socket.emit('start_route_opt',{"ro_data":ro_data,"filters":filters});
+
+  };
+
+
+  function highlight_route(comb){
+
+    for (var i = 0; i < comb.length; i++) {
+
+      $("#var_table tbody").children('tr').each(function () { // loop through rows
+        if ($(this).find("[name=ro]").is(":checked")){
+
+          var wellname=$(this).find("[name=wellname]").text() // get wellname
+          var route_name=$(this).find("[name=route_name]").text() // get route_name
+
+          if (comb[i]["well"]==wellname && comb[i]["route_name"]==route_name){ // start new well dict
+            $(this).find('td').each (function(column, td) {
+              $(td).css('background-color','#fbfbea');
+            });
+          }
+
+        }
+      })
+    }
+
+  }
+
+  socket.on('route_table', function(msg) {
+
+    clear_var_table();
+    highlight_route(msg.comb);
+
+    $("#gap_cal_status").empty()
+    if (msg.comb_cnt==-1){
+      $("#gap_cal_status").append("<h4>Solving best combination...");
+    }else{
+      $("#gap_cal_status").append("<h4>Solving "+msg.comb_cnt+" out of "+msg.comb_tot+"...");
+    }
+
+  });
+
+
+  socket.on('comb_num', function(msg) {
+    var comb_num=msg.comb_num;
+    if (comb_num>1000){
+      $("#comb_num").css('color', 'red');
+    }else{
+      $("#comb_num").css('color', '');
+    }
+    $("#comb_num").text("Combinations: "+comb_num);
+    $("#load_img").hide();
+  });
+
+
+
+  socket.on('progress', function(msg) {
+
+      if(msg.finish==1){ // finished performing routing optimization
+
+        $('#calc_img').hide();
+        $("#gap_cal_status").empty();        
+        $("#gap_cal_status").append("<h3>"+msg.data+"</h3>");
+        $("#gap_cal_update").empty();
+        complete=1;
+        clear_var_table();
+        highlight_route(msg.best_comb);
+
+      }else if(msg.finish==2){ // finished performing constraints optimization at certain state
+
+        $("#gap_cal_update").empty();
+        // $("#gap_cal_update").prepend("<span style='font-size:14px;'>"+msg.data+"</span><br>");
+        $("#route_opt_update").prepend(
+            "<span style='font-size:14px;' title='"+msg.comb+"' id='s"+msg.state_id+"' value='0'>"
+              +"State_id="+msg.state_id+", "
+              +"Qoil="+msg.res.tot_qoil+", "
+              +"Qgas="+msg.res.tot_qgas+", "
+              +"Qwat="+msg.res.tot_qwat+", "
+              +"time:"+msg.time
+            +"</span><br>"
+            +"<div style='display:none;' id='state_id_s"+msg.state_id+"'>"
+              +"<p style='font-size:8px;margin:1px;'>"
+              +msg.comb
+              +"</p><hr style='margin:1px;'>"
+            +"</div>"
+          );
+        console.log(msg.comb);
+
+        if (msg.best==1){ // update best field with best result from calculations
+          $("#best").empty();
+          $("#best").append(
+            "<h4>Best result:</h4>"+
+            "<span style='font-size:14px;color:green;'>"
+              +"State_id="+msg.state_id+", "
+              +"Qoil="+msg.res.tot_qoil+", "
+              +"Qgas="+msg.res.tot_qgas+", "
+              +"Qwat="+msg.res.tot_qwat
+            +"</span><hr>"
+          );
+        }
+
+        // $("#gap_cal_status").empty();
+        // $("#gap_cal_status").append("<h4>Solving "+msg.state_id+" out of "+msg.tot);
+
+      }else{
+        $("#gap_cal_update").prepend("<span style='font-size:14px;'>"+msg.data+"</span><br>");
+      }
+  });
+
+ //
+  socket.on('disconnect', function(data) {
+    alert("socket disconnect!");
+  });
+
+  socket.on('ping', function(data) {
+    console.log("ping");
+  });
+
+
+  function clear_var_table(){
+    $("#var_table tbody").children('tr').each(function () { // loop through rows
+      $(this).find('td').each (function(column, td) {
+        if($(td).text()){
+          $(td).css('background-color','#ffffff');
+        };
+      });
+    });
+  }
+
+ //
+ //  socket.on('prep_ro_data', function(data) {
+ //    $("#variations").show();
+ //
+ //    var color="#ffffff";
+ //    var prev_color="#ffffff";
+ //
+ //    for (var well in data.data){
+ //
+ //      if (prev_color=="#ffffff"){
+ //        color="#f2f2f2";
+ //      }else{
+ //        color="#ffffff";
+ //      }
+ //
+ //      var arrayLength = data.data[well].length;
+ //      for (var i = 0; i < arrayLength; i++) {
+ //
+ //        //$('#var_table tbody tr:last').after(
+ //        $('#var_table tbody').append(
+ //          '<tr>'+
+ //            '<td style="background-color:'+color+'" name="wellname">'+well+'</td>'+
+ //            '<td style="background-color:'+color+'" name="unit">'+data.data[well][i]["unit"]+'</td>'+
+ //            '<td style="background-color:'+color+'" name="rms">'+data.data[well][i]["rms"]+'</td>'+
+ //            '<td style="background-color:'+color+'" name="tl">'+data.data[well][i]["tl"]+'</td>'+
+ //            '<td style="background-color:'+color+'" name="route_name">'+data.data[well][i]["route_name"]+'</td>'+
+ //            '<td style="background-color:'+color+'">'+
+ //              '<input type="checkbox" value="" id="" checked="checked" name="ro">'+
+ //            '</td>'+
+ //          '</tr>'
+ //        );
+ //
+ //      }
+ //      prev_color=color;
+ //    }
+ //
+ //    count_combinations();
+ //
+ //  });
+ //
+ //
+  setInterval(function(){
+      if (complete==1){
+        socket.emit('ping');
+      }
+  }, 50000);
+ //
+  // function start_route_opt() {
+  //   // $("#variations").hide();
+  //   $("#gap_cal_status").append("<h4>Calculations started</h4>");
+  //   $('#calc_img').show();
+  //   var ro_data=get_route_options();
+  //   socket.emit('start_route_opt',{"ro_data":ro_data});
+  //  }
+
+  function get_route_options(){
+
+    var ro_data={};
+    var routes=[];
+    var wellname_="";
+
+    $("#var_table tbody").children('tr').each(function () { // loop through rows
+      if ($(this).find("[name=ro]").is(":checked")){
+
+        var wellname=$(this).find("[name=wellname]").text() // get wellname
+        var route_name=$(this).find("[name=route_name]").text() // get route_name
+
+        if (wellname_!=wellname){ // start new well dict
+          routes=[];
+          // if (wellname_){
+          //   if (ro_data[wellname_].length<2){ // remove well route options that are less than 2
+          //     delete ro_data[wellname_];
+          //   }
+          // }
+        }
+        routes.push(route_name);
+        ro_data[wellname]=routes;
+        wellname_=wellname
+      }
+    })
+
+    // console.log(ro_data);
+    return ro_data
+  }
+ //
+ //  //
+ //  // function disconnect_gap_calc() {
+ //  //   // alert("stop")
+ //  //   // socket.emit('disconnect_gap_calc');
+ //  //   stop_calc();
+ //  // };
+ //  //
+ //  //
+ //  // function stop_calc() {
+ //  //
+ //  //   // var state=get_state(); // get state data from target fwhp, route and optimize columns
+ //  //
+ //  //   // Make AJAX call to save state data to session in the server, see "savestate" url call in views.py
+ //  //   // AJAX standard form for calling
+ //  //   $.ajax({
+ //  //       type: "POST",
+ //  //       url: "/stop", // url to call in the views.py
+ //  //       // The key needs to match your method's input parameter (case-sensitive).
+ //  //       data: "stop",
+ //  //       success: function(data){
+ //  //       },
+ //  //       failure: function(errMsg) {
+ //  //           alert(errMsg);
+ //  //       }
+ //  //   });
+ //  //
+ //  //   return "";
+ //  //
+ //  // };
+
+
+
+</script>
+
+
+{% endblock %}

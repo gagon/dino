@@ -3,6 +3,7 @@ import numpy as np
 import os
 import dpath.util as dpu
 import datetime
+import time
 
 def read_gap_file():
     dirname, filename = os.path.split(os.path.abspath(__file__))
@@ -14,6 +15,7 @@ def save_gap_file(gap):
     dirname, filename = os.path.split(os.path.abspath(__file__))
     fullpath=os.path.join(dirname,'temp\gap.json')
     json.dump(gap, open(fullpath, 'w'),indent=4, sort_keys=True)
+    time.sleep(0.1)
     return None
 
 def calculate_pres_drop(pipe,pres_in,qtot):

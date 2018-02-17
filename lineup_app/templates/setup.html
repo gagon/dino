@@ -281,9 +281,9 @@
                   <td>
                     {% if row.connection.routes|length>1 %}
                       {% if row.ro==1 %}
-                        <input type="checkbox" name="ro" value="" checked='checked'>
+                        <input type="checkbox" name="ro" value="" checked='checked' id='{{ "ro_"+well_key }}'>
                       {% else %}
-                        <input type="checkbox" name="ro" value="">
+                        <input type="checkbox" name="ro" value="" id='{{ "ro_"+well_key }}'>
                       {% endif %}
                     {% endif %}
                   </td>
@@ -349,7 +349,8 @@
     $(':checkbox').change(function(){
       if(this.name=="ro"){
         // if(this.checked) {
-          var comb_num=calculate_comb(session_json);
+          var check_id=$(this).attr("id")
+          var comb_num=calculate_comb(session_json,check_id);
           // $("#comb_num").text("Combinations: "+comb_num);
         // }
       }
@@ -515,7 +516,7 @@
   }
   ////////////////////////////////////////////////////////////////////////////////
 
-  function calculate_comb(data){
+  function calculate_comb(data,check_id){
 
     var comb_num=1;
     var wellname;
@@ -531,10 +532,14 @@
         }
       })
     }
-    runtime=comb_num*15.0/60.0/60.0
-    if(comb_num>1){
+
+    if(comb_num>1 && comb_num<50000){
       alert("Number of combinations is "
           + comb_num + ".\nThis can be reduced by applying rules and filters in Calculate GAP page.");
+    }else if (comb_num>50000){
+      alert("Number of combinations is "
+          + comb_num + ".\nExceeding max limit of combinations!.");
+      $("#"+check_id).prop('checked', false);
     }
     return comb_num;
   }
