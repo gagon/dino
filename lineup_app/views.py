@@ -97,6 +97,7 @@ def logout():
     flask_login.logout_user()
     utils.clear_well_data_session_json()
     utils.delete_refcase()
+    session.pop("user",None)
     return redirect(url_for('index'))
 
 # main fucntion where user is logged in if username and password are correct
@@ -104,20 +105,27 @@ def logout():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":""}
-    if request.method == 'POST':
-        username = request.form.get('username')
-        # print(username,users)
-        if username in users:
-            if request.form.get('password') == users[username]['password']:
-                user = User()
-                user.id = username
-                flask_login.login_user(user)
-                return redirect(url_for('index'))
+
+    user=""
+    if "user" in session:
+        user=session["user"]
+
+    else:
+
+        if request.method == 'POST':
+            username = request.form.get('username')
+            if username in users:
+                if request.form.get('password') == users[username]['password']:
+                    user = User()
+                    user.id = username
+                    flask_login.login_user(user)
+                    session["user"]=str(request.remote_addr)
+                    return redirect(url_for('index'))
+                else:
+                    flash("Incorrect")
             else:
-                flash("Incorrect")
-        else:
-            return render_template('login.html',page_active=page_active)
-    return render_template('login.html',page_active=page_active)
+                return render_template('login.html',page_active=page_active)
+    return render_template('login.html',page_active=page_active,user=user)
 
 # error handing in case of incorrect or no login, redirects to login page
 @app.errorhandler(401)
@@ -204,6 +212,8 @@ def live():
 @login_required
 def live_ro():
     session_json=utils.get_session_json()
+    if not "well_data" in session_json: # check if state was exists. well_data ~ state
+        return "NO session well state. Go back to <b>Setup</b> and save state"
     ro_data=ro.get_well_routes(session_json)
     comb_num=ro.count_combs(ro_data)
     page_active={"live_ro":"active"}
@@ -259,6 +269,7 @@ def results():
 @app.route('/load')
 @login_required
 def load():
+    session_json=utils.get_session_json()
     if not "well_data" in session_json: # check if state was exists. well_data ~ state
         return "NO session well state. Go back to <b>Setup</b> and save state"
     page_active={"load_pcs":"active","load_state":"","setup":"","live":"","results":""}
@@ -526,3 +537,11 @@ def ping():
     emit("ping")
     return "None"
 """========================================================================================="""
+
+
+# help page
+@app.route('/help')
+@login_required
+def help():
+    page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":"","help":"active"}
+    return render_template('help.html',page_active=page_active)

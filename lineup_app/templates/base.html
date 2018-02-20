@@ -7,6 +7,7 @@
 
     <title>DINO</title>
     <!-- <link rel="shortcut icon" href="/static/logo_ranking.ico"> -->
+    <link rel="icon" type="image/png" href="/static/img/t-rex2.png" />
 
     <link href="/static/libs/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- <link href="/static/bootswatch/1/bootstrap.min.css" rel="stylesheet"> -->
@@ -88,11 +89,21 @@
     <nav class="navbar navbar-default navbar-fixed-top" style="margin-bottom:150px;">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a href="/"><img alt="Brand" src="/static/img/kpo_logo.jpg"></a>
+          <a href="/"><img src="/static/img/dino-logo.png"></a>
+          <a href="/"><img src="/static/img/kpo-logo.png"></a>
         </div>
         <div class="collapse navbar-collapse">
 
           <ul class="nav navbar-nav navbar-right">
+            <!-- <li>
+              <a href="/"><img src="/static/img/dino-logo2.png" height="18"></a>
+            </li> -->
+            <li class='{{page_active.help}}'>
+              <a href="/help">
+                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                Help
+              </a>
+            </li>
             <li>
               <a href="/logout">
                 <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>

@@ -22,8 +22,14 @@
         </div>
         <input type="submit" class="btn btn-success" value="Log in">
       </form>
-
+      <hr>
+      {% if user %}
+        <span>Currently 1 user logged in from: {{ user }}</span>
+      {% else %}
+        <span>No users logged in</span>
+      {% endif %}
     </div>
+
 
   </div>
 

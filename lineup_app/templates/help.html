@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block currentpage %}
+
+
+
+<div class="container-fluid" id="help_container" style="background-color:#f8f8f1;">
+  <div class="row">
+    <div class="col-lg-12">
+      <h2>Contents</h2>
+      <ul>
+        <li><a href="#" id="link_1">1 Introduction</a></li>
+        <li><a href="#" id="link_2">2 Step by step guide</a></li>
+        <ul>
+          <li><a href="#" id="link_2-1">2.1 Setting up line-up and performing GAP calculation</a></li>
+          <li><a href="#" id="link_2-2">2.2 Load State from clipboard and/or report/database</a></li>
+        </ul>
+      </ul>
+      <hr>
+      <h2 id="content_1">1 - Introduction</h2>
+      <p>
+        DINO is designed and implemented as a tool to use GAP for field daily production optimization workflow.
+        It is an interface to simplify and enhance user exprience and efficiency using Integrated Network Model (INM)
+        for near real-time field and well optimization. In addition, DINO performs calibration of GAP model on frequent basis.
+      </p>
+      <p>
+        DINO was built using Python web framework and Petex OpenServer API for automating calculations in IPM software products.
+      </p>
+
+      <hr>
+
+      <h2 id="content_2">2 - Step by step guide</h2>
+
+      <h3 id="content_2-1">2.1 - Setting up line-up and performing GAP calculation</h3><br>
+
+      <h4>2.1.1 - Go to Setup page. Here you can setup parameters prior to calculations.</h4>
+      <img src="/static/img/tuts/1-go to setup.png" alt="" height=400><br><br>
+
+      <h4>2.1.2 - Change Qgas max and Separator pressures for KPC and Unit-2</h4>
+      <img src="/static/img/tuts/2-modify constraints and sep pres.png" alt="" height=400><br><br>
+
+      <h4>2.1.3 - Change well route by selecting available routes from dropdown list</h4>
+      <img src="/static/img/tuts/3-change route.png" alt="" height=250><br><br>
+
+      <h4>2.1.4 - Shut 1 well by setting target FWHP to -1</h4>
+      <img src="/static/img/tuts/4-shut-in well.png" alt="" height=350><br><br>
+
+      <h4>2.1.5 - Sort wells by GOR. Click twice on GOR label of the table</h4>
+      <img src="/static/img/tuts/5-sort by GOR.png" alt="" height=250><br><br>
+
+      <h4>2.1.6 - Fix well by checking "Fixed Target FWHP" checkbox</h4>
+      <img src="/static/img/tuts/6-make well fixed.png" alt="" height=250><br><br>
+
+      <h4>2.1.7 - Save State for calculation</h4>
+      <img src="/static/img/tuts/7-save state.png" alt="" height=300><br><br>
+
+      <h4>2.1.8 - Press OK</h4>
+      <img src="/static/img/tuts/8-save state click ok.png" alt="" height=150><br><br>
+
+      <h4>2.1.9 - Go to GAP calculation</h4>
+      <img src="/static/img/tuts/9-go to calculate.png" alt="" height=350><br><br>
+
+      <h4>2.1.10 - Press Start to start calculation</h4>
+      <img src="/static/img/tuts/10-start calculate.png" alt="" height=350><br><br>
+
+      <h4>2.1.11 - Calculation logging</h4>
+      <img src="/static/img/tuts/11-ongoing calculation.png" alt="" height=450><br><br>
+
+      <h4>2.1.12 - Calculation complete. Constraints that exceed the limits are highlighted with <mark>yellow</mark>.</h4>
+      <img src="/static/img/tuts/12-calculation complete.png" alt="" height=450><br><br>
+
+      <h4>2.1.13 - Go to Results page</h4>
+      <img src="/static/img/tuts/13-results page.png" alt="" height=550><br><br>
+
+      <h4>2.1.14 - See well results of wells configured in Setup</h4>
+      <img src="/static/img/tuts/14-well results.png" alt="" height=400><br><br>
+
+      <h4>2.1.15 - Save current results as reference case for next calculations for comparison</h4>
+      <img src="/static/img/tuts/15-save ref.png" alt="" height=450><br><br>
+
+      <h4>2.1.16 - Press OK to proceed saving.</h4>
+      <img src="/static/img/tuts/16-save ref question.png" alt="" height=150><br><br>
+      <img src="/static/img/tuts/17-saved ref.png" alt="" height=150><br><br>
+
+      <h4>2.1.17 - Go to Setup and modify line-up, change well route and uncheck fixed well.</h4>
+      <img src="/static/img/tuts/18-change route.png" alt="" height=450><br><br>
+      <img src="/static/img/tuts/19-unfix well.png" alt="" height=300><br><br>
+
+      <h4>2.1.18 - Save State, perform GAP calculation and go to Results. You can now compare current results against previously saved ref case</h4>
+      <img src="/static/img/tuts/20-ref compare results.png" alt="" height=450><br><br>
+
+      <h4>2.1.19 - You can also delete reference case results.</h4>
+      <img src="/static/img/tuts/21-delete ref.png" alt="" height=450><br><br>
+
+      <hr>
+
+      <h3 id="content_2-2">2.2 - Loading State</h3><br>
+
+      <h4>2.2.1 - Go to Load State page.</h4>
+      <img src="/static/img/tuts/1-go to setup.png" alt="" height=400><br><br>
+
+
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+
+
+
+  $( document ).ready(function() {
+
+    $("#link_2-2").click(function() {
+        $('#main-content-container').animate({
+            scrollTop: ($('#content_2-2').offset().top-50)
+        },500);
+    });
+
+
+    $("#link_2-1").click(function() {
+        $('#main-content-container').animate({
+            scrollTop: ($('#content_2-1').offset().top-50)
+        },500);
+    });
+
+    $("#link_2").click(function() {
+        $('#main-content-container').animate({
+            scrollTop: ($('#content_2').offset().top-50)
+        },500);
+    });
+
+    $("#link_1").click(function() {
+        $('#main-content-container').animate({
+            scrollTop: ($('#content_1').offset().top-50)
+        },500);
+    });
+
+  });
+
+</script>
+
+
+{% endblock %}
