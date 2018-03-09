@@ -24,6 +24,7 @@ from lineup_app.utils import field_balance as fb
 from lineup_app.utils import utils
 from lineup_app.utils import results as rs
 from lineup_app.utils import optimize_routing as ro
+from lineup_app.utils import get_pi_data as pi
 
 from lineup_app.NetSim_modules import NetSimRoutines as NS
 from lineup_app.NetSim_modules import NetSim_setup as nsst
@@ -35,7 +36,7 @@ from lineup_app.NetSim_modules import NetSim_load_pcs2ns as pcs2ns
 
 
 # use mockup from NetSim file
-MOCKUP=True
+MOCKUP=False
 
 
 
@@ -156,6 +157,7 @@ def setup():
             session_json["well_data"]=nsst.get_gap_wells()
         else:
             print("add GAP openserver")
+            session_json["well_data"]=st.get_gap_wells()
         print(session_json["well_data"])
 
     # get well connections from "well_connections.xlsm" file
@@ -170,14 +172,14 @@ def setup():
             nsst.set_unit_routes(session_json["well_data"]) # set well routes as per state
             nsst.set_sep_pres(session_json["unit_data"]) # set separator pressure as per state
 
-        session_json["well_data"]=nsst.get_all_well_data(session_json["well_data"])
+        session_json["well_data"]=nsst.get_all_well_data(session_json["well_data"],None,1)
         session_json["unit_data"]=nsst.get_sep_pres(session_json["unit_data"])
     else:
         if session_json["state"]==1: # check if state has been saved by the user (1)
-            st.set_unit_routes(session_json["well_data"]) # set well routes as per state
+            st.set_unit_routes(session_json["well_data"],None,1) # set well routes as per state
             st.set_sep_pres(session_json["unit_data"]) # set separator pressure as per state
 
-        session_json["well_data"]=st.get_all_well_data(session_json["well_data"]) # get well data from GAP such as GOR, limits and current routes
+        session_json["well_data"]=st.get_all_well_data(session_json["well_data"],None,1) # get well data from GAP such as GOR, limits and current routes
         session_json["unit_data"]=st.get_sep_pres(session_json["unit_data"]) # get separator pressure if state doesn't exist
     #------------------------------------------------------------------------------
 
@@ -380,20 +382,7 @@ def start_route_opt(data):
 def update_combs(data):
     session_json=utils.get_session_json()
     combs=ro.generate_comb2(data["ro_data"])
-    # for comb in combs:
-    #     for c in comb:
-    #         print(c)
-    #     print("--")
-    # data["filters"]["tl_max_num"]
-    # data["filters"]["test_max_num"]
-    # print(data["filters"])
-    # print(session_json.keys())
     combs=ro.filter_combs(combs,data["filters"],session_json)
-    # print("++++++++++++++++++++++++++")
-    # for comb in combs:
-    #     for c in comb:
-    #         print(c)
-    #     print("--")
     emit("comb_num",{"comb_num":len(combs)})
     return "None"
 """========================================================================================="""
@@ -456,12 +445,14 @@ def upload_file():
         if file.filename == '': # check if filename is not empty
             flash('No selected file')
             return redirect(request.url)
-        if file and utils.allowed_file(file.filename): # check if file exists and file is one of the allowed (look on top)
+        if file and utils.allowed_file(file.filename,ALLOWED_EXTENSIONS): # check if file exists and file is one of the allowed (look on top)
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename)) # save file in temp folder
 
             result_text,warn_text=gath_par.parse_gathering_report() # parse the data in excel file and return results
-            well_details=xl_setup.read_conns()
+
+            session_json=utils.get_session_json() # read from json file all necessary app data
+            well_details=xl_setup.read_conns(session_json["well_data"])
 
             result_text=utils.merge_route_slot(result_text,well_details)
 
@@ -474,10 +465,10 @@ def upload_file():
 """ GET DATA FROM EC ==================================================================== """
 def ec_connect(driver):
     connStr = "DRIVER={"+driver+"};" +\
-                "DSN=ECPROD;" +\
+                "DSN=ECPROD11;" +\
                 "UID=ec_reader;" +\
                 "PWD=veryhardpaS$w0rd;" +\
-                "DBQ=ECPROD;"
+                "DBQ=ECPROD11;"
     conn = pyodbc.connect(connStr)
     cursor = conn.cursor()
     return cursor,conn
@@ -531,6 +522,8 @@ def get_alloc_thp():
     return jsonify({"thps":thps})
 
 
+
+
 """ SOCKETIO HEARTBEAT ==================================================== """
 @socketio.on('ping')
 def ping():
@@ -545,3 +538,40 @@ def ping():
 def help():
     page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":"","help":"active"}
     return render_template('help.html',page_active=page_active)
+
+
+
+@app.route('/iwit_thp', methods=["POST"])
+def iwit_thp():
+
+    # get date and convert it to PI format
+    dt=request.json
+    dt = datetime.datetime.strptime(dt,"%Y-%m-%d")
+    dt_start=dt.strftime('%d/%m/%Y %H:%M:%S')
+    dt_end=(dt+datetime.timedelta(hours=23.9999)).strftime('%d/%m/%Y %H:%M:%S')
+
+    wellnames=get_wellnames() # get wellnames PA vs GAP
+
+    iwit_thps=pi.get_iwit_thp(wellnames,dt_start,dt_end)
+
+    return jsonify({"thps":iwit_thps})
+
+
+@app.route('/generic_pi_data', methods=["POST"])
+def generic_pi_data():
+
+    # get date and convert it to PI format
+    data2get=request.json
+    # print(data2get)
+    # dt = datetime.datetime.strptime(dt,"%Y-%m-%d")
+    # dt_start=dt.strftime('%d/%m/%Y %H:%M:%S')
+    # dt_end=(dt+datetime.timedelta(hours=23.9999)).strftime('%d/%m/%Y %H:%M:%S')
+
+    # wellnames=get_wellnames() # get wellnames PA vs GAP
+
+    data=pi.get_pi_data(data2get)
+    data=[list(i) for i in zip(*[data["ts"],data["values"]])]
+    # print(data)
+
+    return jsonify({"data":data})
+    # return "None"
