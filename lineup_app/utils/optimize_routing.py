@@ -74,14 +74,19 @@ def filter_combs(combs,filters,session_json):
         state_comb=state_routes+comb_
 
         counts=Counter(state_comb)
+        # print(counts.keys())
+        # print(counts.values())
         # print(counts)
+        # print(state_comb)
         for i,r in enumerate(counts.keys()):
+            # if r=="U3--DIRECT--EOPS_U3":
+            #     print(r,i,list(counts.values())[i])
             cnt=list(counts.values())[i]
 
-            # print(r, comb_)
+
 
             if r in comb_:
-
+                # print(r,comb_)
                 if filters["tl_max_num"]:
                     if cnt>int(filters["tl_max_num"]):
                         flag=1
@@ -194,6 +199,7 @@ def route_optimization(session_json,ro_data,filters,mockup):
         iter_start=datetime.datetime.now()
 
         best=0
+        print("iter:",cnt)
         emit("route_table",{"comb":comb,"comb_cnt":cnt+1,"comb_tot":len(combinations)}) # update table highlights according to routes applied
         sleep(0.1)
 
@@ -221,8 +227,7 @@ def route_optimization(session_json,ro_data,filters,mockup):
                 "comb":comb_str
             })
 
-    if not mockup:
-        PE_server=ut.PE.Stop()
+
 
 
 
@@ -234,6 +239,9 @@ def route_optimization(session_json,ro_data,filters,mockup):
         emit("progress",{"data":"Resolving best combination.."})
         emit("route_table",{"comb":best_comb,"comb_cnt":-1,"comb_tot":len(combinations)}) # update table highlights according to routes applied
         res=solve_comb(session_json,best_comb,mockup,PE_server)
+
+    if not mockup:
+        PE_server=ut.PE.Stop()
 
     dt=datetime.datetime.now()-start
     dt=str(dt).split('.')[0]
@@ -250,12 +258,12 @@ def solve_comb(session_json,comb,mockup,PE_server):
         session_json["well_data"][c["well"]]["selected_route"]=c["route_name"]
 
     if mockup:
-        nsst.set_unit_routes(session_json["well_data"]) # set well routes as per state
-        session_json["well_data"]=nsst.get_all_well_data(session_json["well_data"])
-        res=nsopt.run_optimization(session_json,2)
+        nsst.set_unit_routes(session_json["well_data"],PE_server,2) # set well routes as per state
+        session_json["well_data"]=nsst.get_all_well_data(session_json["well_data"],PE_server,2)
+        res=nsopt.run_optimization(session_json,PE_server,2)
     else:
-        st.set_unit_routes(session_json["well_data"]) # set well routes as per state
-        session_json["well_data"]=st.get_all_well_data(session_json["well_data"])
+        st.set_unit_routes(session_json["well_data"],PE_server,2) # set well routes as per state
+        session_json["well_data"]=st.get_all_well_data(session_json["well_data"],PE_server,2)
         res=gob.run_optimization(session_json,PE_server,2)
 
     return res

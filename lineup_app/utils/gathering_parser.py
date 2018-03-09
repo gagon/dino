@@ -51,13 +51,16 @@ def get_rmss(book):
 def parse_gathering_report():
 
     # get current directory using os library
-    dirname, filename = os.path.split(os.path.abspath(__file__))
+    dirname=os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..')) # added after restructuring files/folders
     # construct excel file full path
     xl_fullpath=os.path.join(dirname,'static\well_connections.xlsm')
+
     wc_book = xlrd.open_workbook(xl_fullpath)
 
 
-    folder=os.path.join(os.path.dirname(os.path.abspath(__file__)),"temp")
+    # folder=os.path.join(os.path.dirname(os.path.abspath(__file__)),"temp")
+    folder=os.path.join(dirname,'temp')
+    print(folder)
     allfiles=read_files(folder)
     rmss=get_rmss(wc_book)
     wells=get_wellnames(wc_book)

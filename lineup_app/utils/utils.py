@@ -55,17 +55,18 @@ def save_loaded2session(session_json,loaded_data):
     return session_json
 
 
-def allowed_file(filename): # make sure file is one of allowed extentions (look on top)
+def allowed_file(filename,ALLOWED_EXTENSIONS): # make sure file is one of allowed extentions (look on top)
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def merge_route_slot(result_text,well_details):
     result_text_new=[]
+    print(well_details.keys())
     for well in result_text:
         for w,val in well_details.items():
             if well[0]==w:
-                for r in val["routes"]:
+                for r in val["connection"]["routes"]:
                     print(w,well[1],well[2],well[3])
                     print(w,r["unit"],r["rms"],r["tl"])
                     if well[1]==r["unit"] and well[2]==r["rms"] and well[3]==r["tl"]:
