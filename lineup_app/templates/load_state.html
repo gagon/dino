@@ -7,8 +7,120 @@
 <div class="container-fluid">
 
   <div class="row">
+    <div class="col-lg-6">
+      <h3>Load PI data</h3>
+      <img src="/static/img/loading-dots.gif" id="load_img" style="display:none;" height="18" / >
+      <!-- <img src="/static/img/loading-dots.gif" id="load_img"> -->
+
+      <!-- <button type="button" class="btn btn-primary">Calculate</button> -->
+      <!-- <a href="#">Convert PI to DINO UOM</a> -->
+      <button class="btn btn-primary" id="update-pi-btn" type="button" style="margin-bottom:10px;">Update from PI</button>
+      <button class="btn btn-primary" id="convert-pi-btn" type="button" style="margin-bottom:10px;">Covert PI to DINO UOM</button>
+
+
+      <table id="pi_data_table" class="table table-bordered table-condensed" style="font-size:12px;">
+        <thead>
+          <th>Stream</th>
+          <th>Value</th>
+          <th>UOM</th>
+          <th>PI Value</th>
+          <th>PI UOM</th>
+          <th>PI tag</th>
+          <th>Plot</th>
+        </thead>
+        <tbody id="pi_data_table_body">
+          <tr>
+            <td style="background-color:#f2f2f2;">CPC oil</td>
+            <td><span id="cpc_oil_act" contenteditable>1623</span></td>
+            <td style="background-color:#f2f2f2;">Sm3/d</td>
+            <td><span id="cpc_oil_piact" contenteditable>1623</span></td>
+            <td style="background-color:#f2f2f2;">Sm3/hr</td>
+            <td><span id="cpc_oil_tag" contenteditable>KA:KPC:521X_FIX100.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">OGP gas</td>
+            <td><span id="ogp_gas_act" contenteditable>1210000</span></td>
+            <td style="background-color:#f2f2f2;">KSm3/d</td>
+            <td><span id="ogp_gas_piact" contenteditable>1210000</span></td>
+            <td style="background-color:#f2f2f2;">Sm3/hr</td>
+            <td><span id="ogp_gas_tag" contenteditable>3000_FXI005.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">Gas injection</td>
+            <td><span id="gas_inj_act" contenteditable>1041135</span></td>
+            <td style="background-color:#f2f2f2;">KSm3/d</td>
+            <td><span id="gas_inj_piact" contenteditable>1041135</span></td>
+            <td style="background-color:#f2f2f2;">Sm3/hr</td>
+            <td><span id="gas_inj_tag" contenteditable>KA:Unit2:8360_FIX950.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">Fuel gas</td>
+            <td><span id="fuel_gas_act" contenteditable>49530</span></td>
+            <td style="background-color:#f2f2f2;">KSm3/d</td>
+            <td><span id="fuel_gas_piact" contenteditable>49530</span></td>
+            <td style="background-color:#f2f2f2;">Sm3/hr</td>
+            <td><span id="fuel_gas_tag" contenteditable>KA:KPC:5340_FT001.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">MTU oil</td>
+            <td><span id="mtu_oil_act" contenteditable>0</span></td>
+            <td style="background-color:#f2f2f2;">m3/d</td>
+            <td><span id="mtu_oil_piact" contenteditable>0</span></td>
+            <td style="background-color:#f2f2f2;">m3/hr</td>
+            <td><span id="mtu_oil_tag" contenteditable>3000_FXI006.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">OGP oil</td>
+            <td><span id="ogp_oil_act" contenteditable>97</span></td>
+            <td style="background-color:#f2f2f2;">m3/d</td>
+            <td><span id="ogp_oil_piact" contenteditable>97</span></td>
+            <td style="background-color:#f2f2f2;">m3/hr</td>
+            <td><span id="ogp_oil_tag" contenteditable>3000_FXI004F.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">U3</td>
+            <td><span id="ogp_oil_act" contenteditable>97</span></td>
+            <td style="background-color:#f2f2f2;">m3/d</td>
+            <td><span id="ogp_oil_piact" contenteditable>97</span></td>
+            <td style="background-color:#f2f2f2;">m3/hr</td>
+            <td><span id="ogp_oil_tag" contenteditable>3000_FXI004F.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+
+        </tbody>
+
+      </table>
+    </div>
+
+    <div class="col-lg-6">
+      <h3>PI data</h3>
+      <div class="input-group" style="margin-bottom:10px; width:800px;">
+        <span class="input-group-addon" id="basic-addon3">Start</span>
+        <input type="text" class="form-control" id="start_date" value="01/01/2018 00:00:00">
+        <span class="input-group-addon">End</span>
+        <input type="text" class="form-control" id="end_date" value="02/01/2018 00:00:00">
+        <span class="input-group-addon">Interval</span>
+        <input type="text" class="form-control" id="interval" value="10m">
+      </div>
+      <div class="panel panel-default">
+       <div class="" id="pi_plot" style="height:300px;margin:5px;">
+      </div>
+     </div>
+    </div>
+
+  </div>
+
+  <hr>
+
+  <div class="row">
     <div class="col-lg-4">
-      <h3>Load from clipboard</h3>
+      <h3>Load Well States</h3>
     </div>
   </div>
 
@@ -18,6 +130,7 @@
       <button class="btn btn-primary" id="load_state" onclick="load_state();" type="button">Load data</button>
       <hr>
         <label for="comment">Copy/paste from Excel </label>
+        <!-- <button class="btn btn-primary" id="iwit_thp" type="button">IWIT</button> -->
         <br>
         <caption>Column (1) - wellname same as in GAP. Column (2) - Unit connection for dual wells (leave blank for single connections).
           Column (3) - FWHP to be applied (leave blank to let GAP calculate) </caption>
@@ -25,66 +138,85 @@
         <div class="checkbox">
           <label style="font-size:20px;color:red;"><input type="checkbox" value="" checked id="shut_the_rest">Shut-in all other wells not in the list above</label>
         </div>
-        <p id="load_result"></p>
+
     </div>
 
     <div class="col-lg-3">
-      <div id="showdata_div"></div><br>
-      <div id="showdata"></div>
+
+      <button class="btn btn-primary" id="save_table2state" onclick="save_table2state();" type="button" disabled>Save data to state</button>
+
+      <!-- <button class="btn btn-primary" id="clear_table2state" onclick="clear_table2state();" type="button">Clear table</button> -->
+      <hr>
+      <label for="comment">QC data before loading to state</label>
+      <span id="load_result"></span>
+      <div id="showdata" style="height:550px;overflow-y:auto;display:none;"></div>
+
     </div>
 
   </div>
 
-  <hr>
+  <!-- <hr> -->
 
   <div class="row">
     <div class="col-lg-4">
-      <h3>Parse Gathering report</h3>
+      <h4>Parse Gathering report</h4>
       <form id="upload-file" method="post" enctype="multipart/form-data" class="form-inline">
           <div class="form-group">
             <input class="form-control" type="file" name="file" id="hc">
           </div>
           <button class="btn btn-primary" id="upload-file-btn" type="button">Upload</button>
       </form>
-    </div>
-    <div class="col-lg-4">
-      <h3>Get FWHPs from Database</h3>
-      <form id="thp-data" method="post" enctype="multipart/form-data" class="form-inline">
-          <div class="form-group">
-            <input class="form-control" type="text" placeholder="Enter data 2017-01-01" id="thp_date" value="2017-01-01">
-          </div>
-          <button class="btn btn-primary" id="thp-data-btn" type="button">Get data from EC</button>
-      </form>
-    </div>
-    <div class="col-lg-4">
-      <h3>Routes and FWHP</h3>
-      <button class="btn btn-primary" id="merge-data-btn" type="button">Merge routes and FWHPs</button>
-      <button class="btn btn-primary" id="copy-merged-btn" type="button">Copy to textarea</button>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-lg-4">
       <hr>
-      <table class="table table-condensed">
+      <table class="table table-condensed table-bordered">
+        <thead>
+          <th>Well</th>
+          <th>Route</th>
+          <th>Found</th>
+        </thead>
         <tbody id="parse_result"></tbody>
       </table>
       <div id="parse_warning"></div>
     </div>
     <div class="col-lg-4">
+      <h4>Get FWHPs from Database</h4>
+      <form id="thp-data" method="post" enctype="multipart/form-data" class="form-inline">
+          <div class="form-group">
+            <input class="form-control" type="text" placeholder="Enter data 2017-01-01" id="thp_date" value="2018-01-01">
+          </div>
+          <button class="btn btn-primary" id="thp-data-btn" type="button">Get data from EC</button>
+          <button class="btn btn-primary" id="iwit_thp-data-btn" type="button">Get data from IWIT</button>
+      </form>
       <hr>
-      <table class="table table-condensed">
+      <table class="table table-condensed table-bordered">
+        <thead>
+          <th>Well</th>
+          <th>Date</th>
+          <th>THP,bar</th>
+          <th>Online,hrs</th>
+        </thead>
         <tbody id="thp_result"></tbody>
       </table>
       <!-- <div class="" id="thp_result"></div> -->
     </div>
     <div class="col-lg-4">
+      <h4>Routes and FWHP</h4>
+      <button class="btn btn-primary" id="merge-data-btn" type="button">Merge routes and FWHPs</button>
+      <button class="btn btn-primary" id="copy-merged-btn" type="button">Copy to textarea</button>
       <hr>
-      <table class="table table-condensed">
+      <table class="table table-condensed table-bordered">
+        <thead>
+          <th>Well</th>
+          <th>Route</th>
+          <th>THP,bar</th>
+        </thead>
         <tbody id="merged_result"></tbody>
       </table>
     </div>
   </div>
+
+  <hr>
+
+
 
 </div>
 
@@ -97,9 +229,9 @@
   function load_state() {
 
     $("#showdata").empty();
-    $("#showdata_div").empty();
+    // $("#showdata_div").empty();
     var data = $('#excel_data').val();
-    var table = $('<table class="table" style="font-size:12px;"><tr><th>Wellname</th><th>Unit connection</th><th>Target FWHP</th></tr></table>');
+    var table = $('<table class="table table-condensed table-bordered" style="font-size:12px;"><tr><th>Wellname</th><th>Unit connection</th><th>Target FWHP</th></tr></table>');
 
     var state={};
 
@@ -128,9 +260,13 @@
           table.append(row);
         }
       }
-      $('#load_result').text("loaded successfully.");
+      $('#load_result').text("| data is valid.");
       $('#showdata').append(table);
-      $('#showdata_div').append('<button class="btn btn-primary" id="save_table2state" onclick="save_table2state();" type="button">Save data to state</button>');
+      // $('#showdata').prepend('<button class="btn btn-primary" id="save_table2state" onclick="save_table2state();" type="button">Save data to state</button><hr>');
+      // $('#showdata_div').show();
+      $('#showdata').show();
+      $('#save_table2state').prop('disabled', false);
+
     }else{
       $('#load_result').text("No data entered!");
     }
@@ -169,11 +305,11 @@
     };
 
     data2state["state"]=state;
+    console.log(state);
 
     $.ajax({
         type: "POST",
         url: "/savestate_loaded",
-        // The key needs to match your method's input parameter (case-sensitive).
         data: JSON.stringify(data2state),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -188,7 +324,57 @@
   };
 
 
+
+    function write2page(data){
+      console.log(data);
+      for(var i=0, len=data["result_text"].length; i < len; i++){
+        $("#parse_result").append(
+          "<tr><td name='wellname'>"+
+          data["result_text"][i][0]+"</td><td name='route'>"+
+          data["result_text"][i][1]+"--"+
+          data["result_text"][i][2]+"--"+
+          data["result_text"][i][3]+"--slot "+
+          data["result_text"][i][4]+
+          "</td><td>1</td></tr>"
+        );
+      };
+      for(var i=0, len=data["warn_text"].length; i < len; i++){
+        $("#parse_warning").append(
+          data["warn_text"][i]+"<br>"
+        );
+      }
+    };
+
+
+
+    function write2page_thp(data){
+      for(var i=0, len=data["thps"].length; i < len; i++){
+        $("#thp_result").append(
+          "<tr>"+
+            "<td name='wellname'>"+data["thps"][i][0]+"</td>"+
+            "<td>"+data["thps"][i][1]+"</td>"+
+            "<td name='thp'>"+data["thps"][i][2]+"</td>"+
+            "<td>"+data["thps"][i][3]+"</td>"+
+          "</tr>"
+        );
+      };
+    };
+
+
   $(document).ready(function() {
+
+
+    var start_date_dt = new Date();
+    var end_date_dt = new Date();
+    start_date_dt.setDate(end_date_dt.getDate()-1);
+
+    var start_date_str = ("0" + start_date_dt.getDate()).slice(-2) + "/" +("0" + (start_date_dt.getMonth()+1)).slice(-2) + "/" +start_date_dt.getFullYear() + " 00:00:00"
+    $("#start_date").val(start_date_str);
+    var end_date_str = ("0" + end_date_dt.getDate()).slice(-2) + "/" +("0" + (end_date_dt.getMonth()+1)).slice(-2) + "/" +end_date_dt.getFullYear() + " 00:00:00"
+    $("#end_date").val(end_date_str);
+
+
+
     $('#upload-file-btn').click(function() {
       $("#parse_result").empty();
       $("#parse_warning").empty();
@@ -209,30 +395,26 @@
           }
         });
       });
-  });
 
 
-  function write2page(data){
-    console.log(data);
-    for(var i=0, len=data["result_text"].length; i < len; i++){
-      $("#parse_result").append(
-        "<tr><td name='wellname'>"+
-        data["result_text"][i][0]+"</td><td name='route'>"+
-        data["result_text"][i][1]+"--"+
-        data["result_text"][i][2]+"--"+
-        data["result_text"][i][3]+"--slot "+
-        data["result_text"][i][4]+
-        "</td><td>1</td></tr>"
-      );
-    };
-    for(var i=0, len=data["warn_text"].length; i < len; i++){
-      $("#parse_warning").append(
-        data["warn_text"][i]+"<br>"
-      );
-    }
-  }
+    $('#iwit_thp-data-btn').click(function() {
+      var thp_date = $('#thp_date').val();
+      $("#thp_result").empty();
+      $.ajax({
+          type: 'POST',
+          url: '/iwit_thp',
+          data: JSON.stringify(thp_date),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          success: function(data) {
+            write2page_thp(data);
+          },
+          failure: function(errMsg) {
+              alert(errMsg);
+          }
+        });
+      });
 
-  $(document).ready(function() {
     $('#thp-data-btn').click(function() {
       $("#thp_result").empty();
       var thp_date = $('#thp_date').val();
@@ -251,26 +433,8 @@
         }
       });
     });
-  });
-
-  function write2page_thp(data){
-    for(var i=0, len=data["thps"].length; i < len; i++){
-      $("#thp_result").append(
-        "<tr>"+
-          "<td name='wellname'>"+data["thps"][i][0]+"</td>"+
-          "<td>"+data["thps"][i][1]+"</td>"+
-          "<td name='thp'>"+data["thps"][i][2]+"</td>"+
-          "<td>"+data["thps"][i][3]+"</td>"+
-        "</tr>"
-      );
-    };
-  }
 
 
-
-
-
-  $(document).ready(function() {
     $('#merge-data-btn').click(function() {
       $("#merged_result").empty();
 
@@ -336,9 +500,8 @@
 
 
     });
-  });
 
-  $(document).ready(function() {
+
     $('#copy-merged-btn').click(function() {
       $("#excel_data").empty();
       table="#merged_result";
@@ -349,9 +512,222 @@
         var row= wellname+"\t"+route+"\t"+thp+"\n"
         $("#excel_data").append(row)
       });
+      // alert("hi")
+      remove_pi_plot_series();
+      add_pi_plot_series();
 
     });
+
+
   });
+
+
+
+  var pi_chart=Highcharts.chart('pi_plot', {
+    title: {
+      text: "",
+    },
+    legend: {
+      verticalAlign:"top",
+    },
+    xAxis: {
+      type: 'datetime', //For time series, x-axis labels will be time
+      // labels: {
+      //   //You can format the label according to your need
+      //   // format: '{value:%d/%M/%Y %H:%M}'
+      // },
+    },
+
+    series:[
+    ],
+    plotOptions: {
+        series: {
+            animation: false,
+        }
+    }
+  });
+
+  $("#pi_data_table").on('click','.pi_btnSelect',function(){
+    var currentRow=$(this).closest("tr");
+    var name=currentRow.find("td:eq(0)").text();
+    var pi_tag=currentRow.find("td:eq(5)").text();
+
+    console.log(name,pi_tag);
+
+    var data2get={
+      "name":name,
+      "pi_tag":pi_tag,
+    }
+
+    remove_pi_plot_series();
+    add_pi_plot_series(data2get);
+
+  });
+
+
+  function add_pi_plot_series(data2get){
+
+
+    data2get["start"]=$("#start_date").val();
+    data2get["end"]=$("#end_date").val();
+    data2get["interval"]=$("#interval").val();
+    // console.log(data2get[]);
+
+
+    $.ajax({
+      type: 'POST',
+      url: '/generic_pi_data',
+      data: JSON.stringify(data2get),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(data) {
+        var data_edited=convert_dates(data["data"])
+        // console.log(data);
+        pi_chart.addSeries({
+          name:data2get["name"]+":"+data2get["pi_tag"],
+          data: data_edited,
+        }, true);
+      },
+      failure: function(errMsg) {
+          alert(errMsg);
+      }
+    });
+
+
+
+
+  };
+
+
+
+  function add_pi_table_data(data2get){
+
+
+    data2get["start"]=$("#start_date").val();
+    data2get["end"]=$("#end_date").val();
+    data2get["interval"]=$("#interval").val();
+    // console.log(data2get[]);
+
+
+    $.ajax({
+      type: 'POST',
+      url: '/generic_pi_data',
+      data: JSON.stringify(data2get),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(data) {
+        var avg_data=avg_values(data["data"])
+        $("#"+data2get["pi_tag_id"]).text(avg_data);
+        // var data_edited=convert_dates(data["data"])
+        // console.log(data);
+        // pi_chart.addSeries({
+        //   name:data2get["name"]+":"+data2get["pi_tag"],
+        //   data: data_edited,
+        // }, true);
+      },
+      failure: function(errMsg) {
+          alert(errMsg);
+      }
+    });
+
+
+
+
+  };
+
+
+  function avg_values(arr){
+    sum = 0;
+    len = arr.length;
+    for (i = 0; i < len; i++) {
+      if (!isNaN(arr[i][1])){
+        // console.log(sum,arr[i][1]);
+        sum += arr[i][1];
+      }
+    }
+    return (sum / len).toFixed(1);
+  }
+
+
+  function dt2utc (dt){
+
+    var date_str = dt.split(" "); // splitting date and time parts
+    var time=date_str[1];
+    var date_split=date_str[0].split("/"); //split of year,month and day for further reformatting to ISO
+
+    var date=date_split[2]+"-"+date_split[1]+"-"+date_split[0]+ "T"+ time //set ISO format for Date
+    date=new Date(date);
+
+    // added this to convert UTC time to local time
+    var timeZoneFromDB = -2.00; //time zone value from database
+    //get the timezone offset from local time in minutes
+    var tzDifference = timeZoneFromDB * 60 + date.getTimezoneOffset();
+    //convert the offset to milliseconds, add to targetTime, and make a new Date
+    var date = new Date(date.getTime() + tzDifference * 60 * 1000);
+
+
+    var year=date.getFullYear();
+    var month=date.getMonth();
+    var day=date.getDate();
+    var hr=date.getHours();
+    var min=date.getMinutes();
+    var sec=date.getSeconds();
+    var dtutc=Date.UTC(year,month,day,hr,min,sec)
+
+
+
+
+    return dtutc;
+
+  }
+
+
+  function convert_dates(data){
+    var converted_data=[]
+    for(var i = 0; i < data.length; i++) {
+        converted_data.push([dt2utc(data[i][0]),data[i][1]]);
+    }
+    return converted_data
+  }
+
+  function remove_pi_plot_series(){
+    var seriesLength = pi_chart.series.length;
+    for(var i = seriesLength -1; i > -1; i--) {
+        pi_chart.series[i].remove();
+    }
+  };
+
+
+  $(document).on('click',"#update-pi-btn",function(){
+    // $("#load_img").show();
+
+    $("#pi_data_table_body").children('tr').each(function () { // loop through rows in table
+
+      // var wellname=$(this).find("[name=wellname]").text() // get wellname
+
+      var currentRow=$(this).closest("tr");
+      var name=currentRow.find("td:eq(0)").text();
+      var pi_tag=currentRow.find("td:eq(5)").text();
+      var pi_tag_id=currentRow.find("td:eq(3)").children("span").prop('id');
+      // console.log(currentRow.find("td:eq(5)"));
+      console.log(name,pi_tag,pi_tag_id);
+
+      var data2get={
+        "name":name,
+        "pi_tag":pi_tag,
+        "pi_tag_id":pi_tag_id,
+      }
+      //
+      // remove_pi_plot_series();
+      // add_pi_plot_series(data2get);
+      add_pi_table_data(data2get);
+
+    });
+    // $("#load_img").hide();
+
+  });
+
+
 
   </script>
 
