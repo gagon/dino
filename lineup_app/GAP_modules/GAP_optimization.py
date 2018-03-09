@@ -49,7 +49,7 @@ def run_optimization(session_json,PE_server,mode):
     qgas_max_orig=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxQgas") # qgas_max is the main tool for GAP rule based optimizer
 
     # set all qgas max per well
-    set_qgas_max(wellname,status,session_json["well_data"],qgas_max_orig)
+    set_qgas_max(PE_server,wellname,status,session_json["well_data"],qgas_max_orig)
 
     emit("progress",{"data":"Solving Network..."})
     emit("progress",{"data":"------------------------------"})
@@ -98,7 +98,7 @@ def run_optimization(session_json,PE_server,mode):
                     if session_json["well_data"][data_unit[i][0]]["fixed"]==0:
                         unit_qgas-=data_unit[i][2]
                         unit_qoil-=data_unit[i][3]
-                        wells_to_shut.append(data_unit[i][0])
+                        # wells_to_shut.append(data_unit[i][0])
                         ut.shut_well(PE_server,data_unit[i][0])
                         emit("progress",{
                             "data":"%s: SI well %s - GOR=%.1f" % (
@@ -144,7 +144,7 @@ def run_optimization(session_json,PE_server,mode):
                     session_json["well_data"][swing_well]["qgas_max"]=qgas_max2gap
                     emit("progress",{"data":"%s: Swing well %s**" % (units_label[unit_idx],swing_well)})
                 else:
-                    wells_to_shut.append(swing_well)
+                    # wells_to_shut.append(swing_well)
                     ut.shut_well(PE_server,swing_well)
                     emit("progress",{"data":"%s: Unstable swing well %s shut" % (units_label[unit_idx],swing_well)})
                 sleep(0.1)
@@ -154,12 +154,19 @@ def run_optimization(session_json,PE_server,mode):
             sleep(0.1)
             ut.solve_network_rb(PE_server)
 
-        conv=0.0
-        for unit_idx,unit in enumerate(units_simple):
 
+
+        conv=0.0
+        tot_qoil=0.0
+        tot_qgas=0.0
+        tot_qwat=0.0
+        for unit_idx,unit in enumerate(units_simple):
             unit_qgas=ut.get_unit_qgas(PE_server,units[unit_idx])
             unit_qoil=ut.get_unit_qoil(PE_server,units[unit_idx])
             unit_qwat=ut.get_unit_qwat(PE_server,units[unit_idx])
+            tot_qoil+=unit_qoil
+            tot_qgas+=unit_qgas
+            tot_qwat+=unit_qwat
             unit_qgas_max=unit_data[unit]["constraints"]["qgas_max"]
             unit_qoil_max=unit_data[unit]["constraints"]["qoil_max"]
             unit_qwat_max=unit_data[unit]["constraints"]["qwat_max"]
@@ -167,6 +174,7 @@ def run_optimization(session_json,PE_server,mode):
             # unit_data[unit]["results"]["qgas"]=unit_qgas
             # unit_data[unit]["results"]["qoil"]=unit_qoil
             # unit_data[unit]["results"]["qwat"]=unit_qwat
+
 
             # reporting
             if unit_qgas>unit_qgas_max:
@@ -206,6 +214,13 @@ def run_optimization(session_json,PE_server,mode):
 
     ut.set_chokes_calculated(PE_server)
 
+    res={
+        "tot_qoil":round(tot_qoil,1),
+        "tot_qgas":round(tot_qgas,1),
+        "tot_qwat":round(tot_qwat,1)
+    }
+
+
     dt=datetime.datetime.now()-start
     if mode==1:
         # ut.showinterface(PE_server,1)
@@ -215,7 +230,7 @@ def run_optimization(session_json,PE_server,mode):
         emit("progress",{"data":"Calculations complete. Switching to next State... <br> Time spent: %s" % dt})
     sleep(0.1)
 
-    return None
+    return res
 
 
 def route_optimization(session_json):
@@ -244,13 +259,6 @@ def route_optimization(session_json):
             session_json_copy["well_data"][c["well"]]["selected_route"]=c["route_name"]
         st.set_unit_routes(session_json_copy["well_data"]) # set well routes as per state
 
-
-
-
-
-
-
-
         run_optimization(session_json_copy,PE_server)
 
 
@@ -264,7 +272,7 @@ def route_optimization(session_json):
     return "None"
 
 
-def set_qgas_max(wellname,status,well_data,qgas_max_orig):
+def set_qgas_max(PE_server,wellname,status,well_data,qgas_max_orig):
     qgas_max=[] # qgas_max values per well to set
     for well in wellname:
         if "target_fwhp" in well_data[well]:
@@ -280,6 +288,7 @@ def set_qgas_max(wellname,status,well_data,qgas_max_orig):
     qgas_max2gap=ut.updatepar(qgas_max_orig,qgas_max,status)
     qgas_max2gap=ut.list2gapstr(qgas_max2gap)
     ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].WELL[$].MaxQgas",qgas_max2gap)
+
 
     return None
 

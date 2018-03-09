@@ -55,10 +55,11 @@ def get_well_data(PE_server,unit,unit_id,well_data):
 
 
 
-def get_all_well_data(well_data):
+def get_all_well_data(well_data,PE_server,mode):
 
-    PE_server=ut.PE.Initialize()
-    ut.showinterface(PE_server,0)
+    if mode!=2:
+        PE_server=ut.PE.Initialize()
+        ut.showinterface(PE_server,0)
 
     """ SEQUENCE OF UNITS ====================================== """
     units=["KPC MP A","UN3 - TR1","UN2 - Slug01"]
@@ -79,17 +80,19 @@ def get_all_well_data(well_data):
     """ UNMASK ALL UNITS ====================================== """
     ut.unmask_all_units(PE_server)
 
-    ut.showinterface(PE_server,1)
+    if mode!=2:
+        ut.showinterface(PE_server,1)
 
-    PE_server=ut.PE.Stop()
+        PE_server=ut.PE.Stop()
     return well_data
 
 
 
-def set_unit_routes(well_data):
+def set_unit_routes(well_data,PE_server,mode):
 
-    PE_server=ut.PE.Initialize()
-    ut.showinterface(PE_server,0)
+    if mode!=2:
+        PE_server=ut.PE.Initialize()
+        ut.showinterface(PE_server,0)
 
     pipe_status=ut.get_all(PE_server,"GAP.MOD[{PROD}].PIPE[$].MASKFLAG")
     pipes=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].PIPE[$].Label",pipe_status,"string")
@@ -141,9 +144,9 @@ def set_unit_routes(well_data):
 
 
 
-
-    ut.showinterface(PE_server,1)
-    PE_server=ut.PE.Stop()
+    if mode!=2:
+        ut.showinterface(PE_server,1)
+        PE_server=ut.PE.Stop()
 
 
 def set_sep_pres(unit_data):
@@ -155,7 +158,7 @@ def set_sep_pres(unit_data):
     units_simple=["kpc","u3","u2"]
 
     for idx,unit in enumerate(units):
-        ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[idx] + "}].SolverPres[0]",unit_data[unit]["sep"]["sep_pres"])
+        ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[idx] + "}].SolverPres[0]",unit_data[units_simple[idx]]["sep"]["sep_pres"])
 
 
 
@@ -181,7 +184,7 @@ def get_sep_pres(unit_data):
     units_simple=["kpc","u3","u2"]
 
     for idx,unit in enumerate(units):
-        unit_data[unit]["sep"]["sep_pres"]=float(ut.PE.DoSet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[idx] + "}].SolverPres[0]"))
+        unit_data[units_simple[idx]]["sep"]["sep_pres"]=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[idx] + "}].SolverPres[0]"))
 
     # sep={}
     # sep["kpc_sep_pres"]=float(ut.PE.DoGet(PE_server,"GAP.MOD[{PROD}].SEP[{" + units[0] + "}].SolverPres[0]"))
@@ -199,4 +202,16 @@ def get_sep_pres(unit_data):
     return unit_data
 
 
-    
+def get_gap_wells():
+
+    PE_server=ut.PE.Initialize()
+    status=ut.get_all(PE_server,"GAP.MOD[{PROD}].WELL[$].MASKFLAG")
+    wellname=ut.get_filtermasked(PE_server,"GAP.MOD[{PROD}].WELL[$].Label",status,"string")
+    PE_server=ut.PE.Stop()
+    print(wellname)
+    # status=nsut.get_all("wells","maskflag")
+    # wellname=nsut.get_filtermasked("wells","label",status,"string")
+    well_data={}
+    for well in wellname:
+        well_data[well]={}
+    return well_data
