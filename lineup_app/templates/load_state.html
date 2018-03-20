@@ -6,117 +6,6 @@
 
 <div class="container-fluid">
 
-  <div class="row">
-    <div class="col-lg-6">
-      <h3>Load PI data</h3>
-      <img src="/static/img/loading-dots.gif" id="load_img" style="display:none;" height="18" / >
-      <!-- <img src="/static/img/loading-dots.gif" id="load_img"> -->
-
-      <!-- <button type="button" class="btn btn-primary">Calculate</button> -->
-      <!-- <a href="#">Convert PI to DINO UOM</a> -->
-      <button class="btn btn-primary" id="update-pi-btn" type="button" style="margin-bottom:10px;">Update from PI</button>
-      <button class="btn btn-primary" id="convert-pi-btn" type="button" style="margin-bottom:10px;">Covert PI to DINO UOM</button>
-
-
-      <table id="pi_data_table" class="table table-bordered table-condensed" style="font-size:12px;">
-        <thead>
-          <th>Stream</th>
-          <th>Value</th>
-          <th>UOM</th>
-          <th>PI Value</th>
-          <th>PI UOM</th>
-          <th>PI tag</th>
-          <th>Plot</th>
-        </thead>
-        <tbody id="pi_data_table_body">
-          <tr>
-            <td style="background-color:#f2f2f2;">CPC oil</td>
-            <td><span id="cpc_oil_act" contenteditable>1623</span></td>
-            <td style="background-color:#f2f2f2;">Sm3/d</td>
-            <td><span id="cpc_oil_piact" contenteditable>1623</span></td>
-            <td style="background-color:#f2f2f2;">Sm3/hr</td>
-            <td><span id="cpc_oil_tag" contenteditable>KA:KPC:521X_FIX100.PV</span></td>
-            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
-          </tr>
-          <tr>
-            <td style="background-color:#f2f2f2;">OGP gas</td>
-            <td><span id="ogp_gas_act" contenteditable>1210000</span></td>
-            <td style="background-color:#f2f2f2;">KSm3/d</td>
-            <td><span id="ogp_gas_piact" contenteditable>1210000</span></td>
-            <td style="background-color:#f2f2f2;">Sm3/hr</td>
-            <td><span id="ogp_gas_tag" contenteditable>3000_FXI005.PV</span></td>
-            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
-          </tr>
-          <tr>
-            <td style="background-color:#f2f2f2;">Gas injection</td>
-            <td><span id="gas_inj_act" contenteditable>1041135</span></td>
-            <td style="background-color:#f2f2f2;">KSm3/d</td>
-            <td><span id="gas_inj_piact" contenteditable>1041135</span></td>
-            <td style="background-color:#f2f2f2;">Sm3/hr</td>
-            <td><span id="gas_inj_tag" contenteditable>KA:Unit2:8360_FIX950.PV</span></td>
-            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
-          </tr>
-          <tr>
-            <td style="background-color:#f2f2f2;">Fuel gas</td>
-            <td><span id="fuel_gas_act" contenteditable>49530</span></td>
-            <td style="background-color:#f2f2f2;">KSm3/d</td>
-            <td><span id="fuel_gas_piact" contenteditable>49530</span></td>
-            <td style="background-color:#f2f2f2;">Sm3/hr</td>
-            <td><span id="fuel_gas_tag" contenteditable>KA:KPC:5340_FT001.PV</span></td>
-            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
-          </tr>
-          <tr>
-            <td style="background-color:#f2f2f2;">MTU oil</td>
-            <td><span id="mtu_oil_act" contenteditable>0</span></td>
-            <td style="background-color:#f2f2f2;">m3/d</td>
-            <td><span id="mtu_oil_piact" contenteditable>0</span></td>
-            <td style="background-color:#f2f2f2;">m3/hr</td>
-            <td><span id="mtu_oil_tag" contenteditable>3000_FXI006.PV</span></td>
-            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
-          </tr>
-          <tr>
-            <td style="background-color:#f2f2f2;">OGP oil</td>
-            <td><span id="ogp_oil_act" contenteditable>97</span></td>
-            <td style="background-color:#f2f2f2;">m3/d</td>
-            <td><span id="ogp_oil_piact" contenteditable>97</span></td>
-            <td style="background-color:#f2f2f2;">m3/hr</td>
-            <td><span id="ogp_oil_tag" contenteditable>3000_FXI004F.PV</span></td>
-            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
-          </tr>
-          <tr>
-            <td style="background-color:#f2f2f2;">U3</td>
-            <td><span id="ogp_oil_act" contenteditable>97</span></td>
-            <td style="background-color:#f2f2f2;">m3/d</td>
-            <td><span id="ogp_oil_piact" contenteditable>97</span></td>
-            <td style="background-color:#f2f2f2;">m3/hr</td>
-            <td><span id="ogp_oil_tag" contenteditable>3000_FXI004F.PV</span></td>
-            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
-          </tr>
-
-        </tbody>
-
-      </table>
-    </div>
-
-    <div class="col-lg-6">
-      <h3>PI data</h3>
-      <div class="input-group" style="margin-bottom:10px; width:800px;">
-        <span class="input-group-addon" id="basic-addon3">Start</span>
-        <input type="text" class="form-control" id="start_date" value="01/01/2018 00:00:00">
-        <span class="input-group-addon">End</span>
-        <input type="text" class="form-control" id="end_date" value="02/01/2018 00:00:00">
-        <span class="input-group-addon">Interval</span>
-        <input type="text" class="form-control" id="interval" value="10m">
-      </div>
-      <div class="panel panel-default">
-       <div class="" id="pi_plot" style="height:300px;margin:5px;">
-      </div>
-     </div>
-    </div>
-
-  </div>
-
-  <hr>
 
   <div class="row">
     <div class="col-lg-4">
@@ -127,10 +16,10 @@
   <div class="row">
 
     <div class="col-lg-4">
-      <button class="btn btn-primary" id="load_state" onclick="load_state();" type="button">Load data</button>
+      <button class="btn btn-default" id="load_state" onclick="load_state();" type="button">Load data</button>
       <hr>
         <label for="comment">Copy/paste from Excel </label>
-        <!-- <button class="btn btn-primary" id="iwit_thp" type="button">IWIT</button> -->
+        <!-- <button class="btn btn-default" id="iwit_thp" type="button">IWIT</button> -->
         <br>
         <caption>Column (1) - wellname same as in GAP. Column (2) - Unit connection for dual wells (leave blank for single connections).
           Column (3) - FWHP to be applied (leave blank to let GAP calculate) </caption>
@@ -143,9 +32,9 @@
 
     <div class="col-lg-3">
 
-      <button class="btn btn-primary" id="save_table2state" onclick="save_table2state();" type="button" disabled>Save data to state</button>
+      <button class="btn btn-default" id="save_table2state" onclick="save_table2state();" type="button" disabled>Save data to state</button>
 
-      <!-- <button class="btn btn-primary" id="clear_table2state" onclick="clear_table2state();" type="button">Clear table</button> -->
+      <!-- <button class="btn btn-default" id="clear_table2state" onclick="clear_table2state();" type="button">Clear table</button> -->
       <hr>
       <label for="comment">QC data before loading to state</label>
       <span id="load_result"></span>
@@ -164,7 +53,7 @@
           <div class="form-group">
             <input class="form-control" type="file" name="file" id="hc">
           </div>
-          <button class="btn btn-primary" id="upload-file-btn" type="button">Upload</button>
+          <button class="btn btn-default" id="upload-file-btn" type="button">Upload</button>
       </form>
       <hr>
       <table class="table table-condensed table-bordered">
@@ -183,8 +72,8 @@
           <div class="form-group">
             <input class="form-control" type="text" placeholder="Enter data 2017-01-01" id="thp_date" value="2018-01-01">
           </div>
-          <button class="btn btn-primary" id="thp-data-btn" type="button">Get data from EC</button>
-          <button class="btn btn-primary" id="iwit_thp-data-btn" type="button">Get data from IWIT</button>
+          <button class="btn btn-default" id="thp-data-btn" type="button">Get data from EC</button>
+          <button class="btn btn-default" id="iwit_thp-data-btn" type="button">Get data from IWIT</button>
       </form>
       <hr>
       <table class="table table-condensed table-bordered">
@@ -200,8 +89,8 @@
     </div>
     <div class="col-lg-4">
       <h4>Routes and FWHP</h4>
-      <button class="btn btn-primary" id="merge-data-btn" type="button">Merge routes and FWHPs</button>
-      <button class="btn btn-primary" id="copy-merged-btn" type="button">Copy to textarea</button>
+      <button class="btn btn-default" id="merge-data-btn" type="button">Merge routes and FWHPs</button>
+      <button class="btn btn-default" id="copy-merged-btn" type="button">Copy to textarea</button>
       <hr>
       <table class="table table-condensed table-bordered">
         <thead>
@@ -262,7 +151,7 @@
       }
       $('#load_result').text("| data is valid.");
       $('#showdata').append(table);
-      // $('#showdata').prepend('<button class="btn btn-primary" id="save_table2state" onclick="save_table2state();" type="button">Save data to state</button><hr>');
+      // $('#showdata').prepend('<button class="btn btn-default" id="save_table2state" onclick="save_table2state();" type="button">Save data to state</button><hr>');
       // $('#showdata_div').show();
       $('#showdata').show();
       $('#save_table2state').prop('disabled', false);
@@ -657,13 +546,16 @@
 
     var date=date_split[2]+"-"+date_split[1]+"-"+date_split[0]+ "T"+ time //set ISO format for Date
     date=new Date(date);
+    console.log(date);
+    console.log(date.getTimezoneOffset());
 
     // added this to convert UTC time to local time
-    var timeZoneFromDB = -2.00; //time zone value from database
+    var timeZoneFromDB = 0.0; //time zone value from database
     //get the timezone offset from local time in minutes
     var tzDifference = timeZoneFromDB * 60 + date.getTimezoneOffset();
     //convert the offset to milliseconds, add to targetTime, and make a new Date
-    var date = new Date(date.getTime() + tzDifference * 60 * 1000);
+    var date = new Date(date.getTime() - tzDifference * 60 * 1000);
+    console.log(date);
 
 
     var year=date.getFullYear();

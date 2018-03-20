@@ -1,0 +1,975 @@
+{% extends 'base.html' %}
+{% block currentpage %}
+
+
+
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-lg-6">
+      <h3>Load PI data</h3>
+      <button class="btn btn-default" id="update_pi_table_btn" type="button" style="margin-bottom:10px;">Update from PI</button>
+      <button class="btn btn-default" id="convert_pi_table_btn" type="button" style="margin-bottom:10px;">Covert PI to DINO UOM</button>
+
+
+      <table id="pi_data_table" class="table table-bordered table-condensed" style="font-size:12px;">
+        <thead>
+          <th class="info">Stream</th>
+          <th class="info">Value</th>
+          <th class="info">UOM</th>
+          <th class="info">PI Value</th>
+          <th class="info">PI UOM</th>
+          <th class="info">PI tag</th>
+          <th class="info">Plot</th>
+        </thead>
+        <tbody id="pi_data_table_body">
+          <tr>
+            <td style="background-color:#f2f2f2;">CPC oil</td>
+            <td><span id="cpc_oil_act"  data-precision="1" contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/d</td>
+            <td><span id="cpc_oil_piact"  data-precision="1" contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/hr</td>
+            <td><span id="cpc_oil_tag"  contenteditable data-validation="numeric">KA:KPC:521X_FIX100.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">OGP gas</td>
+            <td><span id="ogp_gas_act"  data-precision="1" contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">KSm3/d</td>
+            <td><span id="ogp_gas_piact"  data-precision="1" contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/hr</td>
+            <td><span id="ogp_gas_tag"  contenteditable data-validation="numeric">3000_FXI005.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">Gas injection</td>
+            <td><span id="gas_inj_act"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">KSm3/d</td>
+            <td><span id="gas_inj_piact"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/hr</td>
+            <td><span id="gas_inj_tag"  contenteditable data-validation="numeric">KA:Unit2:8360_FIX950.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">Fuel gas</td>
+            <td><span id="fuel_gas_act"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">KSm3/d (sour)</td>
+            <td><span id="fuel_gas_piact"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/hr (sweet)</td>
+            <td><span id="fuel_gas_tag"  contenteditable data-validation="numeric">KA:KPC:5339_FI501.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">MTU oil</td>
+            <td><span id="mtu_oil_act"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/d</td>
+            <td><span id="mtu_oil_piact"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">unst.m3/hr</td>
+            <td><span id="mtu_oil_tag"  contenteditable data-validation="numeric">3000_FXI006.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">OGP oil</td>
+            <td><span id="ogp_oil_act"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/d</td>
+            <td><span id="ogp_oil_piact"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">unst.m3/hr</td>
+            <td><span id="ogp_oil_tag"  contenteditable data-validation="numeric">3000_FXI004F.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">KPC gas - U3</td>
+            <td><span id="kpc_gas_2_u3_act"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">KSm3/d</td>
+            <td><span id="kpc_gas_2_u3_piact" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/hr</td>
+            <td><span id="kpc_gas_2_u3_tag"  contenteditable data-validation="numeric">KA:KPC:5000_F002A.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">KPC gas - U2</td>
+            <td><span id="kpc_gas_2_u2_act"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">KSm3/d</td>
+            <td><span id="kpc_gas_2_u2_piact"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/hr</td>
+            <td><span id="kpc_gas_2_u2_tag"  contenteditable data-validation="numeric">KA:KPC:5000_FI002.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">U2 oil - KPC</td>
+            <td><span id="u2_oil_2_kpc_act"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/d</td>
+            <td><span id="u2_oil_2_kpc_piact"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">unst.m3/hr</td>
+            <td><span id="u2_oil_2_kpc_tag"  contenteditable data-validation="numeric">2000_FXI004.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">U2 oil - U3</td>
+            <td><span id="u2_oil_2_u3_act"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/d</td>
+            <td><span id="u2_oil_2_u3_piact"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">unst.m3/hr</td>
+            <td><span id="u2_oil_2_u3_tag"  contenteditable data-validation="numeric">KA:Unit3:3160_C_FI035.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">U3 oil - KPC</td>
+            <td><span id="u3_oil_2_kpc_act"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/d</td>
+            <td><span id="u3_oil_2_kpc_piact"  data-precision="1"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">unst.m3/hr</td>
+            <td><span id="u3_oil_2_kpc_tag"  contenteditable data-validation="numeric">KA:Unit3:3160_C_FI038.PV</span></td>
+            <td><a href="#" class="pi_btnSelect">Plot PI</a></td>
+          </tr>
+
+
+
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div class="col-lg-6">
+      <h3>Plot data</h3>
+      <div class="input-group" style="margin-bottom:10px;">
+        <span class="input-group-addon" id="basic-addon3">Start</span>
+        <input type="text" class="form-control" id="start_date" value="01/01/2018 00:00:00">
+        <span class="input-group-addon">End</span>
+        <input type="text" class="form-control" id="end_date" value="02/01/2018 00:00:00">
+        <span class="input-group-addon">Interval</span>
+        <input type="text" class="form-control" id="interval" value="10m">
+      </div>
+      <div class="panel panel-default">
+       <div class="" id="pi_plot" style="height:325px;margin:5px;">
+      </div>
+     </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col-lg-6">
+
+      <h3>Lab data</h3>
+      <button class="btn btn-default" id="update_lab_table_btn" type="button" style="margin-bottom:10px;">Lab data from PI</button>
+
+      <table id="lab_data_table" class="table table-bordered table-condensed" style="font-size:12px;">
+        <thead>
+          <th class="info">Measurement</th>
+          <th class="info">Value</th>
+          <th class="info">UOM</th>
+          <th class="info">PI tag</th>
+          <th class="info">Plot</th>
+          </thead>
+        <tbody id="lab_data_table_body">
+
+          <tr>
+            <td style="background-color:#f2f2f2;">U2 oil shrinkage (MP1/2 sample)</td>
+            <td><span id="u2_shrinkage"  data-precision="3"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">-</td>
+            <td><span id="u2_shrinkage_tag"  contenteditable data-validation="numeric">KA:UNIT2_002_CONDENSATE_Shrinkage factor</span></td>
+            <td><a href="#" class="lab_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">U2 oil - gas vol @SC (MP1/2 sample)</td>
+            <td><span id="u2_mp_gasvol"  data-precision="3"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">L</td>
+            <td><span id="u2_mp_gasvol_tag"  contenteditable data-validation="numeric">KA:UNIT2_002_CONDENSATE_Gas volume at standard condition</span></td>
+            <td><a href="#" class="lab_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">U2 oil - oil vol @SC (MP1/2 sample)</td>
+            <td><span id="u2_mp_oilvol"  data-precision="3"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">ml</td>
+            <td><span id="u2_mp_oilvol_tag"  contenteditable data-validation="numeric">KA:UNIT2_002_CONDENSATE_Condensate volume at 20°C</span></td>
+            <td><a href="#" class="lab_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">U2 oil flash GOR (MP1/2 sample)</td>
+            <td><span id="u2_mp_rs"  data-precision="3"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/Sm3</td>
+            <td style="background-color:#f2f2f2;">calc: gas vol @SC / oil vol @SC</td>
+            <td><a href="#" class="lab_btnSelect">Plot PI</a></td>
+          </tr>
+
+
+          <tr>
+            <td style="background-color:#f2f2f2;">U3 oil shrinkage (OGP oil sample)</td>
+            <td><span id="u3_shrinkage"  data-precision="3"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">-</td>
+            <td><span id="u3_shrinkage_tag"  contenteditable data-validation="numeric">KA:UNIT3_040_CONDENSATE_Shrinkage factor</span></td>
+            <td><a href="#" class="lab_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">U3 oil - gas vol @SC (OGP oil sample)</td>
+            <td><span id="u3_lp_gasvol"  data-precision="3"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">L</td>
+            <td><span id="u3_lp_gasvol_tag"  contenteditable data-validation="numeric">KA:UNIT3_040_CONDENSATE_Gas volume at standard condition</span></td>
+            <td><a href="#" class="lab_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">U3 oil - oil vol @SC (OGP oil sample)</td>
+            <td><span id="u3_lp_oilvol"  data-precision="3"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">ml</td>
+            <td><span id="u3_lp_oilvol_tag"  contenteditable data-validation="numeric">KA:UNIT3_040_CONDENSATE_Condensate volume at 20°C</span></td>
+            <td><a href="#" class="lab_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">U3 oil flash GOR (OGP oil sample)</td>
+            <td><span id="u3_lp_rs" data-precision="3"  contenteditable data-validation="numeric"></span></td>
+            <td style="background-color:#f2f2f2;">Sm3/Sm3</td>
+            <td style="background-color:#f2f2f2;">calc: gas vol @SC / oil vol @SC</td>
+            <td><a href="#" class="lab_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">U3 oil flash GOR (MP slugcatcher)</td>
+            <td><span id="u3_mp_rs" data-precision="3"  contenteditable data-validation="numeric">132</span></td>
+            <td style="background-color:#f2f2f2;">Sm3/Sm3</td>
+            <td style="background-color:#f2f2f2;">-</td>
+            <td><a href="#" class="lab_btnSelect">Plot PI</a></td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">KPC oil flash GOR (MP slugcatcher)</td>
+            <td><span id="kpc_mp_rs" data-precision="3"  contenteditable data-validation="numeric">120</span></td>
+            <td style="background-color:#f2f2f2;">Sm3/Sm3</td>
+            <td style="background-color:#f2f2f2;">-</td>
+            <td><a href="#" class="lab_btnSelect">Plot PI</a></td>
+          </tr>
+
+
+          <tr>
+            <td style="background-color:#f2f2f2;">Sweet Gas / Sour Gas</td>
+            <td><span id="sweet_sour_conv" data-precision="3"  contenteditable data-validation="numeric">0.896</span></td>
+            <td style="background-color:#f2f2f2;">-</td>
+            <td><span id="sweet_sour_conv_tag"  contenteditable data-validation="numeric">-</span></td>
+            <td><a href="#" class="lab_btnSelect">Plot PI</a></td>
+          </tr>
+
+
+
+
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="col-lg-6">
+      <h3>Plot data</h3>
+
+      <div class="input-group" style="margin-bottom:10px;">
+        <span class="input-group-addon" id="basic-addon3">Start</span>
+        <input type="text" class="form-control" id="start_date_lab" value="01/01/2018 00:00:00">
+        <span class="input-group-addon">End</span>
+        <input type="text" class="form-control" id="end_date_lab" value="02/01/2018 00:00:00">
+        <span class="input-group-addon">Interval</span>
+        <input type="text" class="form-control" id="interval_lab" value="1d">
+      </div>
+
+      <div class="panel panel-default">
+        <div class="" id="lab_plot" style="height:328px;margin:5px;"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <h3>Unit production</h3>
+      <button class="btn btn-default" id="calculate_units_btn" type="button" style="margin-bottom:10px;">Calculate Unit production</button>
+      <button class="btn btn-default" id="save_data_btn" type="button" style="margin-bottom:10px;">Save data</button>
+
+      <div class="row">
+        <div class="col-lg-6">
+
+          <table class="table table-bordered table-condensed" style="font-size:12px;">
+            <thead>
+              <tr>
+                <th class="info"><b>Production (calculated)</b></td>
+                <th class="info"><b>Qoil, Sm3/d</b></td>
+                <th class="info"><b>Qgas, KSm3/d</b></td>
+                <th class="info"><b>Qwater, Sm3/d</b></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style='background-color:#f2f2f2;'>Field</td>
+                <td ><span id="field-qoil_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td ><span id="field-qgas_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td ><span id="field-qwat_act" data-precision="1"  contenteditable data-validation="numeric">0</span></td>
+              </tr>
+              <tr>
+                <td style='background-color:#f2f2f2;'>KPC</td>
+                <td ><span id="kpc-qoil_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td ><span id="kpc-qgas_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td ><span id="kpc-qwat_act" data-precision="1"  contenteditable data-validation="numeric">0</span></td>
+              </tr>
+              <tr>
+                <td style='background-color:#f2f2f2;'>Unit-3</td>
+                <td ><span id="u3-qoil_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td ><span id="u3-qgas_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td ><span id="u3-qwat_act" data-precision="1"  contenteditable data-validation="numeric">0</span></td>
+              </tr>
+              <tr>
+                <td style='background-color:#f2f2f2;'>Unit-2</td>
+                <td ><span id="u2-qoil_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td ><span id="u2-qgas_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td ><span id="u2-qwat_act" data-precision="1"  contenteditable data-validation="numeric">0</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+        <div class="col-lg-6">
+          <table id="disgas_data_table" class="table table-bordered table-condensed" style="font-size:12px;">
+            <thead>
+              <th class="info">Stream</th>
+              <th class="info">Value</th>
+              <th class="info">UOM</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="width:50%;background-color:#f2f2f2;">MTU oil dis.gas (calc)</td>
+                <td><span id="mtu_diss_gas" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td style="width:30%;background-color:#f2f2f2;">KSm3/d</td>
+              </tr>
+              <tr>
+                <td style="background-color:#f2f2f2;">OGP oil dis.gas (calc)</td>
+                <td><span id="ogp_diss_gas" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td style="background-color:#f2f2f2;">KSm3/d</td>
+              </tr>
+              <tr>
+                <td style="background-color:#f2f2f2;">U2 to U3 oil dis.gas (calc)</td>
+                <td><span id="u2_oil_2_u3_diss_gas" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td style="background-color:#f2f2f2;">KSm3/d</td>
+              </tr>
+              <tr>
+                <td style="background-color:#f2f2f2;">U2 to KPC oil dis.gas (calc)</td>
+                <td><span id="u2_oil_2_kpc_diss_gas" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td style="background-color:#f2f2f2;">KSm3/d</td>
+              </tr>
+              <tr>
+                <td style="background-color:#f2f2f2;">U3 to KPC oil dis.gas (calc)</td>
+                <td><span id="u3_oil_2_kpc_diss_gas" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td style="background-color:#f2f2f2;">KSm3/d</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+
+</div>
+
+
+
+
+<script type="text/javascript" charset="utf-8">
+
+
+
+
+  $(document).ready(function() {
+
+    var start_date_dt = new Date();
+    var start_date_dt_lab = new Date();
+    var end_date_dt = new Date();
+    start_date_dt.setDate(end_date_dt.getDate()-1);
+    start_date_dt_lab.setDate(end_date_dt.getDate()-30);
+
+    var start_date_str = ("0" + start_date_dt.getDate()).slice(-2) + "/" +("0" + (start_date_dt.getMonth()+1)).slice(-2) + "/" +start_date_dt.getFullYear() + " 00:00:00"
+    $("#start_date").val(start_date_str);
+
+    var start_date_str_lab = ("0" + start_date_dt_lab.getDate()).slice(-2) + "/" +("0" + (start_date_dt_lab.getMonth()+1)).slice(-2) + "/" +start_date_dt_lab.getFullYear() + " 00:00:00"
+    $("#start_date_lab").val(start_date_str_lab);
+
+    var end_date_str = ("0" + end_date_dt.getDate()).slice(-2) + "/" +("0" + (end_date_dt.getMonth()+1)).slice(-2) + "/" +end_date_dt.getFullYear() + " 00:00:00"
+    $("#end_date").val(end_date_str);
+    $("#end_date_lab").val(end_date_str); // currentday for lab is the same
+
+
+
+
+
+  });
+
+
+  $("#pi_data_table").on('click','.pi_btnSelect',function(){
+
+    var table=$(this)
+    var time={
+      "start":$("#start_date").val(),
+      "end":$("#end_date").val(),
+      "interval":$("#interval").val()
+    }
+
+    var rows ={
+      "name":0,
+      "pi_tag":5,
+      "pi_tag_id":3
+    }
+    plot_pi(table,time,rows,"streams");
+
+  });
+
+
+  $("#lab_data_table").on('click','.lab_btnSelect',function(){
+
+    var table=$(this)
+    var time={
+      "start":$("#start_date_lab").val(),
+      "end":$("#end_date_lab").val(),
+      "interval":$("#interval_lab").val()
+    }
+
+    var rows ={
+      "name":0,
+      "pi_tag":3,
+      "pi_tag_id":1
+    }
+
+    plot_pi(table,time,rows,"lab");
+
+  });
+
+
+  function plot_pi(table,time,rows,type){
+
+    var currentRow=$(table).closest("tr");
+    var name=currentRow.find("td:eq("+rows["name"]+")").text();
+    var pi_tag=currentRow.find("td:eq("+rows["pi_tag"]+")").text();
+
+    if(pi_tag.indexOf("calc:") == -1 && pi_tag != "-" && pi_tag != ""){
+
+      var data2get={
+        "name":name,
+        "pi_tag":pi_tag,
+        "start":time["start"],
+        "end":time["end"],
+        "interval":time["interval"],
+        "type":type
+      }
+
+      if (type=="streams"){
+        var chart_type=pi_chart
+      }else{
+        var chart_type=lab_chart
+      }
+
+      remove_pi_plot_series(chart_type);
+      add_pi_plot_series(data2get,chart_type);
+
+    };
+
+  }
+
+
+  var pi_chart=Highcharts.chart('pi_plot', {
+    title: {
+      text: "",
+    },
+    legend: {
+      verticalAlign:"top",
+    },
+    xAxis: {
+      type: 'datetime', //For time series, x-axis labels will be time
+    },
+    series:[
+    ],
+    plotOptions: {
+        series: {
+            animation: false,
+        }
+    }
+  });
+
+  var lab_chart=Highcharts.chart('lab_plot', {
+    title: {
+      text: "",
+    },
+    legend: {
+      verticalAlign:"top",
+    },
+    xAxis: {
+      type: 'datetime', //For time series, x-axis labels will be time
+    },
+    series:[
+    ],
+    plotOptions: {
+        series: {
+            animation: false,
+        }
+    }
+  });
+
+
+  function add_pi_plot_series(data2get,chart_type){
+
+    $.ajax({
+      type: 'POST',
+      url: '/generic_pi_data',
+      data: JSON.stringify(data2get),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(data) {
+
+        var data_edited=convert_dates(data["data"])
+
+        chart_type.addSeries({
+          name:data2get["name"]+":"+data2get["pi_tag"],
+          data: data_edited,
+        }, true);
+
+      },
+      failure: function(errMsg) {
+          alert(errMsg);
+      }
+    });
+
+  };
+
+
+
+  function dt2utc (dt){
+
+    var date_str = dt.split(" "); // splitting date and time parts
+    var time=date_str[1];
+    var date_split=date_str[0].split("/"); //split of year,month and day for further reformatting to ISO
+
+    var date=date_split[2]+"-"+date_split[1]+"-"+date_split[0]+ "T"+ time //set ISO format for Date
+    date=new Date(date);
+
+    // added this to convert UTC time to local time
+    var timeZoneFromDB = 0.0; //time zone value from database
+    //get the timezone offset from local time in minutes
+    var tzDifference = timeZoneFromDB * 60 + date.getTimezoneOffset();
+    //convert the offset to milliseconds, add to targetTime, and make a new Date
+    var date = new Date(date.getTime() - tzDifference * 60 * 1000);
+
+    var year=date.getFullYear();
+    var month=date.getMonth();
+    var day=date.getDate();
+    var hr=date.getHours();
+    var min=date.getMinutes();
+    var sec=date.getSeconds();
+    var dtutc=Date.UTC(year,month,day,hr,min,sec)
+
+    return dtutc;
+
+  }
+
+
+  function convert_dates(data){
+    var converted_data=[]
+    for(var i = 0; i < data.length; i++) {
+        converted_data.push([dt2utc(data[i][0]),data[i][1]]);
+    }
+    return converted_data
+  }
+
+  function remove_pi_plot_series(chart_type){
+    var seriesLength = chart_type.series.length;
+    for(var i = seriesLength -1; i > -1; i--) {
+        chart_type.series[i].remove();
+    }
+  };
+
+
+  $(document).on('click',"#update_pi_table_btn",function(){
+
+    var time={
+      "start":$("#start_date").val(),
+      "end":$("#end_date").val(),
+      "interval":$("#interval").val()
+    }
+
+    var rows ={
+      "name":0,
+      "pi_tag":5,
+      "pi_tag_id":3
+    }
+    var data2get_list=pi_tags_from_table("pi_data_table_body",rows,time);
+    data2get_list["type"]="streams"
+    add_table_data(data2get_list);
+
+  });
+
+
+
+
+  $(document).on('click',"#update_lab_table_btn",function(){
+
+    var time={
+      "start":$("#start_date_lab").val(),
+      "end":$("#end_date_lab").val(),
+      "interval":$("#interval_lab").val()
+    }
+
+    var rows ={
+      "name":0,
+      "pi_tag":3,
+      "pi_tag_id":1
+    }
+
+    var data2get_list=pi_tags_from_table("lab_data_table_body",rows,time)
+    data2get_list["type"]="lab"
+    add_table_data(data2get_list);
+
+
+  });
+
+
+  function calc_u2u3_rs(){
+
+    var u2_mp_gasvol=$("#u2_mp_gasvol").text();
+    var u2_mp_oilvol=$("#u2_mp_oilvol").text();
+    if (u2_mp_oilvol){
+      $("#u2_mp_rs").text((parseFloat(u2_mp_gasvol)/parseFloat(u2_mp_oilvol)*1000).toFixed(1));
+    }
+
+    var u3_lp_gasvol=$("#u3_lp_gasvol").text();
+    var u3_lp_oilvol=$("#u3_lp_oilvol").text();
+    if (u3_lp_oilvol){
+      $("#u3_lp_rs").text((parseFloat(u3_lp_gasvol)/parseFloat(u3_lp_oilvol)*1000).toFixed(1));
+    }
+
+  }
+
+  function add_table_data(data2get_list){
+
+    $.ajax({
+      type: 'POST',
+      url: '/generic_pi_arr',
+      data: JSON.stringify(data2get_list),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(data) {
+        set_pi_values(data["data"])
+        if (data2get_list["type"]=="lab"){
+          calc_u2u3_rs();
+        }
+      },
+      failure: function(errMsg) {
+          alert(errMsg);
+      }
+    });
+
+  };
+
+
+
+  function set_pi_values(data){
+    for (i=0;i<data["tags"].length;i++){
+      $("#"+data["tags"][i]["pi_tag_id"]).text(
+        data["tags"][i]["pidata"]["values"]
+      );
+    }
+  }
+
+
+  function pi_tags_from_table(table,rows,time){
+
+    var data2get_list={}
+    data2get_list["tags"]=[]
+    data2get_list["time"]=time
+
+    $("#"+table).children('tr').each(function () { // loop through rows in table
+
+      var currentRow=$(this).closest("tr");
+      var name=currentRow.find("td:eq("+rows["name"]+")").text();
+      var pi_tag=currentRow.find("td:eq("+rows["pi_tag"]+")").text();
+      var pi_tag_id=currentRow.find("td:eq("+rows["pi_tag_id"]+")").children("span").prop('id');
+      var precision=parseInt(currentRow.find("td:eq("+rows["pi_tag_id"]+")").children("span").data('precision'));
+
+      if(pi_tag.indexOf("calc:") == -1 && pi_tag != "-"){
+
+        var data2get={
+          "name":name,
+          "pi_tag":pi_tag,
+          "pi_tag_id":pi_tag_id,
+          "precision":precision
+        }
+        data2get_list["tags"].push(data2get);
+      }
+
+    });
+    return data2get_list
+  };
+
+
+
+  $(document).on('click',"#convert_pi_table_btn",function(){
+
+    //cpc oil
+    var cpc_pi_val=parseFloat($("#cpc_oil_piact").text());
+    var precision = parseInt($("#cpc_oil_act").data("precision"));
+    convert_to_dino_units("cpc_oil_act",cpc_pi_val,1,precision,1,24)
+    //ogp gas
+    var ogp_gas_pi_val=parseFloat($("#ogp_gas_piact").text());
+    var precision = parseInt($("#ogp_gas_act").data("precision"));
+    convert_to_dino_units("ogp_gas_act",ogp_gas_pi_val,1,precision,1000,24)
+    //gas inj
+    var gas_inj_pi_val=parseFloat($("#gas_inj_piact").text());
+    var precision = parseInt($("#gas_inj_act").data("precision"));
+    convert_to_dino_units("gas_inj_act",gas_inj_pi_val,1,precision,1000,24)
+    //fuel gas
+    var fuel_gas_pi_val=parseFloat($("#fuel_gas_piact").text());
+    var sweet_sour_conv=1/parseFloat($("#sweet_sour_conv").text());
+    var precision = parseInt($("#fuel_gas_act").data("precision"));
+    convert_to_dino_units("fuel_gas_act",fuel_gas_pi_val,sweet_sour_conv,precision,1000,24)
+    //mtu oil
+    var mtu_oil_pi_val=parseFloat($("#mtu_oil_piact").text());
+    var u3_shrinkage=parseFloat($("#u3_shrinkage").text());
+    var precision = parseInt($("#mtu_oil_act").data("precision"));
+    convert_to_dino_units("mtu_oil_act",mtu_oil_pi_val,(1-u3_shrinkage),precision,1,24)
+    //ogp oil
+    var ogp_oil_pi_val=parseFloat($("#ogp_oil_piact").text());
+    var u3_shrinkage=parseFloat($("#u3_shrinkage").text());
+    var precision = parseInt($("#ogp_oil_act").data("precision"));
+    convert_to_dino_units("ogp_oil_act",ogp_oil_pi_val,(1-u3_shrinkage),precision,1,24)
+    //KPC gas - U3
+    var kpc_gas_2_u3_pi_val=parseFloat($("#kpc_gas_2_u3_piact").text());
+    var precision = parseInt($("#kpc_gas_2_u3_act").data("precision"));
+    convert_to_dino_units("kpc_gas_2_u3_act",kpc_gas_2_u3_pi_val,1,precision,1000,24)
+    //KPC gas - U2
+    var kpc_gas_2_u2_pi_val=parseFloat($("#kpc_gas_2_u2_piact").text());
+    var precision = parseInt($("#kpc_gas_2_u2_act").data("precision"));
+    convert_to_dino_units("kpc_gas_2_u2_act",kpc_gas_2_u2_pi_val,1,precision,1000,24)
+    //U2 oil - KPC
+    var u2_oil_2_kpc_pi_val=parseFloat($("#u2_oil_2_kpc_piact").text());
+    var u2_shrinkage=parseFloat($("#u2_shrinkage").text());
+    var precision = parseInt($("#u2_oil_2_kpc_act").data("precision"));
+    convert_to_dino_units("u2_oil_2_kpc_act",u2_oil_2_kpc_pi_val,(1-u2_shrinkage),precision,1,24)
+    //U2 oil - U3
+    var u2_oil_2_u3_pi_val=parseFloat($("#u2_oil_2_u3_piact").text());
+    var u2_shrinkage=parseFloat($("#u2_shrinkage").text());
+    var precision = parseInt($("#u2_oil_2_u3_act").data("precision"));
+    convert_to_dino_units("u2_oil_2_u3_act",u2_oil_2_u3_pi_val,(1-u2_shrinkage),precision,1,24)
+    //U3 oil - KPC
+    var u3_oil_2_kpc_pi_val=parseFloat($("#u3_oil_2_kpc_piact").text());
+    var u3_shrinkage=parseFloat($("#u3_shrinkage").text());
+    var precision = parseInt($("#u3_oil_2_kpc_act").data("precision"));
+    convert_to_dino_units("u3_oil_2_kpc_act",u3_oil_2_kpc_pi_val,(1-u3_shrinkage),precision,1,24)
+
+  });
+
+
+  function convert_to_dino_units(target,val,mult,precision,divider,daily){
+    if (!isNaN(val) && !isNaN(mult)){
+      $("#"+target).text((val*mult*daily/divider).toFixed(precision));
+      $("#"+target).css("background-color","transparent");
+    }else{
+      $("#"+target).text("Missing data")
+      $("#"+target).css("background-color","#F6CECE");
+    }
+  }
+
+
+  $(document).on('click',"#calculate_units_btn",function(){
+
+    var precision;
+    // KPC oil
+    var cpc_val=parseFloat($("#cpc_oil_act").text());
+    var u2_oil_2_kpc_val=parseFloat($("#u2_oil_2_kpc_act").text());
+    var u3_oil_2_kpc_val=parseFloat($("#u3_oil_2_kpc_act").text());
+    precision = parseInt($("#kpc-qoil_act").data("precision"));
+    var kpc_qoil_val=cpc_val-u2_oil_2_kpc_val-u3_oil_2_kpc_val;
+    convert_to_dino_units("kpc-qoil_act",kpc_qoil_val,1,precision,1,1);
+    // U2 oil
+    var u2_oil_2_kpc_val=parseFloat($("#u2_oil_2_kpc_act").text());
+    var u2_oil_2_u3_val=parseFloat($("#u2_oil_2_u3_act").text());
+    precision = parseInt($("#u2-qoil_act").data("precision"));
+    var u2_qoil_val=u2_oil_2_kpc_val+u2_oil_2_u3_val;
+    convert_to_dino_units("u2-qoil_act",u2_qoil_val,1,precision,1,1)
+    // U3 oil
+    var u3_oil_2_kpc_val=parseFloat($("#u3_oil_2_kpc_act").text());
+    var mtu_oil_val=parseFloat($("#mtu_oil_act").text());
+    var ogp_oil_val=parseFloat($("#ogp_oil_act").text());
+    var u2_oil_2_u3_val=parseFloat($("#u2_oil_2_u3_act").text());
+    precision = parseInt($("#u3-qoil_act").data("precision"));
+    var u3_qoil_val=u3_oil_2_kpc_val+mtu_oil_val+ogp_oil_val-u2_oil_2_u3_val;
+    convert_to_dino_units("u3-qoil_act",u3_qoil_val,1,precision,1,1)
+    //Field oil
+    precision = parseInt($("#field-qoil_act").data("precision"));
+    var field_qoil_val=cpc_val+mtu_oil_val+ogp_oil_val;
+    convert_to_dino_units("field-qoil_act",field_qoil_val,1,precision,1,1)
+
+
+    //Disgas
+    //RS
+    var u3_lp_rs_val=parseFloat($("#u3_lp_rs").text());
+    var u2_mp_rs_val=parseFloat($("#u2_mp_rs").text());
+    //MTU disgas
+    var mtu_diss_gas_val=mtu_oil_val*u3_lp_rs_val/1000;
+    precision = parseInt($("#mtu_diss_gas").data("precision"));
+    convert_to_dino_units("mtu_diss_gas",mtu_diss_gas_val,1,precision,1,1)
+    //OGP disgas
+    var ogp_diss_gas_val=ogp_oil_val*u3_lp_rs_val/1000;
+    precision = parseInt($("#ogp_diss_gas").data("precision"));
+    convert_to_dino_units("ogp_diss_gas",ogp_diss_gas_val,1,precision,1,1)
+    //U2 oil to KPC disgas
+    var u2_oil_2_kpc_diss_gas_val=u2_oil_2_kpc_val*u2_mp_rs_val/1000;
+    precision = parseInt($("#u2_oil_2_kpc_diss_gas").data("precision"));
+    convert_to_dino_units("u2_oil_2_kpc_diss_gas",u2_oil_2_kpc_diss_gas_val,1,precision,1,1)
+    //U2 oil to U3 disgas
+    var u2_oil_2_u3_diss_gas_val=u2_oil_2_u3_val*u2_mp_rs_val/1000;
+    precision = parseInt($("#u2_oil_2_u3_diss_gas").data("precision"));
+    convert_to_dino_units("u2_oil_2_u3_diss_gas",u2_oil_2_u3_diss_gas_val,1,precision,1,1)
+    //U3 oil to KPC disgas
+    var u3_oil_2_kpc_diss_gas_val=u3_oil_2_kpc_val*u3_lp_rs_val/1000;
+    precision = parseInt($("#u3_oil_2_kpc_diss_gas").data("precision"));
+    convert_to_dino_units("u3_oil_2_kpc_diss_gas",u3_oil_2_kpc_diss_gas_val,1,precision,1,1)
+
+
+    //KPC gas
+    var fuel_gas_val=parseFloat($("#fuel_gas_act").text());
+    var kpc_gas_2_u2_val=parseFloat($("#kpc_gas_2_u2_act").text());
+    var kpc_gas_2_u3_val=parseFloat($("#kpc_gas_2_u3_act").text());
+    var kpc_qgas_val=fuel_gas_val+kpc_gas_2_u2_val+kpc_gas_2_u3_val-u2_oil_2_kpc_diss_gas_val-u3_oil_2_kpc_diss_gas_val;
+    precision = parseInt($("#kpc-qgas_act").data("precision"));
+    convert_to_dino_units("kpc-qgas_act",kpc_qgas_val,1,precision,1,1);
+    //U2 gas
+    var gas_inj_val=parseFloat($("#gas_inj_act").text());
+    var u2_qgas_val=gas_inj_val-kpc_gas_2_u2_val+u2_oil_2_kpc_diss_gas_val;
+    precision = parseInt($("#u2-qgas_act").data("precision"));
+    convert_to_dino_units("u2-qgas_act",u2_qgas_val,1,precision,1,1);
+    //U3 gas
+    var ogp_gas_val=parseFloat($("#ogp_gas_act").text());
+    var u3_qgas_val=ogp_gas_val-kpc_gas_2_u3_val+u3_oil_2_kpc_diss_gas_val+ogp_diss_gas_val+mtu_diss_gas_val;
+    precision = parseInt($("#u3-qgas_act").data("precision"));
+    convert_to_dino_units("u3-qgas_act",u3_qgas_val,1,precision,1,1);
+    //Field gas
+    precision = parseInt($("#field-qgas_act").data("precision"));
+    var field_qgas_val=gas_inj_val+ogp_gas_val+fuel_gas_val+ogp_diss_gas_val+mtu_diss_gas_val;
+    convert_to_dino_units("field-qgas_act",field_qgas_val,1,precision,1,1)
+
+  });
+
+
+    $(document).on('click',"#save_data_btn",function(){
+
+      var data2save={};
+      var streams={};
+      var unit_data={};
+      var lab={};
+
+      streams=save_item("cpc_oil_act","cpc_oil","float",streams);
+      streams=save_item("cpc_oil_act","cpc_oil","float",streams);
+      streams=save_item("fuel_gas_act","fuel_gas","float",streams);
+      streams=save_item("gas_inj_act","gas_inj","float",streams);
+      streams=save_item("kpc_gas_2_u2_act","kpc_gas_2_u2","float",streams);
+      streams=save_item("kpc_gas_2_u3_act","kpc_gas_2_u3","float",streams);
+      streams=save_item("mtu_oil_act","mtu_oil","float",streams);
+      streams=save_item("mtu_oil_diss_gas_act","mtu_oil_diss_gas","float",streams);
+      streams=save_item("ogp_gas_act","ogp_gas","float",streams);
+      streams=save_item("ogp_oil_act","ogp_oil","float",streams);
+      streams=save_item("ogp_oil_diss_gas_act","ogp_oil_diss_gas","float",streams);
+      streams=save_item("u2_oil_2_kpc_act","u2_oil_2_kpc","float",streams);
+      streams=save_item("u2_oil_2_kpc_diss_gas_act","u2_oil_2_kpc_diss_gas","float",streams);
+      streams=save_item("u2_oil_2_u3_act","u2_oil_2_u3","float",streams);
+      streams=save_item("u2_oil_2_u3_diss_gas_act","u2_oil_2_u3_diss_gas","float",streams);
+      streams=save_item("u3_oil_2_kpc_act","u3_oil_2_kpc","float",streams);
+      streams=save_item("u3_oil_2_kpc_diss_gas_act","u3_oil_2_kpc_diss_gas","float",streams);
+
+      unit_data=save_item("kpc-qoil_act","kpc-qoil","float",unit_data);
+      unit_data=save_item("kpc-qgas_act","kpc-qgas","float",unit_data);
+      unit_data=save_item("kpc-qwat_act","kpc-qwat","float",unit_data);
+      unit_data=save_item("u2-qoil_act","u2-qoil","float",unit_data);
+      unit_data=save_item("u2-qgas_act","u2-qgas","float",unit_data);
+      unit_data=save_item("u2-qwat_act","u2-qwat","float",unit_data);
+      unit_data=save_item("u3-qoil_act","u3-qoil","float",unit_data);
+      unit_data=save_item("u3-qgas_act","u3-qgas","float",unit_data);
+      unit_data=save_item("u3-qwat_act","u3-qwat","float",unit_data);
+
+      lab=save_item("u3_shrinkage","u3_shrinkage","float",lab);
+      lab=save_item("u2_shrinkage","u2_shrinkage","float",lab);
+      lab=save_item("u2_mp_rs","u2_mp_rs","float",lab);
+      lab=save_item("u3_lp_rs","u3_lp_rs","float",lab);
+      lab=save_item("u3_mp_rs","u3_mp_rs","float",lab);
+      lab=save_item("kpc_mp_rs","kpc_mp_rs","float",lab);
+      lab=save_item("sweet_sour_conv","sweet_sour_conv","float",lab);
+
+
+      data2save["streams"]=streams;
+      data2save["unit_data"]=unit_data;
+      data2save["lab"]=lab;
+
+      console.log(data2save);
+
+
+      $.ajax({
+        type: 'POST',
+        url: '/save_streams',
+        data: JSON.stringify(data2save),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+          alert(data["data"]);
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
+        }
+      });
+
+
+
+    });
+
+
+    function save_item(item,target,type,data){
+
+      if (type=="float"){
+        val=parseFloat($("#"+item).text());
+      }else if (type=="int"){
+        val=parseInt($("#"+item).text());
+      }
+
+
+      validation = $("#"+item).data("validation");
+      valid=validate_val(val,validation);
+
+      if (valid){
+        console.log(item,validation,valid,val);
+        data[target]=val
+      }
+      return data
+    }
+
+
+
+    function validate_val(val,criteria){
+      var valid;
+      if (criteria=="numeric"){
+        if (isNaN(val)){
+          valid=false;
+        }else{
+          valid=true;
+        }
+      }
+      return valid
+    }
+
+
+
+
+
+
+  </script>
+
+
+
+
+{% endblock %}

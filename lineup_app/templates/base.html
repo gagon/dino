@@ -24,6 +24,9 @@
 
 
 
+
+
+
     <style type="text/css">
 
       html,body{
@@ -133,6 +136,10 @@
               <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
                Load state
             </a>
+            <a href="/load_streams" class="list-group-item list-group-item-action {{page_active.load_streams}}">
+              <span class="glyphicon glyphicon-oil" aria-hidden="true"></span>
+               Load streams
+            </a>
             <a href="/setup" class="list-group-item list-group-item-action {{page_active.setup}}">
               <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
               Setup
@@ -163,6 +170,9 @@
               </a>
               <a href="#" class="list-group-item list-group-item-action" id="#delete_2ref" onclick="delete_refcase();">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>  Delete Ref case
+              </a>
+              <a href="#" class="list-group-item list-group-item-action" id="calc_afs" onclick="calc_afs();">
+                <span class="glyphicon glyphicon-check" aria-hidden="true"></span>  Calculate AFs
               </a>
             {% elif page_active.live=="active" %}
               <a href="#" class="list-group-item list-group-item-action" id="#start_gap_calc" onclick="start_calc();">
