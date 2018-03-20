@@ -28,6 +28,7 @@ def calc_target_fwhps(session_json):
     return session_json
 
 
+
 def save_loaded2session(session_json,loaded_data):
 
     loaded_state=loaded_data["state"]
@@ -134,3 +135,33 @@ def save_2ref(session_json):
     json_fullpath_ref=os.path.join(dirname,r"temp\session_ref_case.json")
     json.dump(session_json, open(json_fullpath_ref, 'w'))
     return "None"
+
+
+def save_streams2session(data,session_json):
+    unit_data=data["unit_data"]
+    lab=data["lab"]
+    streams=data["streams"]
+
+    for u,v in unit_data.items(): # save unit_data
+        unit=u.split("-")[0] # unit and phase separated by -
+        phase=u.split("-")[1]
+        session_json["fb_data"]["unit_data"][unit]["measured"][phase]=v
+
+    for l,v in lab.items():
+        session_json["fb_data"]["lab"][l]=v
+
+    for s,v in streams.items():
+        session_json["fb_data"]["streams"]["measured"][s]=v
+
+
+    return session_json
+
+
+def save_afs2session(afs,session_json):
+    for unit,af in afs.items():
+        for a,v in af.items():
+            for p,n in v.items():
+                print(unit,p,n)
+                session_json["fb_data"]["unit_data"][unit]["af"][p]=n
+
+    return session_json

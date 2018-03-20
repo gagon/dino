@@ -8,6 +8,7 @@ def calculate(session_json):
 
     pc_data=session_json["well_data_byunit"]
     fb_data=session_json["fb_data"]
+    # unit_data=session_json["unit_data"]
 
     units_tot=[]
     units_pc=[]
@@ -70,51 +71,56 @@ def calculate(session_json):
         fb_data["unit_pcs"][u+"_pc"]=units_pc[v]
 
 
-    fb_data["wells"]["kpc"]["mp_rs"]=fb_data["lab"]["kpc_mp_rs"]
-    fb_data["wells"]["u3"]["mp_rs"]=fb_data["lab"]["u3_mp_rs"]
-    fb_data["wells"]["u3"]["lp_rs"]=fb_data["lab"]["u3_lp_rs"]
-    fb_data["wells"]["u2"]["mp_rs"]=fb_data["lab"]["u2_mp_rs"]
+    # fb_data["unit_data"]["kpc"]["mp_rs"]=fb_data["lab"]["kpc_mp_rs"]
+    # fb_data["unit_data"]["u3"]["mp_rs"]=fb_data["lab"]["u3_mp_rs"]
+    # fb_data["unit_data"]["u3"]["lp_rs"]=fb_data["lab"]["u3_lp_rs"]
+    # fb_data["unit_data"]["u2"]["mp_rs"]=fb_data["lab"]["u2_mp_rs"]
+
 
 
 
     """ FIELD BALANCE =================================================================================================== """
 
 
-    for u,val in fb_data["wells"].items():
-        fb_data["wells"][u]["qoil"]=units_tot[unit_idx[u]][0]
-        fb_data["wells"][u]["qoil_alloc"]=units_tot[unit_idx[u]][0]*1.0
-        fb_data["wells"][u]["qgas"]=units_tot[unit_idx[u]][1]
-        fb_data["wells"][u]["qgas_alloc"]=units_tot[unit_idx[u]][1]*1.0
-        if fb_data["wells"][u]["qoil"]>0:
-            fb_data["wells"][u]["gor"]=fb_data["wells"][u]["qgas"]/fb_data["wells"][u]["qoil"]*1000.0
-        else:
-            fb_data["wells"][u]["gor"]=0
+    for u,val in fb_data["unit_data"].items():
+        if not "tr" in u:
+            fb_data["unit_data"][u]["actual"]["qoil"]=units_tot[unit_idx[u]][0]
+            # fb_data["unit_data"][u]["qoil_alloc"]=units_tot[unit_idx[u]][0]*1.0
+            fb_data["unit_data"][u]["actual"]["qgas"]=units_tot[unit_idx[u]][1]
+            # fb_data["unit_data"][u]["qgas_alloc"]=units_tot[unit_idx[u]][1]*1.0
+            if fb_data["unit_data"][u]["actual"]["qoil"]>0:
+                fb_data["unit_data"][u]["actual"]["gor"]=fb_data["unit_data"][u]["actual"]["qgas"]/fb_data["unit_data"][u]["actual"]["qoil"]*1000.0
+            else:
+                fb_data["unit_data"][u]["actual"]["gor"]=0
 
 
-    if fb_data["wells"]["kpc"]["qgas_alloc"]>fb_data["streams"]["constraints"]["fuel_gas_max"]:
+    if fb_data["unit_data"]["kpc"]["actual"]["qgas"]>fb_data["streams"]["constraints"]["fuel_gas_max"]:
         fb_data["streams"]["actuals"]["fuel_gas"]=fb_data["streams"]["constraints"]["fuel_gas_max"]
 
 
     fb_data["streams"]["actuals"]["u2_oil_2_kpc"]=max(
             0.0,
             min(
-                fb_data["streams"]["constraints"]["cpc_oil_max"]-fb_data["wells"]["kpc"]["qoil_alloc"],
-                fb_data["wells"]["u2"]["qoil_alloc"]
+                fb_data["streams"]["constraints"]["cpc_oil_max"]-fb_data["unit_data"]["kpc"]["actual"]["qoil"],
+                fb_data["unit_data"]["u2"]["actual"]["qoil"]
             )
         )
 
     fb_data["streams"]["actuals"]["u2_oil_2_u3"]=max(
             0.0,
-            fb_data["wells"]["u2"]["qoil_alloc"]-fb_data["streams"]["actuals"]["u2_oil_2_kpc"]
+            fb_data["unit_data"]["u2"]["actual"]["qoil"]-fb_data["streams"]["actuals"]["u2_oil_2_kpc"]
         )
 
-    fb_data["streams"]["actuals"]["u3_tot_oil"]=fb_data["wells"]["u3"]["qoil_alloc"]+fb_data["streams"]["actuals"]["u2_oil_2_u3"]
+    fb_data["streams"]["actuals"]["u2_tot_oil"]=fb_data["unit_data"]["u2"]["actual"]["qoil"]
+
+
+    fb_data["streams"]["actuals"]["u3_tot_oil"]=fb_data["unit_data"]["u3"]["actual"]["qoil"]+fb_data["streams"]["actuals"]["u2_oil_2_u3"]
 
     fb_data["streams"]["actuals"]["u3_oil_2_kpc"]=max(
             0.0,
             min(
                 fb_data["streams"]["constraints"]["cpc_oil_max"] \
-                -fb_data["wells"]["kpc"]["qoil_alloc"] \
+                -fb_data["unit_data"]["kpc"]["actual"]["qoil"] \
                 -fb_data["streams"]["actuals"]["u2_oil_2_kpc"],
 
                 fb_data["streams"]["actuals"]["u3_tot_oil"]
@@ -122,7 +128,7 @@ def calculate(session_json):
         )
 
     fb_data["streams"]["actuals"]["cpc_oil"]= \
-        fb_data["wells"]["kpc"]["qoil_alloc"] \
+        fb_data["unit_data"]["kpc"]["actual"]["qoil"] \
         +fb_data["streams"]["actuals"]["u2_oil_2_kpc"] \
         +fb_data["streams"]["actuals"]["u3_oil_2_kpc"]
 
@@ -138,36 +144,38 @@ def calculate(session_json):
 
 
     fb_data["streams"]["actuals"]["kpc_free_gas"]= \
-        fb_data["wells"]["kpc"]["qgas_alloc"] \
+        fb_data["unit_data"]["kpc"]["actual"]["qgas"] \
         -fb_data["streams"]["actuals"]["fuel_gas"] \
-        -fb_data["wells"]["kpc"]["qoil_alloc"]*fb_data["wells"]["kpc"]["mp_rs"]/1000.0
+        -fb_data["unit_data"]["kpc"]["actual"]["qoil"]*fb_data["lab"]["kpc_mp_rs"]/1000.0
 
 
-    fb_data["streams"]["actuals"]["u2_gas_2_kpc"]=fb_data["streams"]["actuals"]["u2_oil_2_kpc"]*fb_data["wells"]["u2"]["mp_rs"]/1000.0
-    fb_data["streams"]["actuals"]["u2_gas_2_u3"]=fb_data["streams"]["actuals"]["u2_oil_2_u3"]*fb_data["wells"]["u2"]["mp_rs"]/1000.0
-    fb_data["streams"]["actuals"]["u3_gas_2_kpc"]=fb_data["streams"]["actuals"]["u3_oil_2_kpc"]*fb_data["wells"]["u3"]["lp_rs"]/1000.0
+    fb_data["streams"]["actuals"]["u2_oil_2_kpc_diss_gas"]=fb_data["streams"]["actuals"]["u2_oil_2_kpc"]*fb_data["lab"]["u2_mp_rs"]/1000.0
+    fb_data["streams"]["actuals"]["u2_oil_2_u3_diss_gas"]=fb_data["streams"]["actuals"]["u2_oil_2_u3"]*fb_data["lab"]["u2_mp_rs"]/1000.0
+    fb_data["streams"]["actuals"]["u3_oil_2_kpc_diss_gas"]=fb_data["streams"]["actuals"]["u3_oil_2_kpc"]*fb_data["lab"]["u3_lp_rs"]/1000.0
 
     fb_data["streams"]["actuals"]["kpc_tot_gas"]= \
-        fb_data["wells"]["kpc"]["qgas_alloc"] \
+        fb_data["unit_data"]["kpc"]["actual"]["qgas"] \
         +fb_data["streams"]["actuals"]["u2_gas_2_kpc"] \
         +fb_data["streams"]["actuals"]["u3_gas_2_kpc"] \
         -fb_data["streams"]["actuals"]["fuel_gas"]
 
 
     fb_data["streams"]["actuals"]["u3_free_gas"]= \
-        fb_data["wells"]["u3"]["qgas_alloc"] \
-        -fb_data["wells"]["u3"]["qoil_alloc"]*fb_data["wells"]["u3"]["mp_rs"]/1000.0
+        fb_data["unit_data"]["u3"]["actual"]["qgas"] \
+        -fb_data["unit_data"]["u3"]["actual"]["qoil"]*fb_data["lab"]["u3_mp_rs"]/1000.0
 
 
     fb_data["streams"]["actuals"]["u2_free_gas"]= \
-        fb_data["wells"]["u2"]["qgas_alloc"] \
-        -fb_data["wells"]["u2"]["qoil_alloc"]*fb_data["wells"]["u2"]["mp_rs"]/1000.0
+        fb_data["unit_data"]["u2"]["actual"]["qgas"] \
+        -fb_data["unit_data"]["u2"]["actual"]["qoil"]*fb_data["lab"]["u2_mp_rs"]/1000.0
+
+    fb_data["streams"]["actuals"]["u2_tot_gas"]=fb_data["streams"]["actuals"]["u2_free_gas"]
 
 
     fb_data["streams"]["actuals"]["u3_tot_gas"]= \
-        fb_data["wells"]["u3"]["qgas_alloc"] \
-        -fb_data["streams"]["actuals"]["mtu_oil"]*fb_data["wells"]["u3"]["mp_rs"]/1000.0 \
-        -fb_data["streams"]["actuals"]["ogp_oil"]*fb_data["wells"]["u3"]["mp_rs"]/1000.0 \
+        fb_data["unit_data"]["u3"]["actual"]["qgas"] \
+        -fb_data["streams"]["actuals"]["mtu_oil"]*fb_data["lab"]["u3_lp_rs"]/1000.0 \
+        -fb_data["streams"]["actuals"]["ogp_oil"]*fb_data["lab"]["u3_lp_rs"]/1000.0 \
         -fb_data["streams"]["actuals"]["u3_gas_2_kpc"]
 
 
@@ -191,6 +199,14 @@ def calculate(session_json):
         )
 
     fb_data["streams"]["actuals"]["gas_inj"]=fb_data["streams"]["actuals"]["kpc_gas_2_u2"]+fb_data["streams"]["actuals"]["u2_free_gas"]
+
+
+
+
+    fb_data["streams"]["actuals"]["kpc_tot_oil"]=fb_data["unit_data"]["kpc"]["actual"]["qoil"]+fb_data["streams"]["actuals"]["u2_oil_2_kpc"]+fb_data["streams"]["actuals"]["u3_oil_2_kpc"]
+
+
+
 
 
 
@@ -256,13 +272,13 @@ def calculate(session_json):
         fb_data["streams"]["perc"]["u3_free_gas_perc"]=0.0
 
 
-    # print(fb_data["wells"]["kpc"]["qoil_alloc"])
-    # print(fb_data["wells"]["u2"]["qoil_alloc"])
-    # print(fb_data["wells"]["u3"]["qoil_alloc"])
+    # print(fb_data["unit_data"]["kpc"]["qoil_alloc"])
+    # print(fb_data["unit_data"]["u2"]["qoil_alloc"])
+    # print(fb_data["unit_data"]["u3"]["qoil_alloc"])
     # print("---")
-    # print(fb_data["wells"]["kpc"]["qgas_alloc"])
-    # print(fb_data["wells"]["u2"]["qgas_alloc"])
-    # print(fb_data["wells"]["u3"]["qgas_alloc"])
+    # print(fb_data["unit_data"]["kpc"]["qgas"])
+    # print(fb_data["unit_data"]["u2"]["qgas"])
+    # print(fb_data["unit_data"]["u3"]["qgas"])
     # print("---")
     # print(fb_data["streams"]["constraints"]["cpc_oil_max"])
     # print(fb_data["streams"]["actuals"]["u2_oil_2_kpc"])
@@ -272,7 +288,7 @@ def calculate(session_json):
     # print(fb_data["streams"]["actuals"]["ogp_oil"])
     # print("---")
     # print(fb_data["streams"]["actuals"]["kpc_free_gas"])
-    # print(fb_data["wells"]["kpc"]["qoil_alloc"]*fb_data["wells"]["kpc"]["mp_rs"]/1000.0)
+    # print(fb_data["unit_data"]["kpc"]["qoil_alloc"]*fb_data["unit_data"]["kpc"]["mp_rs"]/1000.0)
     # print(fb_data["streams"]["actuals"]["u2_gas_2_kpc"])
     # print(fb_data["streams"]["actuals"]["u3_gas_2_kpc"])
     # print(fb_data["streams"]["actuals"]["kpc_tot_gas"])

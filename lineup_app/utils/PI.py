@@ -94,7 +94,7 @@ def InterpolatedValues(data, start, end, interval="1d"):
 
         date = datetime.datetime(*date[0:6])
         value = pv.Value
-        print(date,value)
+        # print(date,value)
 
         try:
             value = float(value)
