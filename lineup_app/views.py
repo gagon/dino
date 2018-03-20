@@ -170,17 +170,17 @@ def setup():
     if MOCKUP:
         if session_json["state"]==1: # check if state has been saved by the user (1)
             nsst.set_unit_routes(session_json["well_data"]) # set well routes as per state
-            nsst.set_sep_pres(session_json["unit_data"]) # set separator pressure as per state
+            nsst.set_sep_pres(session_json["fb_data"]["unit_data"]) # set separator pressure as per state
 
         session_json["well_data"]=nsst.get_all_well_data(session_json["well_data"],None,1)
         session_json["unit_data"]=nsst.get_sep_pres(session_json["unit_data"])
     else:
         if session_json["state"]==1: # check if state has been saved by the user (1)
             st.set_unit_routes(session_json["well_data"],None,1) # set well routes as per state
-            st.set_sep_pres(session_json["unit_data"]) # set separator pressure as per state
+            st.set_sep_pres(session_json["fb_data"]["unit_data"]) # set separator pressure as per state
 
         session_json["well_data"]=st.get_all_well_data(session_json["well_data"],None,1) # get well data from GAP such as GOR, limits and current routes
-        session_json["unit_data"]=st.get_sep_pres(session_json["unit_data"]) # get separator pressure if state doesn't exist
+        session_json["fb_data"]["unit_data"]=st.get_sep_pres(session_json["fb_data"]["unit_data"]) # get separator pressure if state doesn't exist
     #------------------------------------------------------------------------------
 
     # group wells by unit for html page
@@ -189,7 +189,7 @@ def setup():
     # save gathered data to json file
     utils.save_session_json(session_json)
 
-    page_active={"load_pcs":"","load_state":"","setup":"active","live":"","results":""}
+    page_active={"setup":"active"}
     # render page, pass data dictionary to the page
     return render_template('setup.html',data=session_json,page_active=page_active)
 """========================================================================================="""
@@ -261,7 +261,7 @@ def results():
     # merge data to present if ref case exists
     data,merge_done=rs.merge_ref(session_json)
 
-    page_active={"load_pcs":"","load_state":"","setup":"","live":"","results":"active"}
+    page_active={"load_pcs":"","load_state":"","load_streams":"","setup":"","live":"","results":"active"}
 
     return render_template('results.html',data=data,page_active=page_active,merge_done=merge_done)
 """========================================================================================="""
@@ -274,7 +274,7 @@ def load():
     session_json=utils.get_session_json()
     if not "well_data" in session_json: # check if state was exists. well_data ~ state
         return "NO session well state. Go back to <b>Setup</b> and save state"
-    page_active={"load_pcs":"active","load_state":"","setup":"","live":"","results":""}
+    page_active={"load_pcs":"active","load_state":"","load_streams":"","setup":"","live":"","results":""}
     return render_template('load.html',page_active=page_active)
 """========================================================================================="""
 
@@ -288,6 +288,17 @@ def load_state():
         return "NO session well state. Go back to <b>Setup</b> and save state"
     page_active={"load_pcs":"","load_state":"active","setup":"","live":"","results":""}
     return render_template('load_state.html',page_active=page_active)
+"""========================================================================================="""
+
+""" LOAD STATE PAGE RENDER ================================================================= """
+@app.route('/load_streams')
+@login_required
+def load_streams():
+    session_json=utils.get_session_json()
+    if not "well_data" in session_json: # check if state was exists. well_data ~ state
+        return "NO session well state. Go back to <b>Setup</b> and save state"
+    page_active={"load_streams":"active"}
+    return render_template('load_streams.html',page_active=page_active)
 """========================================================================================="""
 
 
@@ -575,3 +586,30 @@ def generic_pi_data():
 
     return jsonify({"data":data})
     # return "None"
+
+
+@app.route('/generic_pi_arr', methods=["POST"])
+def generic_pi_arr():
+    data2get_list=request.json
+    data=pi.get_pi_arr(data2get_list)
+
+    return jsonify({"data":data})
+
+
+""" SAVE STREAMS FUNCTION ==================================================================== """
+@app.route('/save_streams', methods = ['POST'])
+def save_streams():
+    session_json=utils.get_session_json() # read session data
+    session_json=utils.save_streams2session(request.json,session_json)
+    utils.save_session_json(session_json)
+    return jsonify({'data':"Saved Streams successfully!"})
+"""========================================================================================="""
+
+""" SAVE AFS FUNCTION ==================================================================== """
+@app.route('/save_afs', methods = ['POST'])
+def save_afs():
+    session_json=utils.get_session_json() # read session data
+    session_json=utils.save_afs2session(request.json,session_json)
+    utils.save_session_json(session_json)
+    return jsonify({'data':"Saved AFs successfully!"})
+"""========================================================================================="""
