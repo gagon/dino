@@ -62,19 +62,19 @@ def get_all_well_data(session_json):
 
     afs=[
         [
-            session_json["fb_data"]["wells"]["kpc"]["af_oil"],
-            session_json["fb_data"]["wells"]["kpc"]["af_gas"],
-            session_json["fb_data"]["wells"]["kpc"]["af_wat"]
+            session_json["fb_data"]["unit_data"]["kpc"]["af"]["af_oil"],
+            session_json["fb_data"]["unit_data"]["kpc"]["af"]["af_gas"],
+            session_json["fb_data"]["unit_data"]["kpc"]["af"]["af_wat"]
         ],
         [
-            session_json["fb_data"]["wells"]["u3"]["af_oil"],
-            session_json["fb_data"]["wells"]["u3"]["af_gas"],
-            session_json["fb_data"]["wells"]["u3"]["af_wat"]
+            session_json["fb_data"]["unit_data"]["u3"]["af"]["af_oil"],
+            session_json["fb_data"]["unit_data"]["u3"]["af"]["af_gas"],
+            session_json["fb_data"]["unit_data"]["u3"]["af"]["af_wat"]
         ],
         [
-            session_json["fb_data"]["wells"]["u2"]["af_oil"],
-            session_json["fb_data"]["wells"]["u2"]["af_gas"],
-            session_json["fb_data"]["wells"]["u2"]["af_wat"]
+            session_json["fb_data"]["unit_data"]["u2"]["af"]["af_oil"],
+            session_json["fb_data"]["unit_data"]["u2"]["af"]["af_gas"],
+            session_json["fb_data"]["unit_data"]["u2"]["af"]["af_wat"]
         ]
     ]
 
