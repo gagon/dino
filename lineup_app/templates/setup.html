@@ -266,6 +266,7 @@
                 <th>Comingled</th>
                 <th>Flow to</th>
                 <th>MAP</th>
+
                 <th>
                   <a href="javascript:void(0);" id="#reset_to_map{{ loop.index0 }}" onclick="reset_to_map({{ loop.index0 }});">
                     Reset all to MAP
@@ -274,6 +275,12 @@
                   Target FWHP
                   <span class="glyphicon glyphicon-info-sign" aria-hidden="true" title=
                   "Target FWHP will be set by applying dP.&#013;In case back pressure is higher than Target FWHP,&#013;dP will be set to 0 and resulting FWHP will be used."
+                  ></span>
+                </th>
+                <th>
+                  Let below MAP
+                  <span class="glyphicon glyphicon-info-sign" aria-hidden="true" title=
+                  "In certain cases FWHP is allowed to be below MAP.&#013;For instance, wells under test/monitoring"
                   ></span>
                 </th>
                 <th>
@@ -327,6 +334,13 @@
                   <td>
                     <input class="form-control input-small" type="text"
                       style="padding:1px;width:60px;height:18px;font-size:12px;" name="target_fwhp" value="{{ row.target_fwhp }}">
+                  </td>
+                  <td>
+                    {% if row.below_map==1 %}
+                      <input type="checkbox" name="below_map" value="" checked='checked'>
+                    {% else %}
+                      <input type="checkbox" name="below_map" value="">
+                    {% endif %}
                   </td>
                   <td>
                     {% if row.fixed==1 %}
@@ -489,10 +503,23 @@
           }else if (fwhp_val==-1){
             well_data[wellname]["target_fwhp"]=-1;
           }else{
-            well_data[wellname]["target_fwhp"]=map;
+            if ($(this).find("[name=below_map]").is(":checked")){ // if let below map checked then fwhp value can be recorded
+              if(fwhp_val<50){
+                well_data[wellname]["target_fwhp"]=50;
+              }else{
+                well_data[wellname]["target_fwhp"]=fwhp_val;
+              }
+            }else{
+              well_data[wellname]["target_fwhp"]=map;
+            }
+
           }
         }else{
-          well_data[wellname]["target_fwhp"]=map;
+          if ($(this).find("[name=below_map]").is(":checked")){
+            well_data[wellname]["target_fwhp"]=50; // arbitrary number to make pressure below network pressure
+          }else{
+            well_data[wellname]["target_fwhp"]=map;
+          }
         };
 
         if ($(this).find("[name=fixed]").is(":checked")){ // get fixed state from row
@@ -505,6 +532,13 @@
           well_data[wellname]["ro"]=1
         }else{
           well_data[wellname]["ro"]=0
+        }
+
+
+        if ($(this).find("[name=below_map]").is(":checked")){ // get fixed state from row
+          well_data[wellname]["below_map"]=1
+        }else{
+          well_data[wellname]["below_map"]=0
         }
 
       })
@@ -667,34 +701,34 @@
 
   function reset_all(){
 
-    $("#kpc-qoil_max").text("50000");
-    $("#kpc-qgas_max").text("50000");
-    $("#kpc-qwat_max").text("50000");
-    $("#u3-qoil_max").text("50000");
-    $("#u3-qgas_max").text("50000");
-    $("#u3-qwat_max").text("50000");
-    $("#u2-qoil_max").text("50000");
-    $("#u2-qgas_max").text("50000");
-    $("#u2-qwat_max").text("50000");
+    $("#kpc-qoil_max").text(50000);
+    $("#kpc-qgas_max").text(50000);
+    $("#kpc-qwat_max").text(50000);
+    $("#u3-qoil_max").text(50000);
+    $("#u3-qgas_max").text(50000);
+    $("#u3-qwat_max").text(50000);
+    $("#u2-qoil_max").text(50000);
+    $("#u2-qgas_max").text(50000);
+    $("#u2-qwat_max").text(50000);
 
-    $("#kpc_af_oil").text("1");
-    $("#kpc_af_gas").text("1");
-    $("#kpc_af_wat").text("1");
-    $("#u3_af_oil").text("1");
-    $("#u3_af_gas").text("1");
-    $("#u3_af_wat").text("1");
-    $("#u2_af_oil").text("1");
-    $("#u2_af_gas").text("1");
-    $("#u2_af_wat").text("1");
+    $("#kpc_af_oil").text(1);
+    $("#kpc_af_gas").text(1);
+    $("#kpc_af_wat").text(1);
+    $("#u3_af_oil").text(1);
+    $("#u3_af_gas").text(1);
+    $("#u3_af_wat").text(1);
+    $("#u2_af_oil").text(1);
+    $("#u2_af_gas").text(1);
+    $("#u2_af_wat").text(1);
 
   }
 
 
   function copy2qgasmax(){
 
-    $("#kpc-qgas_max").text($("#kpc-qgas_meas").text());
-    $("#u3-qgas_max").text($("#u3-qgas_meas").text());
-    $("#u2-qgas_max").text($("#u2-qgas_meas").text());
+    $("#kpc-qgas_max").text(parseFloat($("#kpc-qgas_meas").text()));
+    $("#u3-qgas_max").text(parseFloat($("#u3-qgas_meas").text()));
+    $("#u2-qgas_max").text(parseFloat($("#u2-qgas_meas").text()));
 
   }
 
