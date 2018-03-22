@@ -56,7 +56,7 @@ def run_optimization(session_json,PE_server,mode):
     sleep(0.1)
     ut.solve_network_rb(PE_server)
 
-    unit_data=session_json["unit_data"]
+    unit_data=session_json["fb_data"]["unit_data"]
 
 
     repeat=1
@@ -80,16 +80,27 @@ def run_optimization(session_json,PE_server,mode):
 
                 if qgas[i]>0:
                     if session_json["well_data"][well]["unit_id"]==unit_idx:
-                        data_unit.append([well,session_json["well_data"][well]["gor"],qgas[i],qoil[i],qwat[i]])
+
+                        # qgas[i]=qgas[i]*unit_data[unit]["af"]["af_gas"]
+                        # qoil[i]=qoil[i]*unit_data[unit]["af"]["af_oil"]
+                        # qwat[i]=qwat[i]*unit_data[unit]["af"]["af_wat"]
+
+                        data_unit.append(
+                            [well,session_json["well_data"][well]["gor"],
+                            qgas[i],
+                            qoil[i],
+                            qwat[i]]
+                        )
                         unit_qgas+=qgas[i]
                         unit_qoil+=qoil[i]
                         unit_qwat+=qwat[i]
 
+
             data_unit=sorted(data_unit,key=lambda x:x[1],reverse=True)
 
-            unit_qgas_max=unit_data[unit]["constraints"]["qgas_max"]
-            unit_qoil_max=unit_data[unit]["constraints"]["qoil_max"]
-            unit_qwat_max=unit_data[unit]["constraints"]["qwat_max"]
+            unit_qgas_max=unit_data[unit]["constraints"]["qgas_max"]/unit_data[unit]["af"]["af_gas"]
+            unit_qoil_max=unit_data[unit]["constraints"]["qoil_max"]/unit_data[unit]["af"]["af_oil"]
+            unit_qwat_max=unit_data[unit]["constraints"]["qwat_max"]/unit_data[unit]["af"]["af_wat"]
 
             if unit_qgas>unit_qgas_max or unit_qoil>unit_qoil_max:
                 optimized=1
@@ -161,9 +172,10 @@ def run_optimization(session_json,PE_server,mode):
         tot_qgas=0.0
         tot_qwat=0.0
         for unit_idx,unit in enumerate(units_simple):
-            unit_qgas=ut.get_unit_qgas(PE_server,units[unit_idx])
-            unit_qoil=ut.get_unit_qoil(PE_server,units[unit_idx])
-            unit_qwat=ut.get_unit_qwat(PE_server,units[unit_idx])
+            print(unit_qgas)
+            unit_qgas=ut.get_unit_qgas(PE_server,units[unit_idx])*unit_data[unit]["af"]["af_gas"]
+            unit_qoil=ut.get_unit_qoil(PE_server,units[unit_idx])*unit_data[unit]["af"]["af_oil"]
+            unit_qwat=ut.get_unit_qwat(PE_server,units[unit_idx])*unit_data[unit]["af"]["af_wat"]
             tot_qoil+=unit_qoil
             tot_qgas+=unit_qgas
             tot_qwat+=unit_qwat
@@ -174,6 +186,7 @@ def run_optimization(session_json,PE_server,mode):
             # unit_data[unit]["results"]["qgas"]=unit_qgas
             # unit_data[unit]["results"]["qoil"]=unit_qoil
             # unit_data[unit]["results"]["qwat"]=unit_qwat
+
 
 
             # reporting
