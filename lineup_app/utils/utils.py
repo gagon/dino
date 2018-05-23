@@ -46,12 +46,16 @@ def save_loaded2session(session_json,loaded_data):
             if in_routes==1:
                 session_json["well_data"][well]["selected_route"]=loaded_state[well]["selected_route"]
                 session_json["well_data"][well]["target_fwhp"]=round(float(loaded_state[well]["target_fwhp"]),1)
+                if session_json["well_data"][well]["map"]>float(loaded_state[well]["target_fwhp"]): # to let wells produce below map, for example during well test
+                    session_json["well_data"][well]["below_map"]=1
             else:
-                print("Route is not in well connections list! Well %s, %s" % (well,loaded_state[well]["selected_route"]))
+                print("Route is not in well connections list! Well %s, %s. Well will be SI" % (well,loaded_state[well]["selected_route"]))
+                session_json["well_data"][well]["target_fwhp"]=-1
 
         else: # if well is not in loaded_state then shut the well
             if shut_the_rest:
                 session_json["well_data"][well]["target_fwhp"]=-1
+                print("Well %s is Shut as did not appear in reports!" % (well))
 
     return session_json
 
@@ -63,13 +67,13 @@ def allowed_file(filename,ALLOWED_EXTENSIONS): # make sure file is one of allowe
 
 def merge_route_slot(result_text,well_details):
     result_text_new=[]
-    print(well_details.keys())
+    # print(well_details.keys())
     for well in result_text:
         for w,val in well_details.items():
             if well[0]==w:
                 for r in val["connection"]["routes"]:
-                    print(w,well[1],well[2],well[3])
-                    print(w,r["unit"],r["rms"],r["tl"])
+                    # print(w,well[1],well[2],well[3])
+                    # print(w,r["unit"],r["rms"],r["tl"])
                     if well[1]==r["unit"] and well[2]==r["rms"] and well[3]==r["tl"]:
 
                         row=well
@@ -162,6 +166,6 @@ def save_afs2session(afs,session_json):
         for a,v in af.items():
             for p,n in v.items():
                 print(unit,p,n)
-                session_json["fb_data"]["unit_data"][unit]["af"][p]=n
+                session_json["fb_data"]["unit_data"][unit]["af"][p]=float(n)
 
     return session_json

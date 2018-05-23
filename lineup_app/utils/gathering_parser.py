@@ -168,6 +168,7 @@ def parse_gathering_report():
 
         # QC step
 
+        # calc number of wells
         for key,val in rmss.items():
             well_cnt=0
             for well,val2 in well_routes.items():

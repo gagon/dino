@@ -98,18 +98,21 @@ def calculate(session_json):
         fb_data["streams"]["actuals"]["fuel_gas"]=fb_data["streams"]["constraints"]["fuel_gas_max"]
 
 
+    fb_data["streams"]["actuals"]["u2_oil_2_u3"]=min(
+            fb_data["unit_data"]["u2"]["actual"]["qoil"],
+            fb_data["streams"]["constraints"]["u2_oil_2_u3_max"]
+        )
+
+    print("======",fb_data["streams"]["constraints"]["u2_oil_2_u3_max"])
     fb_data["streams"]["actuals"]["u2_oil_2_kpc"]=max(
             0.0,
             min(
                 fb_data["streams"]["constraints"]["cpc_oil_max"]-fb_data["unit_data"]["kpc"]["actual"]["qoil"],
-                fb_data["unit_data"]["u2"]["actual"]["qoil"]
+                fb_data["unit_data"]["u2"]["actual"]["qoil"]-fb_data["streams"]["actuals"]["u2_oil_2_u3"]
             )
         )
 
-    fb_data["streams"]["actuals"]["u2_oil_2_u3"]=max(
-            0.0,
-            fb_data["unit_data"]["u2"]["actual"]["qoil"]-fb_data["streams"]["actuals"]["u2_oil_2_kpc"]
-        )
+
 
     fb_data["streams"]["actuals"]["u2_tot_oil"]=fb_data["unit_data"]["u2"]["actual"]["qoil"]
 
@@ -126,6 +129,7 @@ def calculate(session_json):
                 fb_data["streams"]["actuals"]["u3_tot_oil"]
             )
         )
+
 
     fb_data["streams"]["actuals"]["cpc_oil"]= \
         fb_data["unit_data"]["kpc"]["actual"]["qoil"] \
@@ -155,8 +159,8 @@ def calculate(session_json):
 
     fb_data["streams"]["actuals"]["kpc_tot_gas"]= \
         fb_data["unit_data"]["kpc"]["actual"]["qgas"] \
-        +fb_data["streams"]["actuals"]["u2_gas_2_kpc"] \
-        +fb_data["streams"]["actuals"]["u3_gas_2_kpc"] \
+        +fb_data["streams"]["actuals"]["u2_oil_2_kpc_diss_gas"] \
+        +fb_data["streams"]["actuals"]["u3_oil_2_kpc_diss_gas"] \
         -fb_data["streams"]["actuals"]["fuel_gas"]
 
 
@@ -176,8 +180,8 @@ def calculate(session_json):
         fb_data["unit_data"]["u3"]["actual"]["qgas"] \
         -fb_data["streams"]["actuals"]["mtu_oil"]*fb_data["lab"]["u3_lp_rs"]/1000.0 \
         -fb_data["streams"]["actuals"]["ogp_oil"]*fb_data["lab"]["u3_lp_rs"]/1000.0 \
-        -fb_data["streams"]["actuals"]["u3_gas_2_kpc"]
-
+        -fb_data["streams"]["actuals"]["u3_oil_2_kpc_diss_gas"] \
+        +fb_data["streams"]["actuals"]["u2_oil_2_u3_diss_gas"]
 
     fb_data["streams"]["actuals"]["kpc_gas_2_u3"]=min(
             fb_data["streams"]["actuals"]["kpc_tot_gas"],

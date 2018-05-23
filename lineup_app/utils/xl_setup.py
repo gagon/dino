@@ -106,30 +106,36 @@ def read_pcs():
     well_pcs={}
 
     r=8
-    while pc_sh.cell(row=r, column=2).value!=None:
-        if pc_sh.cell(row=r, column=16).value!=None:
+    while pc_sh.cell(row=r, column=2).value!=None: # go through wells
+
+        if is_number(pc_sh.cell(row=r, column=16).value): #check if PC exits (not empty cell)
             well_data={}
             well_data["wellname"]=str(pc_sh.cell(row=r, column=2).value)
-            well_data["sbhp"]=pc_sh.cell(row=r, column=12).value
-            if pc_sh.cell(row=r, column=14).value!=None and pc_sh.cell(row=r, column=14).value>0:
-                well_data["gor"]=(1.0/pc_sh.cell(row=r, column=14).value)*1000000.0
+            well_data["sbhp"]=pc_sh.cell(row=r, column=12).value # get SBHP
+            if is_number(pc_sh.cell(row=r, column=14).value):
+                if pc_sh.cell(row=r, column=14).value>0:
+                    well_data["gor"]=(1.0/pc_sh.cell(row=r, column=14).value)*1000000.0 #convert CGR to GOR
+                else:
+                    well_pcs["error"]="GOR less than 0! Check Deliverability file, well: %s" % str(pc_sh.cell(row=r, column=2).value)
+                    break
             else:
-                well_data["gor"]=0.0
+                well_pcs["error"]="NO GOR! Check Deliverability file, well: %s" % str(pc_sh.cell(row=r, column=2).value)
+                break
 
-            if pc_sh.cell(row=r, column=32).value!=None:
+            if is_number(pc_sh.cell(row=r, column=32).value):
                 well_data["map"]=pc_sh.cell(row=r, column=32).value
             else:
-                well_data["map"]=0.0
+                well_pcs["error"]="NO MAP! Check Deliverability file, well: %s" % str(pc_sh.cell(row=r, column=2).value)
+                break
 
-            if pc_sh.cell(row=r, column=8).value!=None:
+            if is_number(pc_sh.cell(row=r, column=8).value):
                 well_data["wct"]=pc_sh.cell(row=r, column=8).value/100.0
             else:
-                well_data["wct"]=0.0
+                well_pcs["error"]="NO Watercut! Check Deliverability file, well: %s" % str(pc_sh.cell(row=r, column=2).value)
+                break
 
-            if well_data["gor"]>0.0 and well_data["wct"]>0.0:
-                well_data["wgr"]=well_data["wct"]/(well_data["gor"]*(1.0-well_data["wct"]))
-            else:
-                well_data["wgr"]=0.0
+
+            well_data["wgr"]=well_data["wct"]/(well_data["gor"]*(1.0-well_data["wct"]))
 
 
             well_data["qoil_coeffs"]=[
@@ -149,12 +155,14 @@ def read_pcs():
             well_pcs[well_data["wellname"]]=well_data
         r+=1
 
-    for well,data in well_pcs.items():
-        pc=generate_pc(data["qoil_coeffs"],data["wct"],data["fbhp_coeffs"],data["gor"])
-        well_pcs[well]["pc"]=pc
-
+    if not "error" in well_pcs.keys():
+        for well,data in well_pcs.items():
+            pc=generate_pc(data["qoil_coeffs"],data["wct"],data["fbhp_coeffs"],data["gor"])
+            well_pcs[well]["pc"]=pc
 
     return well_pcs
+
+
 
 def generate_pc(qoil_coeffs,wc,fbhp_coeffs,gor):
     qoil=1000.0
@@ -209,7 +217,12 @@ def read_maps(well_data):
 
 
 
-
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except:
+        return False
 
 
 if __name__=="__main__":
