@@ -1337,11 +1337,11 @@
 
       for (var p=0;p<phases.length;p++){
         var meas=fb_data["unit_data"][units[i]]["measured"]["q"+phases[p]]
-        var act=fb_data["unit_data"][units[i]]["actual"]["q"+phases[p]]
+        var act=fb_data["unit_data"][units[i]]["actual"]["q"+phases[p]]/fb_data["unit_data"][units[i]]["af"]["af_"+phases[p]]
         if (!isNaN(meas) && !isNaN(act)){
           if (meas>0){
-            afs[units[i]]["af"]["af_"+phases[p]]=(act/meas).toFixed(3)
-            message+=units_label[i]+" "+phases[p]+" AF="+String((act/meas).toFixed(3))+"\n"
+            afs[units[i]]["af"]["af_"+phases[p]]=meas/act
+            message+=units_label[i]+" "+phases[p]+" AF="+String((meas/act).toFixed(3))+"\n"
           }
         }
       }

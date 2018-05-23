@@ -34,9 +34,9 @@
           </tr>
           <tr>
             <td style='background-color:#f2f2f2;'>Qoil AF</td>
-            <td class="text-center"><span id="kpc_af_oil" contenteditable>{{ data.fb_data.unit_data.kpc.af.af_oil }}</span></td>
-            <td class="text-center"><span id="u3_af_oil" contenteditable>{{ data.fb_data.unit_data.u3.af.af_oil }}</span></td>
-            <td class="text-center"><span id="u2_af_oil" contenteditable>{{ data.fb_data.unit_data.u2.af.af_oil }}</span></td>
+            <td class="text-center"><span id="kpc_af_oil" contenteditable>{{ data.fb_data.unit_data.kpc.af.af_oil|round(3, 'common') }}</span></td>
+            <td class="text-center"><span id="u3_af_oil" contenteditable>{{ data.fb_data.unit_data.u3.af.af_oil|round(3, 'common') }}</span></td>
+            <td class="text-center"><span id="u2_af_oil" contenteditable>{{ data.fb_data.unit_data.u2.af.af_oil|round(3, 'common') }}</span></td>
           </tr>
           <tr>
             <td class="info"></td>
@@ -58,9 +58,9 @@
           </tr>
           <tr>
             <td style='background-color:#f2f2f2;'>Qgas AF</td>
-            <td class="text-center"><span id="kpc_af_gas" contenteditable >{{ data.fb_data.unit_data.kpc.af.af_gas }}</span></td>
-            <td class="text-center"><span id="u3_af_gas" contenteditable>{{ data.fb_data.unit_data.u3.af.af_gas }}</span></td>
-            <td class="text-center"><span id="u2_af_gas" contenteditable>{{ data.fb_data.unit_data.u2.af.af_gas }}</span></td>
+            <td class="text-center"><span id="kpc_af_gas" contenteditable >{{ data.fb_data.unit_data.kpc.af.af_gas|round(3, 'common') }}</span></td>
+            <td class="text-center"><span id="u3_af_gas" contenteditable>{{ data.fb_data.unit_data.u3.af.af_gas|round(3, 'common') }}</span></td>
+            <td class="text-center"><span id="u2_af_gas" contenteditable>{{ data.fb_data.unit_data.u2.af.af_gas|round(3, 'common') }}</span></td>
           </tr>
           <tr>
             <td class="info"></td>
@@ -82,9 +82,9 @@
           </tr>
           <tr>
             <td style='background-color:#f2f2f2;'>Qwater AF</td>
-            <td class="text-center"><span id="kpc_af_wat" contenteditable >{{ data.fb_data.unit_data.kpc.af.af_wat }}</span></td>
-            <td class="text-center"><span id="u3_af_wat" contenteditable>{{ data.fb_data.unit_data.u3.af.af_wat }}</span></td>
-            <td class="text-center"><span id="u2_af_wat" contenteditable>{{ data.fb_data.unit_data.u2.af.af_wat }}</span></td>
+            <td class="text-center"><span id="kpc_af_wat" contenteditable >{{ data.fb_data.unit_data.kpc.af.af_wat|round(3, 'common') }}</span></td>
+            <td class="text-center"><span id="u3_af_wat" contenteditable>{{ data.fb_data.unit_data.u3.af.af_wat|round(3, 'common') }}</span></td>
+            <td class="text-center"><span id="u2_af_wat" contenteditable>{{ data.fb_data.unit_data.u2.af.af_wat|round(3, 'common') }}</span></td>
           </tr>
         </tbody>
       </table>
@@ -177,54 +177,61 @@
           <tr>
             <td style="background-color:#f2f2f2;">CPC oil</td>
             <td style=''><span id="cpc_oil_max" contenteditable>{{ data.fb_data.streams.constraints.cpc_oil_max }}</span></td>
-            <td style="background-color:#f2f2f2;">{{ data.fb_data.streams.measured.cpc_oil }}</td>
+            <td style="background-color:#f2f2f2;" id="cpc_oil_meas">{{ data.fb_data.streams.measured.cpc_oil }}</td>
             <td style="background-color:#f2f2f2;">Sm3/d</td>
           </tr>
           <tr>
             <td style="background-color:#f2f2f2;">OGP gas</td>
             <td style=''><span id="ogp_gas_max" contenteditable>{{ data.fb_data.streams.constraints.ogp_gas_max }}</span></td>
-            <td style="background-color:#f2f2f2;">{{ data.fb_data.streams.measured.ogp_gas }}</td>
+            <td style="background-color:#f2f2f2;" id="ogp_gas_meas">{{ data.fb_data.streams.measured.ogp_gas }}</td>
             <td style="background-color:#f2f2f2;">KSm3/d</td>
           </tr>
           <tr>
             <td style="background-color:#f2f2f2;">Gas injection</td>
             <td style=''><span id="gas_inj_max" contenteditable>{{ data.fb_data.streams.constraints.gas_inj_max }}</span></td>
-            <td style="background-color:#f2f2f2;">{{ data.fb_data.streams.measured.gas_inj }}</td>
+            <td style="background-color:#f2f2f2;" id="gas_inj_meas">{{ data.fb_data.streams.measured.gas_inj }}</td>
             <td style="background-color:#f2f2f2;">KSm3/d</td>
           </tr>
           <tr>
             <td style="background-color:#f2f2f2;">Fuel gas</td>
             <td style=''><span id="fuel_gas_max" contenteditable>{{ data.fb_data.streams.constraints.fuel_gas_max }}</span></td>
-            <td style="background-color:#f2f2f2;">{{ data.fb_data.streams.measured.fuel_gas }}</td>
+            <td style="background-color:#f2f2f2;" id="fuel_gas_meas">{{ data.fb_data.streams.measured.fuel_gas }}</td>
             <td style="background-color:#f2f2f2;">KSm3/d</td>
           </tr>
           <tr>
             <td style="background-color:#f2f2f2;">MTU oil</td>
             <td style=''><span id="mtu_oil_max" contenteditable>{{ data.fb_data.streams.constraints.mtu_oil_max }}</span></td>
-            <td style="background-color:#f2f2f2;">{{ data.fb_data.streams.measured.mtu_oil }}</td>
+            <td style="background-color:#f2f2f2;" id="mtu_oil_meas">{{ data.fb_data.streams.measured.mtu_oil }}</td>
             <td style="background-color:#f2f2f2;">Sm3/d</td>
           </tr>
           <tr>
             <td style="background-color:#f2f2f2;">OGP oil</td>
             <td style=''><span id="ogp_oil_max" contenteditable>{{ data.fb_data.streams.constraints.ogp_oil_max }}</span></td>
-            <td style="background-color:#f2f2f2;">{{ data.fb_data.streams.measured.ogp_oil }}</td>
+            <td style="background-color:#f2f2f2;" id="ogp_oil_meas">{{ data.fb_data.streams.measured.ogp_oil }}</td>
             <td style="background-color:#f2f2f2;">Sm3/d</td>
           </tr>
           <tr>
-            <td style="background-color:#f2f2f2;">KPC Qgas Max to Unit-2</td>
+            <td style="background-color:#f2f2f2;">KPC Qgas to Unit-2</td>
             <td style=''><span id="kpc_gas_2_u2_max" contenteditable>{{ data.fb_data.streams.constraints.kpc_gas_2_u2_max }}</span></td>
-            <td style="background-color:#f2f2f2;">{{ data.fb_data.streams.measured.kpc_gas_2_u2 }}</td>
+            <td style="background-color:#f2f2f2;" id="kpc_gas_2_u2_meas">{{ data.fb_data.streams.measured.kpc_gas_2_u2 }}</td>
             <td style="background-color:#f2f2f2;">KSm3/d</td>
           </tr>
           <tr>
-            <td style="background-color:#f2f2f2;">KPC Qgas Max to Unit-3</td>
+            <td style="background-color:#f2f2f2;">KPC Qgas to Unit-3</td>
             <td style=''><span id="kpc_gas_2_u3_max" contenteditable>{{ data.fb_data.streams.constraints.kpc_gas_2_u3_max }}</span></td>
-            <td style="background-color:#f2f2f2;">{{ data.fb_data.streams.measured.kpc_gas_2_u3 }}</td>
+            <td style="background-color:#f2f2f2;" id="kpc_gas_2_u3_meas">{{ data.fb_data.streams.measured.kpc_gas_2_u3 }}</td>
+            <td style="background-color:#f2f2f2;">KSm3/d</td>
+          </tr>
+          <tr>
+            <td style="background-color:#f2f2f2;">Unit-2 Qoil to Unit-3</td>
+            <td style=''><span id="u2_oil_2_u3_max" contenteditable>{{ data.fb_data.streams.constraints.u2_oil_2_u3_max }}</span></td>
+            <td style="background-color:#f2f2f2;" id="u2_oil_2_u3_meas">{{ data.fb_data.streams.measured.u2_oil_2_u3 }}</td>
             <td style="background-color:#f2f2f2;">KSm3/d</td>
           </tr>
 
         </tbody>
       </table>
+      <a href="#" id="copy2qgasmax_streams" onclick="copy2qgasmax_streams();" class="btn btn-default btn-sm">Copy to Constraints</a>
     </div>
 
 
@@ -417,6 +424,7 @@
   ////////////////////////////////////////////////////////////////////////////////
 
   $(document).ready(function() {
+
     $(':checkbox').change(function(){
       if(this.name=="ro"){
         // if(this.checked) {
@@ -425,17 +433,51 @@
           // $("#comb_num").text("Combinations: "+comb_num);
         // }
       }
+      $("#save_state").removeClass('list-group-item-action').addClass('list-group-item-danger');
     });
+
+
+    //trigger any input changes in the page and highlight save button
+    $("input").change( function() {
+      $("#save_state").removeClass('list-group-item-action').addClass('list-group-item-danger');
+    });
+    //trigger any input/span changes in the page and highlight save button
+    $("span").on('DOMNodeInserted', function () {
+      $("#save_state").removeClass('list-group-item-action').addClass('list-group-item-danger');
+    });
+    //trigger any select changes in the page and highlight save button
+    $("select").change( function() {
+      $("#save_state").removeClass('list-group-item-action').addClass('list-group-item-danger');
+    });
+
+
+    // fired just before going to another page. This is to make sure user does not forget to save changes in the page.
+    $(window).bind('beforeunload', function() {
+      // do something, preferably ajax request etc
+      var changes_done = $("#save_state").attr('class');
+      if(changes_done.indexOf("danger") >= 0){ // danger in the button class means there were changes in the page by user
+        var saveit=confirm("Save changes?");
+        if(saveit){
+          save_state("out") //"out" means saving just before going to other page, message is sent only once
+          alert('Your settings were saved before going to other page!')
+        }
+      }
+    });
+
+
+    // this is to ensure user does not forget to set stream measured values to constraints as this is used for correct field balance calculation
+    //copy2qgasmax_streams()
+
+
+
   });
 
 
   ////////////////////////////////////////////////////////////////////////////////
-  function save_state() {
+  function save_state(when) { // when says if saving is done by click or before going to other page. "out" -going to other page, "in" - wihtin the page by clicking button
 
     session_json=get_state(session_json); // get state data from target fwhp, route and optimize columns
     session_json["state"]=1;
-    // console.log(session_json["well_data"]);
-
 
     // Make AJAX call to save state data to session in the server, see "savestate" url call in views.py
     // AJAX standard form for calling
@@ -447,8 +489,11 @@
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(data){
-          console.log(data);
-          alert(data.data); // send message after saving to state
+          if (when=="in"){ //this message only if save button is clicked
+            alert(data.data); // send message after saving to state
+          }
+          $("#save_state").removeClass('list-group-item-danger').addClass('list-group-item-action'); // change color of button back
+
         },
         failure: function(errMsg) {
             alert(errMsg);
@@ -466,9 +511,9 @@
 
     data["well_data"]=get_well_state(data["well_data"]);
     data["fb_data"]["unit_data"]=get_unit_data(data["fb_data"]["unit_data"]);
-    console.log(data["fb_data"]);
+    //console.log(data["fb_data"]);
     data["fb_data"]=get_fb_data(data["fb_data"]);
-    console.log(data["fb_data"]);
+    //console.log(data["fb_data"]);
 
     return data;
   }
@@ -615,7 +660,7 @@
       })
     }
 
-    if(comb_num>1 && comb_num<50000){
+    if(comb_num>1 && comb_num<50000000000){
       alert("Number of combinations is "
           + comb_num + ".\nThis can be reduced by applying rules and filters in Calculate GAP page.");
     }else if (comb_num>50000){
@@ -729,6 +774,20 @@
     $("#kpc-qgas_max").text(parseFloat($("#kpc-qgas_meas").text()));
     $("#u3-qgas_max").text(parseFloat($("#u3-qgas_meas").text()));
     $("#u2-qgas_max").text(parseFloat($("#u2-qgas_meas").text()));
+
+  }
+
+  function copy2qgasmax_streams(){
+
+    $("#cpc_oil_max").text(parseFloat($("#cpc_oil_meas").text()));
+    $("#ogp_gas_max").text(parseFloat($("#ogp_gas_meas").text()));
+    $("#gas_inj_max").text(parseFloat($("#gas_inj_meas").text()));
+    $("#fuel_gas_max").text(parseFloat($("#fuel_gas_meas").text()));
+    $("#mtu_oil_max").text(parseFloat($("#mtu_oil_meas").text()));
+    $("#ogp_oil_max").text(parseFloat($("#ogp_oil_meas").text()));
+    $("#kpc_gas_2_u2_max").text(parseFloat($("#kpc_gas_2_u2_meas").text()));
+    $("#kpc_gas_2_u3_max").text(parseFloat($("#kpc_gas_2_u3_meas").text()));
+    $("#u2_oil_2_u3_max").text(parseFloat($("#u2_oil_2_u3_meas").text()));
 
   }
 

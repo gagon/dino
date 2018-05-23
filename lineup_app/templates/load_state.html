@@ -8,183 +8,111 @@
 
 
   <div class="row">
-    <div class="col-lg-4">
-      <h3>Load Well States</h3>
+
+    <div class="col-lg-8">
+      <h4>Load Well States</h4>
+      <table class="table table-condensed table-bordered">
+        <thead>
+          <th class="info">Well</th>
+          <th class="info">Current route</th>
+          <th class="info">Gathering Route</th>
+          <th class="info">FWHP,bar</th>
+          <th class="info">Online</th>
+          <th class="info">Load to State</th>
+        </thead>
+        <tbody id="merged_result">
+
+          {% for well_key, row in data.well_data.items() %}
+            <tr>
+              <td name="wellname">{{ well_key }}</td>
+              <td name="curr_route">{{ row.selected_route }}</td>
+              <td><span  name="route" contenteditable></span></td>
+              <td><span  name="thp" contenteditable></span></td>
+              <td><span name="online" contenteditable></span></td>
+              <td><input type="checkbox" name="toload" value=""></td>
+            </tr>
+          {% endfor%}
+        </tbody>
+      </table>
     </div>
-  </div>
-
-  <div class="row">
 
     <div class="col-lg-4">
-      <button class="btn btn-default" id="load_state" onclick="load_state();" type="button">Load data</button>
-      <hr>
-        <label for="comment">Copy/paste from Excel </label>
-        <!-- <button class="btn btn-default" id="iwit_thp" type="button">IWIT</button> -->
-        <br>
-        <caption>Column (1) - wellname same as in GAP. Column (2) - Unit connection for dual wells (leave blank for single connections).
-          Column (3) - FWHP to be applied (leave blank to let GAP calculate) </caption>
-        <textarea class="form-control" rows="30" id="excel_data"></textarea>
-        <div class="checkbox">
-          <label style="font-size:20px;color:red;"><input type="checkbox" value="" checked id="shut_the_rest">Shut-in all other wells not in the list above</label>
+
+      <div class="panel panel-default" style="margin-top:40px;">
+        <div class="panel-heading">Gathering report</div>
+        <div class="panel-body">
+          <form id="upload-file" method="post" enctype="multipart/form-data" class="form-inline">
+            <div class="form-group">
+              <input class="form-control" type="file" name="file" id="hc">
+            </div>
+            <button class="btn btn-primary" id="upload-file-btn" type="button">Upload</button>
+            <img src="/static/img/loading-dots.gif" id="load_img3" style="display:none;" height="18" / >
+          </form>
         </div>
+      </div>
+
+      <div class="panel panel-default" id="log_panel" style="display:none;">
+        <div id="log"></div>
+      </div>
+
+      <div class="panel panel-default" style="margin-top:40px;">
+        <div class="panel-heading">FWHP</div>
+        <div class="panel-body">
+          <form id="thp-data" method="post" enctype="multipart/form-data" class="form-inline">
+            <label for="thp_date_start">Start</label>
+            <input class="form-control" type="text" placeholder="Enter data 01/01/2017 00:00:00" id="thp_date_start" value="2018-01-01 00:00:00">
+            <label for="thp_date_end">End</label>
+            <input class="form-control" type="text" placeholder="Enter data 02/01/2017 00:00:00" id="thp_date_end" value="2018-01-01 00:00:00">
+            <button class="btn btn-primary" id="iwit_thp-data-btn" type="button">IWIT</button>
+            <img src="/static/img/loading-dots.gif" id="load_img" style="display:none;" height="18" / >
+          </form>
+        </div>
+      </div>
+
+      <div class="panel panel-default" style="margin-top:40px;">
+        <div class="panel-heading">Online Status</div>
+        <div class="panel-body">
+          <form id="online-data" method="post" enctype="multipart/form-data" class="form-inline">
+            <input class="form-control" type="text" placeholder="Enter data 01/01/2017 00:00:00" id="online_date_start" value="2018-01-01 00:00:00">
+            <button class="btn btn-primary" id="online-data-btn" type="button">IWIT</button>
+            <img src="/static/img/loading-dots.gif" id="load_img2" style="display:none;" height="18" / >
+          </form>
+        </div>
+      </div>
+      <div class="checkbox">
+        <label style="font-size:20px;"><input type="checkbox" value="" checked id="shut_the_rest">Shut-in all unchecked wells</label>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-block" onclick="save_table2state();">SAVE TO STATE</button>
 
     </div>
 
-    <div class="col-lg-3">
-
-      <button class="btn btn-default" id="save_table2state" onclick="save_table2state();" type="button" disabled>Save data to state</button>
-
-      <!-- <button class="btn btn-default" id="clear_table2state" onclick="clear_table2state();" type="button">Clear table</button> -->
-      <hr>
-      <label for="comment">QC data before loading to state</label>
-      <span id="load_result"></span>
-      <div id="showdata" style="height:550px;overflow-y:auto;display:none;"></div>
-
-    </div>
 
   </div>
-
-  <!-- <hr> -->
-
-  <div class="row">
-    <div class="col-lg-4">
-      <h4>Parse Gathering report</h4>
-      <form id="upload-file" method="post" enctype="multipart/form-data" class="form-inline">
-          <div class="form-group">
-            <input class="form-control" type="file" name="file" id="hc">
-          </div>
-          <button class="btn btn-default" id="upload-file-btn" type="button">Upload</button>
-      </form>
-      <hr>
-      <table class="table table-condensed table-bordered">
-        <thead>
-          <th>Well</th>
-          <th>Route</th>
-          <th>Found</th>
-        </thead>
-        <tbody id="parse_result"></tbody>
-      </table>
-      <div id="parse_warning"></div>
-    </div>
-    <div class="col-lg-4">
-      <h4>Get FWHPs from Database</h4>
-      <form id="thp-data" method="post" enctype="multipart/form-data" class="form-inline">
-          <div class="form-group">
-            <input class="form-control" type="text" placeholder="Enter data 2017-01-01" id="thp_date" value="2018-01-01">
-          </div>
-          <button class="btn btn-default" id="thp-data-btn" type="button">Get data from EC</button>
-          <button class="btn btn-default" id="iwit_thp-data-btn" type="button">Get data from IWIT</button>
-      </form>
-      <hr>
-      <table class="table table-condensed table-bordered">
-        <thead>
-          <th>Well</th>
-          <th>Date</th>
-          <th>THP,bar</th>
-          <th>Online,hrs</th>
-        </thead>
-        <tbody id="thp_result"></tbody>
-      </table>
-      <!-- <div class="" id="thp_result"></div> -->
-    </div>
-    <div class="col-lg-4">
-      <h4>Routes and FWHP</h4>
-      <button class="btn btn-default" id="merge-data-btn" type="button">Merge routes and FWHPs</button>
-      <button class="btn btn-default" id="copy-merged-btn" type="button">Copy to textarea</button>
-      <hr>
-      <table class="table table-condensed table-bordered">
-        <thead>
-          <th>Well</th>
-          <th>Route</th>
-          <th>THP,bar</th>
-        </thead>
-        <tbody id="merged_result"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <hr>
-
 
 
 </div>
 
-<br>
-<br>
 
 
 <script type="text/javascript" charset="utf-8">
 
-  function load_state() {
-
-    $("#showdata").empty();
-    // $("#showdata_div").empty();
-    var data = $('#excel_data').val();
-    var table = $('<table class="table table-condensed table-bordered" style="font-size:12px;"><tr><th>Wellname</th><th>Unit connection</th><th>Target FWHP</th></tr></table>');
-
-    var state={};
-
-    if (data){
-      var rows = data.split("\n");
-
-      for(var y in rows) {
-
-        if (rows[y]){
-          // var cells = rows[y].split("\t");
-          if(rows[y].indexOf('|') > -1){
-            var cells = rows[y].split("|");
-          }else{
-            var cells = rows[y].split("\t");
-          }
-
-          var wellname=cells[0];
-          var unit=cells[1];
-          var fwhp=cells[2];
-          state[wellname]={"selected_route":unit,"fwhp":fwhp}
-
-          var row = $('<tr />');
-          for(var x in cells) {
-              row.append('<td>'+cells[x]+'</td>');
-          }
-          table.append(row);
-        }
-      }
-      $('#load_result').text("| data is valid.");
-      $('#showdata').append(table);
-      // $('#showdata').prepend('<button class="btn btn-default" id="save_table2state" onclick="save_table2state();" type="button">Save data to state</button><hr>');
-      // $('#showdata_div').show();
-      $('#showdata').show();
-      $('#save_table2state').prop('disabled', false);
-
-    }else{
-      $('#load_result').text("No data entered!");
-    }
-
-  };
-
 
   function save_table2state() {
 
-    var data = $('#excel_data').val();
     var data2state={}
     var state={}
-    if (data){
-      var rows = data.split("\n");
-      for(var y in rows) {
-        if (rows[y]){
-          if(rows[y].indexOf('|') > -1){
-            var cells = rows[y].split("|");
-          }else{
-            var cells = rows[y].split("\t");
-          }
-          var wellname=cells[0];
-          var unit=cells[1];
-          var target_fwhp=cells[2];
-          state[wellname]={"selected_route":unit,"target_fwhp":target_fwhp}
-        }
+
+    $("#merged_result").children('tr').each(function () { // loop through rows
+      var toload=$(this).find("[name=toload]").is(':checked') // should I load or not?
+      if (toload){
+        var wellname=$(this).find("[name=wellname]").text() // get wellname
+        var route=$(this).find("[name=route]").text() // get route
+        var target_fwhp=$(this).find("[name=thp]").text() // thp is same as fwhp
+        state[wellname]={"selected_route":route,"target_fwhp":target_fwhp}
       }
-      $('#load_result').text("loaded successfully.");
-    }
+    })
+    data2state["state"]=state;
 
     var shut_the_rest = $('#shut_the_rest').is(':checked');
     if(shut_the_rest){
@@ -193,9 +121,6 @@
       data2state["shut_the_rest"]=0;
     };
 
-    data2state["state"]=state;
-    console.log(state);
-
     $.ajax({
         type: "POST",
         url: "/savestate_loaded",
@@ -203,7 +128,7 @@
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(data){
-          alert("Routes and target FWHPs saved!");
+          alert(data.data);
         },
         failure: function(errMsg) {
             alert(errMsg);
@@ -214,40 +139,79 @@
 
 
 
-    function write2page(data){
-      console.log(data);
+  function write2page_route(data){
+
+    $("#merged_result").children('tr').each(function () { // loop through rows
+
+      var wellname=$(this).find("[name=wellname]").text() // get wellname
+      var curr_route=$(this).find("[name=curr_route]").text() // get current route in GAP
       for(var i=0, len=data["result_text"].length; i < len; i++){
-        $("#parse_result").append(
-          "<tr><td name='wellname'>"+
-          data["result_text"][i][0]+"</td><td name='route'>"+
-          data["result_text"][i][1]+"--"+
-          data["result_text"][i][2]+"--"+
-          data["result_text"][i][3]+"--slot "+
-          data["result_text"][i][4]+
-          "</td><td>1</td></tr>"
-        );
+        if (data["result_text"][i][0]==wellname){
+          route=data["result_text"][i][1]+"--"+
+                data["result_text"][i][2]+"--"+
+                data["result_text"][i][3]+"--slot "+
+                data["result_text"][i][4]
+          $(this).find("[name=route]").text(route)
+          if (route!=curr_route){
+            $(this).find("[name=route]").css("background-color","#e6ffe6")
+          }
+        }
       };
-      for(var i=0, len=data["warn_text"].length; i < len; i++){
-        $("#parse_warning").append(
-          data["warn_text"][i]+"<br>"
-        );
-      }
-    };
+    })
+
+    for(var i=0, len=data["warn_text"].length; i < len; i++){
+      $("#log").append(
+        data["warn_text"][i]+"<br>"
+      );
+      $("#log_panel").show();
+
+    }
+
+  };
 
 
 
-    function write2page_thp(data){
+  function write2page_thp(data){
+
+    $("#merged_result").children('tr').each(function () { // loop through rows
+      var wellname=$(this).find("[name=wellname]").text() // get wellname
+      var route=$(this).find("[name=route]").text() // get route
       for(var i=0, len=data["thps"].length; i < len; i++){
-        $("#thp_result").append(
-          "<tr>"+
-            "<td name='wellname'>"+data["thps"][i][0]+"</td>"+
-            "<td>"+data["thps"][i][1]+"</td>"+
-            "<td name='thp'>"+data["thps"][i][2]+"</td>"+
-            "<td>"+data["thps"][i][3]+"</td>"+
-          "</tr>"
-        );
+        if (data["thps"][i][0]==wellname){
+          $(this).find("[name=thp]").text(data["thps"][i][2])
+        }
       };
-    };
+    })
+
+  };
+
+
+  function write2page_online(data){
+
+    $("#merged_result").children('tr').each(function () { // loop through rows
+      var wellname=$(this).find("[name=wellname]").text() // get wellname
+
+      for(var i=0, len=data["online_status"].length; i < len; i++){
+        if (data["online_status"][i][0]==wellname){
+
+          var status=data["online_status"][i][2];
+          var route=$(this).find("[name=route]").text()
+          var thp=parseFloat($(this).find("[name=thp]").text())
+
+          $(this).find("[name=online]").text(status)
+          if (status=="CLOSED"){
+            $(this).find("[name=online]").css("background-color","#ffe6e6")
+          }
+          if (status=="OPEN" && (route!="" || thp>0)){
+            $(this).find("[name=toload]").prop('checked', true);
+          }
+        }
+      };
+    })
+
+  };
+
+
 
 
   $(document).ready(function() {
@@ -258,64 +222,32 @@
     start_date_dt.setDate(end_date_dt.getDate()-1);
 
     var start_date_str = ("0" + start_date_dt.getDate()).slice(-2) + "/" +("0" + (start_date_dt.getMonth()+1)).slice(-2) + "/" +start_date_dt.getFullYear() + " 00:00:00"
-    $("#start_date").val(start_date_str);
+    $("#thp_date_start").val(start_date_str);
+    $("#online_date_start").val(start_date_str);
     var end_date_str = ("0" + end_date_dt.getDate()).slice(-2) + "/" +("0" + (end_date_dt.getMonth()+1)).slice(-2) + "/" +end_date_dt.getFullYear() + " 00:00:00"
-    $("#end_date").val(end_date_str);
+    $("#thp_date_end").val(end_date_str);
 
 
 
     $('#upload-file-btn').click(function() {
-      $("#parse_result").empty();
-      $("#parse_warning").empty();
+      $("#load_img3").show();
+
+      $("#merged_result").children('tr').each(function () { // clear THP column
+        $(this).find("[name=route]").text("")
+      });
+
       var form_data = new FormData($('#upload-file')[0]);
       $.ajax({
-          type: 'POST',
-          url: '/upload_gath_rep',
-          data: form_data,
-          contentType: false,
-          cache: false,
-          processData: false,
-          async: false,
-          success: function(data) {
-              write2page(data);
-          },
-          failure: function(errMsg) {
-              alert(errMsg);
-          }
-        });
-      });
-
-
-    $('#iwit_thp-data-btn').click(function() {
-      var thp_date = $('#thp_date').val();
-      $("#thp_result").empty();
-      $.ajax({
-          type: 'POST',
-          url: '/iwit_thp',
-          data: JSON.stringify(thp_date),
-          contentType: "application/json; charset=utf-8",
-          dataType: "json",
-          success: function(data) {
-            write2page_thp(data);
-          },
-          failure: function(errMsg) {
-              alert(errMsg);
-          }
-        });
-      });
-
-    $('#thp-data-btn').click(function() {
-      $("#thp_result").empty();
-      var thp_date = $('#thp_date').val();
-      console.log(thp_date);
-      $.ajax({
-        type: "POST",
-        url: "/get_alloc_thp",
-        data: JSON.stringify(thp_date),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        success: function(data){
-          write2page_thp(data);
+        type: 'POST',
+        url: '/upload_gath_rep',
+        data: form_data,
+        contentType: false,
+        cache: false,
+        processData: false,
+        async: false,
+        success: function(data) {
+            write2page_route(data);
+            $("#load_img3").hide();
         },
         failure: function(errMsg) {
             alert(errMsg);
@@ -324,300 +256,65 @@
     });
 
 
-    $('#merge-data-btn').click(function() {
-      $("#merged_result").empty();
+    $('#iwit_thp-data-btn').click(function() {
+      $("#load_img").show();
 
-      var routes=[];
-      table="#parse_result";
-      $(table).children('tr').each(function () {
-        var wellname=$(this).find("[name=wellname]").text();
-        var route=$(this).find("[name=route]").text();
-        routes.push([wellname,route]);
+      $("#merged_result").children('tr').each(function () { // clear THP column
+        $(this).find("[name=thp]").text("")
       });
 
-      var thps=[];
-      table="#thp_result";
-      $(table).children('tr').each(function () {
-        var wellname=$(this).find("[name=wellname]").text();
-        var thp=$(this).find("[name=thp]").text();
-        thps.push([wellname,thp]);
+      var thp_date_start = $('#thp_date_start').val();
+      var thp_date_end = $('#thp_date_end').val();
+      var thp_dates=[thp_date_start,thp_date_end];
+      $("#thp_result").empty();
+      $.ajax({
+        type: 'POST',
+        url: '/iwit_thp',
+        data: JSON.stringify(thp_dates),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+          write2page_thp(data);
+          $("#load_img").hide();
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
+        }
+      });
+    });
+
+
+
+    $('#online-data-btn').click(function() {
+      $("#load_img2").show();
+
+      $("#merged_result").children('tr').each(function () { // clear online column
+        $(this).find("[name=online]").text("")
+        $(this).find("[name=online]").css("background-color","#ffffff")
       });
 
-      var merged=[]
-      for(var i=0, leni=thps.length; i < leni; i++){
-        in_routes=0;
-        idx=-1
-        for(var j=0, lenj=routes.length; j < lenj; j++){
-            if(thps[i][0]==routes[j][0]){
-              in_routes=1;
-              idx=j;
-              break;
-            }
+      var online_date_start = $('#online_date_start').val();
+
+      $.ajax({
+        type: 'POST',
+        url: '/online_status',
+        data: JSON.stringify(online_date_start),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+          write2page_online(data);
+          $("#load_img2").hide();
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
         }
-        if(in_routes==1){
-          merged.push([thps[i][0],routes[idx][1],thps[i][1]])
-        }else{
-          merged.push([thps[i][0],"",-1])
-        }
-      }
-
-      // thp_no_route=[];
-      // for(var i=0, leni=thps.length; i < leni; i++){
-      //   in_routes=0;
-      //   for(var j=0, lenj=merged.length; j < lenj; j++){
-      //       if(thps[i][0]==merged[j][0]){
-      //         in_routes=1;
-      //       }
-      //   }
-      //
-      // }
-
-
-      for(var i=0, leni=merged.length; i < leni; i++){
-        st=""
-        if (merged[i][1]==""){
-          st='style="background-color:#ffe6e6"'
-        }
-        $("#merged_result").append(
-          "<tr "+st+">"+
-            "<td name='wellname'>"+merged[i][0]+"</td>"+
-            "<td name='route'>"+merged[i][1]+"</td>"+
-            "<td name='thp'>"+merged[i][2]+"</td>"+
-          "</tr>"
-        );
-      }
-
-
-    });
-
-
-    $('#copy-merged-btn').click(function() {
-      $("#excel_data").empty();
-      table="#merged_result";
-      $(table).children('tr').each(function () {
-        var wellname=$(this).find("[name=wellname]").text();
-        var route=$(this).find("[name=route]").text();
-        var thp=$(this).find("[name=thp]").text();
-        var row= wellname+"\t"+route+"\t"+thp+"\n"
-        $("#excel_data").append(row)
       });
-      // alert("hi")
-      remove_pi_plot_series();
-      add_pi_plot_series();
-
     });
 
 
   });
 
 
-
-  var pi_chart=Highcharts.chart('pi_plot', {
-    title: {
-      text: "",
-    },
-    legend: {
-      verticalAlign:"top",
-    },
-    xAxis: {
-      type: 'datetime', //For time series, x-axis labels will be time
-      // labels: {
-      //   //You can format the label according to your need
-      //   // format: '{value:%d/%M/%Y %H:%M}'
-      // },
-    },
-
-    series:[
-    ],
-    plotOptions: {
-        series: {
-            animation: false,
-        }
-    }
-  });
-
-  $("#pi_data_table").on('click','.pi_btnSelect',function(){
-    var currentRow=$(this).closest("tr");
-    var name=currentRow.find("td:eq(0)").text();
-    var pi_tag=currentRow.find("td:eq(5)").text();
-
-    console.log(name,pi_tag);
-
-    var data2get={
-      "name":name,
-      "pi_tag":pi_tag,
-    }
-
-    remove_pi_plot_series();
-    add_pi_plot_series(data2get);
-
-  });
-
-
-  function add_pi_plot_series(data2get){
-
-
-    data2get["start"]=$("#start_date").val();
-    data2get["end"]=$("#end_date").val();
-    data2get["interval"]=$("#interval").val();
-    // console.log(data2get[]);
-
-
-    $.ajax({
-      type: 'POST',
-      url: '/generic_pi_data',
-      data: JSON.stringify(data2get),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function(data) {
-        var data_edited=convert_dates(data["data"])
-        // console.log(data);
-        pi_chart.addSeries({
-          name:data2get["name"]+":"+data2get["pi_tag"],
-          data: data_edited,
-        }, true);
-      },
-      failure: function(errMsg) {
-          alert(errMsg);
-      }
-    });
-
-
-
-
-  };
-
-
-
-  function add_pi_table_data(data2get){
-
-
-    data2get["start"]=$("#start_date").val();
-    data2get["end"]=$("#end_date").val();
-    data2get["interval"]=$("#interval").val();
-    // console.log(data2get[]);
-
-
-    $.ajax({
-      type: 'POST',
-      url: '/generic_pi_data',
-      data: JSON.stringify(data2get),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function(data) {
-        var avg_data=avg_values(data["data"])
-        $("#"+data2get["pi_tag_id"]).text(avg_data);
-        // var data_edited=convert_dates(data["data"])
-        // console.log(data);
-        // pi_chart.addSeries({
-        //   name:data2get["name"]+":"+data2get["pi_tag"],
-        //   data: data_edited,
-        // }, true);
-      },
-      failure: function(errMsg) {
-          alert(errMsg);
-      }
-    });
-
-
-
-
-  };
-
-
-  function avg_values(arr){
-    sum = 0;
-    len = arr.length;
-    for (i = 0; i < len; i++) {
-      if (!isNaN(arr[i][1])){
-        // console.log(sum,arr[i][1]);
-        sum += arr[i][1];
-      }
-    }
-    return (sum / len).toFixed(1);
-  }
-
-
-  function dt2utc (dt){
-
-    var date_str = dt.split(" "); // splitting date and time parts
-    var time=date_str[1];
-    var date_split=date_str[0].split("/"); //split of year,month and day for further reformatting to ISO
-
-    var date=date_split[2]+"-"+date_split[1]+"-"+date_split[0]+ "T"+ time //set ISO format for Date
-    date=new Date(date);
-    console.log(date);
-    console.log(date.getTimezoneOffset());
-
-    // added this to convert UTC time to local time
-    var timeZoneFromDB = 0.0; //time zone value from database
-    //get the timezone offset from local time in minutes
-    var tzDifference = timeZoneFromDB * 60 + date.getTimezoneOffset();
-    //convert the offset to milliseconds, add to targetTime, and make a new Date
-    var date = new Date(date.getTime() - tzDifference * 60 * 1000);
-    console.log(date);
-
-
-    var year=date.getFullYear();
-    var month=date.getMonth();
-    var day=date.getDate();
-    var hr=date.getHours();
-    var min=date.getMinutes();
-    var sec=date.getSeconds();
-    var dtutc=Date.UTC(year,month,day,hr,min,sec)
-
-
-
-
-    return dtutc;
-
-  }
-
-
-  function convert_dates(data){
-    var converted_data=[]
-    for(var i = 0; i < data.length; i++) {
-        converted_data.push([dt2utc(data[i][0]),data[i][1]]);
-    }
-    return converted_data
-  }
-
-  function remove_pi_plot_series(){
-    var seriesLength = pi_chart.series.length;
-    for(var i = seriesLength -1; i > -1; i--) {
-        pi_chart.series[i].remove();
-    }
-  };
-
-
-  $(document).on('click',"#update-pi-btn",function(){
-    // $("#load_img").show();
-
-    $("#pi_data_table_body").children('tr').each(function () { // loop through rows in table
-
-      // var wellname=$(this).find("[name=wellname]").text() // get wellname
-
-      var currentRow=$(this).closest("tr");
-      var name=currentRow.find("td:eq(0)").text();
-      var pi_tag=currentRow.find("td:eq(5)").text();
-      var pi_tag_id=currentRow.find("td:eq(3)").children("span").prop('id');
-      // console.log(currentRow.find("td:eq(5)"));
-      console.log(name,pi_tag,pi_tag_id);
-
-      var data2get={
-        "name":name,
-        "pi_tag":pi_tag,
-        "pi_tag_id":pi_tag_id,
-      }
-      //
-      // remove_pi_plot_series();
-      // add_pi_plot_series(data2get);
-      add_pi_table_data(data2get);
-
-    });
-    // $("#load_img").hide();
-
-  });
 
 
 

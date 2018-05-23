@@ -1,0 +1,288 @@
+{% extends 'base.html' %}
+{% block currentpage %}
+
+
+<div class="container-fluid">
+
+
+
+
+
+  <div class="row">
+    <div class="col-lg-6">
+
+
+
+
+      <h3>PI data</h3>
+
+      <form id="pi-data" method="post" enctype="multipart/form-data" class="form-inline">
+        <label for="pi_date_start">Start</label>
+        <input class="form-control" type="text" placeholder="Enter data 01/01/2017 00:00:00" id="pi_date_start" value="01/01/2018 00:00:00">
+        <label for="pi_date_end">End</label>
+        <input class="form-control" type="text" placeholder="Enter data 02/01/2017 00:00:00" id="pi_date_end" value="01/01/2018 00:00:00">
+        <button class="btn btn-primary" id="pi-data-btn" type="button">Get data</button>
+        <img src="/static/img/loading-dots.gif" id="load_img" style="display:none;" height="24" / >
+      </form>
+
+
+    </div>
+  </div>
+<hr>
+  <div class="row">
+    <div class="col-lg-12">
+
+      <h3>WELLS PRODUCTION</h3>
+
+      <table class="table table-hover table-condensed" id="sort_table" style="font-size: 10px;">
+
+        <thead class="thead-default">
+          <tr>
+            <th>Wellname</th>
+            <th>GOR</th>
+            <th>Watercut</th>
+            <th>Connected</th>
+            <th>Comingled</th>
+            <th>MAP</th>
+            <th style="border-left: 1px solid #cccccc;">Flow to</th>
+            <th>Qoil</th>
+            <th>Qgas</th>
+            <th>Qwater</th>
+            <th style="border-left: 1px solid #cccccc;">Target FWHP</th>
+            <th>FWHP</th>
+            <th>dPChoke</th>
+            <th>FL pressure</th>
+            <th>Slot pressure</th>
+            <th style="border-left: 1px solid #cccccc;">PI FWHP</th>
+            <th>PI FL pressure</th>
+            <th>PI Slot pressure</th>
+            <th style="border-left: 1px solid #cccccc;">FWHP diff
+              <span class="glyphicon glyphicon-info-sign" aria-hidden="true" title=
+                "GAP FWHP - PI FWHP">
+              </span>
+            </th>
+            <th>FL pressure diff
+              <span class="glyphicon glyphicon-info-sign" aria-hidden="true" title=
+                "GAP FL pressure - PI FL pressure">
+              </span>
+            </th>
+            <th>Slot pressure diff
+              <span class="glyphicon glyphicon-info-sign" aria-hidden="true" title=
+                "GAP Slot pressure - PI Slot pressure">
+              </span>
+            </th>
+            <th style="border-left: 1px solid #cccccc;">GAP Flowline dP
+              <span class="glyphicon glyphicon-info-sign" aria-hidden="true" title=
+                "GAP FL pressure - GAP Slot pressure = GAP FL dP">
+              </span>
+            </th>
+            <th>PI Flowline dP
+              <span class="glyphicon glyphicon-info-sign" aria-hidden="true" title=
+                "PI FL pressure - PI Slot pressure = PI FL dP">
+              </span>
+            </th>
+            <th>PI dP-GAP dP
+              <span class="glyphicon glyphicon-info-sign" aria-hidden="true" title=
+                "GAP FL dP - PI FL dP">
+              </span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody id="results_table">
+          {% for well_key, row in data.well_data.items() %}
+
+            {% if row.target_fwhp>0 %}
+              <tr>
+
+                <td name="wellname">{{ well_key }}</td>
+                <td title="GOR">{{ row.gor|round(1, 'common') }}</td>
+                <td title="Watercut">{{ row.wct|round(1, 'common') }}</td>
+                <td title="Connected">{{ row.connection.connected }}</td>
+                <td title="Comingled">{{ row.connection.comingled }}</td>
+                <td title="MAP" name="map">{{ row.map }}</td>
+
+                <td title="Flow to" style="border-left: 1px solid #cccccc;">
+                  {{ row.selected_route }}
+                </td>
+                <td title="Qoil">{{ row.qoil|round(1, 'common') }}</td>
+                <td title="Qgas">{{ row.qgas|round(1, 'common') }}</td>
+                <td title="Qwater">{{ row.qwat|round(1, 'common') }}</td>
+
+                <td title="Target FWHP" name="target_fwhp" style="border-left: 1px solid #cccccc;">{{ row.target_fwhp }}</td>
+                <td title="FWHP" name="fwhp" value="{{ row.fwhp_raw }}">{{ row.fwhp|round(1, 'common') }}</td>
+                <td title="dP Choke" name="dp">{{ row.dp|round(1, 'common') }}</td>
+                <td title="FL pressure" name="flp">{{ (row.fwhp-row.dp)|round(1, 'common') }}</td>
+                <td title="Slot pressure" name="slp">{{ row.slotpres|round(1, 'common') }}</td>
+
+
+                <td title="PI FWHP" name="pi_fwhp" style="border-left: 1px solid #cccccc;"></td>
+                <td title="PI FL pressure" name="pi_flp"></td>
+                <td title="PI Slot pressure" name="pi_slp"></td>
+
+                <td title="FWHP diff" name="fwhp_diff" style="border-left: 1px solid #cccccc;"></td>
+                <td title="FL pressure diff" name="flp_diff"></td>
+                <td title="Slot pressure diff" name="slp_diff"></td>
+
+                <td title="GAP dP flowline" name="gap_dp" style="border-left: 1px solid #cccccc;"></td>
+                <td title="PI dP flowline" name="pi_dp"></td>
+                <td title="PI dP-GAP dP" name="dp_dp"></td>
+
+              </tr>
+            {% endif %}
+          {% endfor %}
+
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+
+
+
+</div>
+
+
+
+<script type="text/javascript">
+
+$( document ).ready(function() {
+
+
+  var start_date_dt = new Date();
+  var end_date_dt = new Date();
+  start_date_dt.setDate(end_date_dt.getDate()-1);
+
+  var start_date_str = ("0" + start_date_dt.getDate()).slice(-2) + "/" +("0" + (start_date_dt.getMonth()+1)).slice(-2) + "/" +start_date_dt.getFullYear() + " 00:00:00"
+  $("#pi_date_start").val(start_date_str);
+  var end_date_str = ("0" + end_date_dt.getDate()).slice(-2) + "/" +("0" + (end_date_dt.getMonth()+1)).slice(-2) + "/" +end_date_dt.getFullYear() + " 00:00:00"
+  $("#pi_date_end").val(end_date_str);
+
+  // JS plugin to be able to sort table
+  $("#sort_table").tablesorter();
+
+
+  $('#pi-data-btn').click(function() {
+    $("#load_img").show();
+
+    clear_pi_data()
+
+    var pi_date_start = $('#pi_date_start').val();
+    var pi_date_end = $('#pi_date_end').val();
+    var pi_dates=[pi_date_start,pi_date_end];
+    // $("#thp_result").empty();
+    $.ajax({
+      type: 'POST',
+      url: '/calibration_pi_data',
+      data: JSON.stringify(pi_dates),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(data) {
+        write2page_pi_data(data);
+        $("#load_img").hide();
+        $("#sort_table").trigger("update");
+      },
+      failure: function(errMsg) {
+          alert(errMsg);
+      }
+    });
+  });
+
+});
+
+
+function clear_pi_data(){
+  var cells=["pi_fwhp","pi_flp","pi_slp","fwhp_diff","flp_diff","slp_diff","gap_dp","pi_dp","dp_dp"]
+  $("#results_table").children('tr').each(function () { // clear columns
+    for (i=0;i<cells.length;i++){
+      $(this).find("[name="+cells[i]+"]").text("")
+      $(this).find("[name="+cells[i]+"]").css("background-color","#ffffff")
+    }
+  });
+
+}
+
+
+function write2page_pi_data(data){
+
+  $("#results_table").children('tr').each(function () { // loop through rows
+    var wellname=$(this).find("[name=wellname]").text() // get wellname
+
+    for(var i=0, len=data["cal_pi_data"].length; i < len; i++){
+      if (data["cal_pi_data"][i][0]==wellname){
+
+        var fwhp=parseFloat($(this).find("[name=fwhp]").text());
+
+        if (fwhp<10000){
+          $(this).find("[name=pi_fwhp]").text(data["cal_pi_data"][i][1])
+          $(this).find("[name=pi_flp]").text(data["cal_pi_data"][i][2])
+          $(this).find("[name=pi_slp]").text(data["cal_pi_data"][i][3])
+
+
+          var pi_fwhp=data["cal_pi_data"][i][1];
+          var pi_flp=data["cal_pi_data"][i][2];
+          var pi_slp=data["cal_pi_data"][i][3];
+
+          if (pi_fwhp!="-"){
+            pi_fwhp=parseFloat(pi_fwhp)
+            $(this).find("[name=fwhp_diff]").text((fwhp-pi_fwhp).toFixed(1))
+            color_code(this,"fwhp_diff",fwhp-pi_fwhp);
+          }
+
+          var flp=parseFloat($(this).find("[name=flp]").text());
+          if (pi_flp!="-" && flp>10){
+            pi_flp=parseFloat(pi_flp)
+            $(this).find("[name=flp_diff]").text((flp-pi_flp).toFixed(1))
+            color_code(this,"flp_diff",flp-pi_flp);
+          }
+
+          var slp=parseFloat($(this).find("[name=slp]").text());
+          if (pi_slp!="-" && slp>10){
+            pi_slp=parseFloat(pi_slp)
+            $(this).find("[name=slp_diff]").text((slp-pi_slp).toFixed(1))
+            color_code(this,"slp_diff",slp-pi_slp);
+          }
+
+          var pi_dp=-10000;
+          if (pi_slp!="-" && pi_flp!="-"){
+            $(this).find("[name=pi_dp]").text((pi_flp-pi_slp).toFixed(1))
+            pi_dp=pi_flp-pi_slp
+          }
+          var gap_dp=-10000;
+          if (slp>0 && flp>0){
+            $(this).find("[name=gap_dp]").text((flp-slp).toFixed(1))
+            gap_dp=flp-slp
+          }
+
+          if (pi_dp!=-10000 && gap_dp!=-10000){
+            $(this).find("[name=dp_dp]").text((pi_dp-gap_dp).toFixed(1))
+            color_code(this,"dp_dp",pi_dp-gap_dp);
+          }
+
+
+        }
+
+      }
+    };
+  })
+
+};
+
+
+function color_code(obj,item,val){
+  if (val<-5 || val>5){
+    $(obj).find("[name="+item+"]").css("background-color","#ffe6e6")
+  }else if (val<-2 || val>2) {
+    $(obj).find("[name="+item+"]").css("background-color","#ffffe6")
+  }else{
+    $(obj).find("[name="+item+"]").css("background-color","#e6ffe6")
+  }
+}
+
+
+</script>
+
+
+
+{% endblock %}

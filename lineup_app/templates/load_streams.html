@@ -338,27 +338,27 @@
             <tbody>
               <tr>
                 <td style="width:50%;background-color:#f2f2f2;">MTU oil dis.gas (calc)</td>
-                <td><span id="mtu_diss_gas" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td><span id="mtu_diss_gas_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
                 <td style="width:30%;background-color:#f2f2f2;">KSm3/d</td>
               </tr>
               <tr>
                 <td style="background-color:#f2f2f2;">OGP oil dis.gas (calc)</td>
-                <td><span id="ogp_diss_gas" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td><span id="ogp_diss_gas_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
                 <td style="background-color:#f2f2f2;">KSm3/d</td>
               </tr>
               <tr>
                 <td style="background-color:#f2f2f2;">U2 to U3 oil dis.gas (calc)</td>
-                <td><span id="u2_oil_2_u3_diss_gas" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td><span id="u2_oil_2_u3_diss_gas_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
                 <td style="background-color:#f2f2f2;">KSm3/d</td>
               </tr>
               <tr>
                 <td style="background-color:#f2f2f2;">U2 to KPC oil dis.gas (calc)</td>
-                <td><span id="u2_oil_2_kpc_diss_gas" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td><span id="u2_oil_2_kpc_diss_gas_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
                 <td style="background-color:#f2f2f2;">KSm3/d</td>
               </tr>
               <tr>
                 <td style="background-color:#f2f2f2;">U3 to KPC oil dis.gas (calc)</td>
-                <td><span id="u3_oil_2_kpc_diss_gas" data-precision="1"  contenteditable data-validation="numeric"></span></td>
+                <td><span id="u3_oil_2_kpc_diss_gas_act" data-precision="1"  contenteditable data-validation="numeric"></span></td>
                 <td style="background-color:#f2f2f2;">KSm3/d</td>
               </tr>
             </tbody>
@@ -814,24 +814,24 @@
     var u2_mp_rs_val=parseFloat($("#u2_mp_rs").text());
     //MTU disgas
     var mtu_diss_gas_val=mtu_oil_val*u3_lp_rs_val/1000;
-    precision = parseInt($("#mtu_diss_gas").data("precision"));
-    convert_to_dino_units("mtu_diss_gas",mtu_diss_gas_val,1,precision,1,1)
+    precision = parseInt($("#mtu_diss_gas_act").data("precision"));
+    convert_to_dino_units("mtu_diss_gas_act",mtu_diss_gas_val,1,precision,1,1)
     //OGP disgas
     var ogp_diss_gas_val=ogp_oil_val*u3_lp_rs_val/1000;
-    precision = parseInt($("#ogp_diss_gas").data("precision"));
-    convert_to_dino_units("ogp_diss_gas",ogp_diss_gas_val,1,precision,1,1)
+    precision = parseInt($("#ogp_diss_gas_act").data("precision"));
+    convert_to_dino_units("ogp_diss_gas_act",ogp_diss_gas_val,1,precision,1,1)
     //U2 oil to KPC disgas
     var u2_oil_2_kpc_diss_gas_val=u2_oil_2_kpc_val*u2_mp_rs_val/1000;
-    precision = parseInt($("#u2_oil_2_kpc_diss_gas").data("precision"));
-    convert_to_dino_units("u2_oil_2_kpc_diss_gas",u2_oil_2_kpc_diss_gas_val,1,precision,1,1)
+    precision = parseInt($("#u2_oil_2_kpc_diss_gas_act").data("precision"));
+    convert_to_dino_units("u2_oil_2_kpc_diss_gas_act",u2_oil_2_kpc_diss_gas_val,1,precision,1,1)
     //U2 oil to U3 disgas
     var u2_oil_2_u3_diss_gas_val=u2_oil_2_u3_val*u2_mp_rs_val/1000;
-    precision = parseInt($("#u2_oil_2_u3_diss_gas").data("precision"));
-    convert_to_dino_units("u2_oil_2_u3_diss_gas",u2_oil_2_u3_diss_gas_val,1,precision,1,1)
+    precision = parseInt($("#u2_oil_2_u3_diss_gas_act").data("precision"));
+    convert_to_dino_units("u2_oil_2_u3_diss_gas_act",u2_oil_2_u3_diss_gas_val,1,precision,1,1)
     //U3 oil to KPC disgas
     var u3_oil_2_kpc_diss_gas_val=u3_oil_2_kpc_val*u3_lp_rs_val/1000;
-    precision = parseInt($("#u3_oil_2_kpc_diss_gas").data("precision"));
-    convert_to_dino_units("u3_oil_2_kpc_diss_gas",u3_oil_2_kpc_diss_gas_val,1,precision,1,1)
+    precision = parseInt($("#u3_oil_2_kpc_diss_gas_act").data("precision"));
+    convert_to_dino_units("u3_oil_2_kpc_diss_gas_act",u3_oil_2_kpc_diss_gas_val,1,precision,1,1)
 
 
     //KPC gas
@@ -843,12 +843,12 @@
     convert_to_dino_units("kpc-qgas_act",kpc_qgas_val,1,precision,1,1);
     //U2 gas
     var gas_inj_val=parseFloat($("#gas_inj_act").text());
-    var u2_qgas_val=gas_inj_val-kpc_gas_2_u2_val+u2_oil_2_kpc_diss_gas_val;
+    var u2_qgas_val=gas_inj_val-kpc_gas_2_u2_val+u2_oil_2_kpc_diss_gas_val+u2_oil_2_u3_diss_gas_val;
     precision = parseInt($("#u2-qgas_act").data("precision"));
     convert_to_dino_units("u2-qgas_act",u2_qgas_val,1,precision,1,1);
     //U3 gas
     var ogp_gas_val=parseFloat($("#ogp_gas_act").text());
-    var u3_qgas_val=ogp_gas_val-kpc_gas_2_u3_val+u3_oil_2_kpc_diss_gas_val+ogp_diss_gas_val+mtu_diss_gas_val;
+    var u3_qgas_val=ogp_gas_val-kpc_gas_2_u3_val-u2_oil_2_u3_diss_gas_val+u3_oil_2_kpc_diss_gas_val+ogp_diss_gas_val+mtu_diss_gas_val;
     precision = parseInt($("#u3-qgas_act").data("precision"));
     convert_to_dino_units("u3-qgas_act",u3_qgas_val,1,precision,1,1);
     //Field gas

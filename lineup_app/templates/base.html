@@ -101,12 +101,12 @@
             <!-- <li>
               <a href="/"><img src="/static/img/dino-logo2.png" height="18"></a>
             </li> -->
-            <li class='{{page_active.help}}'>
+            <!-- <li class='{{page_active.help}}'>
               <a href="/help">
                 <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                 Help
               </a>
-            </li>
+            </li> -->
             <li>
               <a href="/logout">
                 <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
@@ -156,12 +156,16 @@
               <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
               Results
             </a>
+            <a href="/calibration" class="list-group-item list-group-item-action {{page_active.calibration}}">
+              <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+              Calibration
+            </a>
             <hr>
             {% if page_active.setup=="active" %}
-              <a href="#" class="list-group-item list-group-item-action" id="#save_state" onclick="save_state();">
+              <a href="#" class="list-group-item list-group-item-action" id="save_state" onclick="save_state('in');">
                 <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>  Save state
               </a>
-              <a href="#" class="list-group-item list-group-item-action" id="#clear_state" onclick="clear_state();">
+              <a href="#" class="list-group-item list-group-item-action" id="clear_state" onclick="clear_state();">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>  Clear state
               </a>
             {% elif page_active.results=="active" %}
